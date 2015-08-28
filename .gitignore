@@ -1,2 +1,4 @@
 .vagrant/
 source/seedsource_project/settings.py
+source/db.sqlite3
+__pycache__/
