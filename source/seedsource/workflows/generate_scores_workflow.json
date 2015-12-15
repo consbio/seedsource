@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "name": "Generate Scores",
+    "description": "Scores any number of variable rasters, and returns the result, which is a sum of all individual scores. Todo: add variable weighting."
+  },
+  "inputs": [
+    {
+      "name": "variables",
+      "type": "list",
+      "args": [[["raster", [[""], {}]]], {}],
+      "description": "A list of variable rasters used to calculate scores."
+    },
+    {
+      "name": "limits",
+      "type": "dict",
+      "description": "min/max limits for each variable, in the same order that variables are given: [{\"min\": 1, \"max\": 2}, ...]"
+    }
+  ],
+  "workflow": [
+    {
+      "id": "process_limits",
+      "task": "sst:process_limits",
+      "inputs": {
+        "limits": {
+          "source": "input",
+          "input": "limits"
+        }
+      }
+    },
+    {
+      "id": "mask_by_limit",
+      "task": "raster:map_by_expression",
+      "inputs": {
+        "arrays_in": {
+          "source": "input",
+          "input": "variables"
+        },
+        "expression": {
+          "source": "literal",
+          "input": "mask(x, x < limits[i]['min'] or x > limits[i]['max'])"
+        },
+        "limits": {
+          "source": "input",
+          "input": "limits"
+        }
+      }
+    },
+    {
+      "id": "calculate_scores",
+      "task": "raster:map_by_expression",
+      "inputs": {
+        "arrays_in": {
+          "source": "dependency",
+          "node": ["mask_by_limit", "arrays_out"]
+        },
+        "expression": {
+          "source": "literal",
+          "input": "int((x * factors[i]['factor'] - factors[i]['mid_factor']) ** 2)"
+        },
+        "factors": {
+          "source": "dependency",
+          "node": ["process_limits", "factors"]
+        }
+      }
+    },
+    {
+      "id": "sum_rasters",
+      "task": "raster:reduce_by_expression",
+      "inputs": {
+        "arrays_in": {
+          "source": "dependency",
+          "node": ["calculate_scores", "arrays_out"]
+        },
+        "expression": {
+          "source": "literal",
+          "input": "x + y"
+        }
+      }
+    },
+    {
+      "id": "finalize_scores",
+      "task": "raster:apply_expression",
+      "inputs": {
+        "array_in": {
+          "source": "dependency",
+          "node": ["sum_rasters", "array_out"]
+        },
+        "expression": {
+          "source": "literal",
+          "input": "int((float(x) + 0.4) ** 0.5)"
+        }
+      }
+    },
+    {
+      "id": "mask_result",
+      "task": "raster:mask_by_expression",
+      "inputs": {
+        "array_in": {
+          "source": "dependency",
+          "node": ["finalize_scores", "array_out"]
+        },
+        "expression": {
+          "source": "literal",
+          "input": "x > 100"
+        }
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "name": "raster_out",
+      "node": ["mask_result", "array_out"]
+    }
+  ]
+}

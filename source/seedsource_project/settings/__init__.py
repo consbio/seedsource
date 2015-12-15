@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 profile = os.environ.get('SEEDSOURCE_DEPLOY_PROFILE')
 
 try:
-    from custom import *
+    from seedsource_project.settings.custom import *
 except ImportError:
     if not profile:
         raise ImproperlyConfigured(
