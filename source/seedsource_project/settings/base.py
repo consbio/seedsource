@@ -3,6 +3,9 @@ import os
 
 
 # Starting at this file, walk back up the directory tree to the project root
+import random
+import string
+
 BASE_DIR = os.path.abspath(__file__)
 for __ in range(3):
     BASE_DIR = os.path.dirname(BASE_DIR)
@@ -14,7 +17,10 @@ if config_file and os.path.isfile(config_file):
         CONFIG = json.loads(f.read())
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = CONFIG.get('django_secret_key', 'pqdv0*(nw^*(m2ph+ks-kfsz^x4#t44rz$i2ndhk2%i6@9z(nf')
+SECRET_KEY = CONFIG.get(
+        'django_secret_key', ''.join(
+                [random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(50)]
+        ))  # This results in a random secret key every time the settings are loaded. Not appropriate for production.
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,7 +37,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'ncdjango'
+    'ncdjango',
+    'tastypie'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -67,8 +74,11 @@ WSGI_APPLICATION = 'seedsource_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': CONFIG.get('db_name', 'seedsource'),
+        'USER': CONFIG.get('db_user', 'seedsource'),
+        'PASSWORD': CONFIG.get('db_password'),
+        'HOST': CONFIG.get('db_host', '127.0.0.1')
     }
 }
 

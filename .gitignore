@@ -2,3 +2,4 @@
 source/seedsource_project/settings.py
 source/db.sqlite3
 __pycache__/
+source/config.json
