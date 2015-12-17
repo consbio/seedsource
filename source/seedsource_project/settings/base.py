@@ -38,7 +38,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'ncdjango',
-    'tastypie'
+    'rest_framework',
+    'tastypie',
+    'djcelery'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -89,3 +91,13 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
+CELERY_TRACK_STARTED = True
+
+NC_REGISTERED_JOBS = {
+    'generate_scores': {
+        'type': 'workflow',
+        'path': os.path.join(BASE_DIR, 'seedsource', 'workflows', 'generate_scores_workflow.json'),
+        'publish_raster_results': True
+    }
+}

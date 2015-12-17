@@ -16,4 +16,4 @@ def test_generate_scores_workflow():
     raster_2 = Raster(numpy.reshape(numpy.arange(100, 200), (10, 10)), BBox((0, 0, 10, 10)), 1, 0)
     limits = [{'min': 30, 'max': 70}, {'min': 140, 'max': 160}]
 
-    result = workflow(variables=[raster_1, raster_2], limits=limits)
+    workflow(variables=[raster_1, raster_2], limits=limits)
