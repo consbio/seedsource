@@ -40,7 +40,9 @@ INSTALLED_APPS = (
     'ncdjango',
     'rest_framework',
     'tastypie',
-    'djcelery'
+    'djcelery',
+
+    'seedsource'
 )
 
 MIDDLEWARE_CLASSES = (
