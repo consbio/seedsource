@@ -6,6 +6,9 @@ import os
 import random
 import string
 
+from clover.render.renderers.stretched import StretchedRenderer
+from clover.utilities.color import Color
+
 BASE_DIR = os.path.abspath(__file__)
 for __ in range(3):
     BASE_DIR = os.path.dirname(BASE_DIR)
@@ -100,6 +103,7 @@ NC_REGISTERED_JOBS = {
     'generate_scores': {
         'type': 'workflow',
         'path': os.path.join(BASE_DIR, 'seedsource', 'workflows', 'generate_scores_workflow.json'),
-        'publish_raster_results': True
+        'publish_raster_results': True,
+        'results_renderer': StretchedRenderer([(0, Color(0, 255, 0)), (100, Color(255, 0, 0))])
     }
 }
