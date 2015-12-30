@@ -5,6 +5,7 @@ import os
 # Starting at this file, walk back up the directory tree to the project root
 import random
 import string
+from datetime import timedelta
 
 from clover.render.renderers.stretched import StretchedRenderer
 from clover.utilities.color import Color
@@ -98,6 +99,15 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CELERY_TRACK_STARTED = True
+CELERYBEAT_SCHEDULE = {
+    'cleanup_temporary_services': {
+        'task': 'ncdjango.geoprocessing.celery_tasks.cleanup_temporary_services',
+        'schedule': timedelta(hours=1),
+        'options': {
+            'expires': 7200  # 2 hrs
+        }
+    }
+}
 
 NC_REGISTERED_JOBS = {
     'generate_scores': {

@@ -9,6 +9,8 @@ ALLOWED_HOSTS = []
 BROKER_URL = 'amqp://{}:{}@localhost:5672'.format(
         CONFIG.get('amqp_username', ''), CONFIG.get('amqp_password', '')
 )
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+
 NC_GEOPROCESSING_JOBS_QUEUE = 'gp'
 
 INSTALLED_APPS += ('socket_logging',)
