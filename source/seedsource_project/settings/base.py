@@ -46,7 +46,8 @@ INSTALLED_APPS = (
     'tastypie',
     'djcelery',
 
-    'seedsource'
+    'seedsource',
+    'accounts'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -89,6 +90,11 @@ DATABASES = {
         'HOST': CONFIG.get('db_host', '127.0.0.1')
     }
 }
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'accounts.backends.IdentityBackend'
+)
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'

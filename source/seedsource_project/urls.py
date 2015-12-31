@@ -19,5 +19,6 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('ncdjango.urls')),
-    url(r'^sst/', include('seedsource.urls'))
+    url(r'^sst/', include('seedsource.urls')),
+    url(r'^accounts/', include('accounts.urls'))
 ]
