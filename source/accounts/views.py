@@ -1,10 +1,10 @@
 from django.contrib.auth import login, authenticate, update_session_auth_hash, logout
-from rest_framework.generics import CreateAPIView, UpdateAPIView, GenericAPIView
+from rest_framework.generics import CreateAPIView, UpdateAPIView, GenericAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from accounts.serializers import CreateAccountSerializer, ChangePasswordSerializer, ChangeEmailSerializer, \
-    LoginSerializer
+from accounts.serializers import CreateAccountSerializer, ChangePasswordSerializer, ChangeEmailSerializer
+from accounts.serializers import LoginSerializer, UserSerializer
 
 
 class CreateAccountView(CreateAPIView):
@@ -43,7 +43,7 @@ class UpdatePasswordView(GenericAPIView):
 
 class LoginView(GenericAPIView):
     serializer_class = LoginSerializer
-    
+
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -62,3 +62,11 @@ class LogoutView(GenericAPIView):
         logout(request)
 
         return Response()
+
+
+class UserInfoView(RetrieveAPIView):
+    serializer_class = UserSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user
