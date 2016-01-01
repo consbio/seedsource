@@ -61,16 +61,16 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                             <span id="EmailDisplay"></span>
-                            <span class="glyphicon glyphicon-menu-down"></span>
+                            <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Account Settings</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#SettingsModal">Account Settings</a></li>
                             <li><a href="javascript:logout()">Sign Out</a></li>
                         </ul>
                     </li>
                 </ul>
                 <ul id="SignedOutNav" class="nav navbar-nav navbar-right">
-                    <li><a href="#">Create Account</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#RegisterModal">Create Account</a></li>
                     <li><a href="#" data-toggle="modal" data-target="#LoginModal">Sign In</a></li>
                 </ul>
             </div>
@@ -97,11 +97,59 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger hidden" role="alert">Invalid username or password.</div>
-                    <form onsubmit="return false">
+                    <form onsubmit="login(); return false;">
                         <input type="email" id="LoginEmail" class="form-control" placeholder="Email address" required autofocus />
                         <input type="password" id="LoginPassword" class="form-control" placeholder="Password" required />
                         <div>&nbsp;</div>
-                        <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="login()">Sign In</button>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="RegisterModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Create Account</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger hidden" role="alert"></div>
+                    <form onsubmit="createAccount(); return false;">
+                        <input type="email" id="RegisterEmail" class="form-control" placeholder="Email address" required autofocus />
+                        <input type="password" id="RegisterPassword" class="form-control" placeholder="Password" required />
+                        <input type="password" id="RegisterPasswordConfirm" class="form-control" placeholder="Confirm Password" required />
+                        <div>&nbsp;</div>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Create Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="SettingsModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Account Settings</h4>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="changeEmail(); return false;">
+                        <label for="ChangeEmail" class="control-label">Email address</label>
+                        <div class="alert alert-danger email hidden" role="alert"></div>
+                        <input type="email" id="ChangeEmail" class="form-control" placeholder="New email" required />
+                        <button class="btn btn-sm btn-primary" type="submit">Change Email</button>
+                    </form>
+                    <div>&nbsp;</div>
+                    <form onsubmit="changePassword(); return false;">
+                        <label for="ChangePassword" class="control-label">Password</label>
+                        <div class="alert alert-danger password hidden" role="alert"></div>
+                        <input type="password" id="ChangePassword" class="form-control" placeholder="New Password" required />
+                        <input type="password" id="ChangePasswordConfirm" class="form-control" placeholder="Confirm Password" required />
+                        <button class="btn btn-sm btn-primary" type="submit">Change Password</button>
                     </form>
                 </div>
             </div>
@@ -109,6 +157,7 @@
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://github.com/carhartl/jquery-cookie/releases/download/v1.4.1/jquery.cookie-1.4.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
     <script type="text/javascript">
@@ -135,7 +184,6 @@
                 password: $('#LoginPassword').val()
             };
             $.post('/accounts/login/', data).success(function() {
-                $('#LoginModal input').val('');
                 $('#LoginModal').modal('hide');
                 checkLogin();
             }).error(function() {
@@ -145,6 +193,74 @@
 
         function logout() {
             $.get('/accounts/logout/').success(loggedOut);
+        }
+
+        function createAccount() {
+            $('#RegisterModal .alert').addClass('hidden');
+
+            var password = $('#RegisterPassword').val();
+            var passwordConfirm = $('#RegisterPasswordConfirm').val();
+
+            if (password !== passwordConfirm) {
+                $('#RegisterModal .alert').html("Passwords don't match.").removeClass('hidden');
+                return;
+            }
+
+            var data = {
+                email: $('#RegisterEmail').val(),
+                password: password
+            };
+            $.post('/accounts/create-account/', data).success(function() {
+                $('#RegisterModal').modal('hide');
+                checkLogin();
+            }).error(function() {
+                $('#RegisterModal .alert')
+                        .html('This email address is used by an existing account.')
+                        .removeClass('hidden');
+            });
+        }
+
+        function changeEmail() {
+            $('#SettingsModal .alert').addClass('hidden');
+
+            var data = {
+                email: $('#ChangeEmail').val()
+            };
+            $.ajax({
+                type: 'PUT',
+                url: '/accounts/change-email/',
+                data: data
+            }).success(function() {
+                $('#SettingsModal').modal('hide');
+                checkLogin();
+            }).error(function() {
+                $('#SettingsModal .alert.email')
+                        .html('This email address is used by an existing account.')
+                        .removeClass('hidden');
+            });
+        }
+
+        function changePassword() {
+            $('#SettingsModal .alert').addClass('hidden');
+
+            var password = $('#ChangePassword').val();
+            var passwordConfirm = $('#ChangePasswordConfirm').val();
+
+            if (password !== passwordConfirm) {
+                $('#SettingsModal .alert.password').html("Passwords don't match.").removeClass('hidden');
+                return;
+            }
+
+            var data = {
+                password: password
+            };
+            $.ajax({
+                type: 'PUT',
+                url: '/accounts/change-password/',
+                data: data
+            }).success(function() {
+                $('#SettingsModal').modal('hide');
+            });
         }
 
         var isLoggedIn = false;
@@ -163,9 +279,16 @@
 
         checkLogin();
 
-        $('#LoginModal').on('shown.bs.modal', function() {
-            $('#LoginModal .alert').addClass('hidden');
-            $('#LoginEmail').focus();
+        $('.modal').on('shown.bs.modal', function() {
+            $('.modal .alert').addClass('hidden');
+            $(this).find('input').val('');
+            $(this).find('input[type=text]:first, input[type=email]:first').focus();
+        });
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+            }
         });
     </script>
 </body>
