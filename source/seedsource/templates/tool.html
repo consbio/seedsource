@@ -69,7 +69,7 @@
                         </ul>
                     </li>
                 </ul>
-                <ul id="SignedOutNav" class="nav navbar-nav navbar-right">
+                <ul id="SignedOutNav" class="nav navbar-nav navbar-right hidden">
                     <li><a href="#" data-toggle="modal" data-target="#RegisterModal">Create Account</a></li>
                     <li><a href="#" data-toggle="modal" data-target="#LoginModal">Sign In</a></li>
                 </ul>
@@ -167,13 +167,19 @@
             }).error(loggedOut);
         }
 
-        function loggedIn(email) {
-            $('#EmailDisplay').html(email);
+        function loggedIn(userEmail) {
+            isLoggedIn = true;
+            email = userEmail;
+
+            $('#EmailDisplay').html(userEmail);
             $('#SignedInNav').removeClass('hidden');
             $('#SignedOutNav').addClass('hidden');
         }
 
         function loggedOut() {
+            isLoggedIn = false;
+            email = null;
+
             $('#SignedInNav').addClass('hidden');
             $('#SignedOutNav').removeClass('hidden');
         }

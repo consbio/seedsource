@@ -6,7 +6,7 @@ class UniqueEmailMixin(object):
     def validate_email(self, value):
         if get_user_model().objects.filter(username__iexact=value).exists():
             raise serializers.ValidationError('An account with this email address already exists.')
-        return value
+        return value.lower()
 
 
 class CreateAccountSerializer(UniqueEmailMixin, serializers.Serializer):
@@ -43,6 +43,9 @@ class ChangePasswordSerializer(serializers.Serializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.CharField()
     password = serializers.CharField()
+
+    def validate_email(self, value):
+        return value.lower()
 
 
 class UserSerializer(serializers.Serializer):
