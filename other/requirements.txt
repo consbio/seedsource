@@ -1,3 +1,4 @@
 Django>=1.8,<1.9
 ncdjango>=0.2,<0.3
 psycopg2
+mercantile

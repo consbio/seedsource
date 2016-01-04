@@ -123,3 +123,10 @@ NC_REGISTERED_JOBS = {
         'results_renderer': StretchedRenderer([(0, Color(0, 255, 0)), (100, Color(255, 0, 0))])
     }
 }
+
+NC_INSTALLED_INTERFACES = (
+    'ncdjango.interfaces.data',
+    'ncdjango.interfaces.arcgis_extended',
+    'ncdjango.interfaces.arcgis',
+    'interfaces.tiles'
+)
