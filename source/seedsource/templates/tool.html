@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +19,10 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <script src="{% static "js/react/react.min.js" %}"></script>
+    <script src="{% static "js/react/react-dom.min.js" %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+
     <style type="text/css">
         html {
             height: 100%;
@@ -32,12 +38,18 @@
             bottom: 0;
             z-index: 2;
             background-color: #fff;
+            overflow: auto;
         }
 
         .main {
             position: fixed;
             top: 50px;
             bottom: 0;
+        }
+
+        .navbar-brand img {
+            margin-top: -2px;
+            margin-right: 5px;
         }
 
         #Map {
@@ -48,13 +60,40 @@
             right: 0;
             z-index: 1;
         }
+
+        .variableConfig {
+            padding: 5px;
+            border: 1px solid #999;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        .variableConfig input {
+            width: 50px;
+            text-align: right;
+        }
+
+        .variableConfig div.transfer {
+            float: right;
+        }
+
+        .variableConfig.focused {
+            background-color: #EEF;
+        }
+
+        .variablesList select {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="{% url "tool_page" %}">Seedlot Selection Tool</a>
+                <a class="navbar-brand" href="{% url "tool_page" %}">
+                    <img src="{% static "images/logo.png" %}" align="left" />
+                    <span style="color: #FFF">Seedlot</span> Selection Tool
+                </a>
             </div>
             <div>
                 <ul id="SignedInNav" class="nav navbar-nav navbar-right hidden">
@@ -80,13 +119,34 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3 sidebar">
-                <div class="lead">Widgets here.</div>
+                <div>
+                    <h4>1. Select a point on the map</h4>
+                    <p id="CoordsDisplay">No point selected.</p>
+                </div>
+                <div>
+                    <h4>2. Species</h4>
+                    <select id="SpeciesSelect">
+                        <option value="species_1" selected>Species 1</option>
+                        <option value="species_2">Species 2</option>
+                        <option value="species_3">Species 3</option>
+                    </select>
+                </div>
+                <div>
+                    <h4>3. Variable & Transfer Limits</h4>
+                    <div id="Variables"></div>
+                </div>
+                <div>
+                    <h4>4. Run Tool</h4>
+                    <button class="btn btn-primary" id="RunButton" disabled>Run</button>
+                </div>
             </div>
             <div class="col-md-9 col-md-offset-3 main">
                 <div id="Map"></div>
             </div>
         </div>
     </div>
+
+    <!-- Dialogs -->
 
     <div id="LoginModal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-sm">
@@ -149,7 +209,7 @@
                         <div class="alert alert-danger password hidden" role="alert"></div>
                         <input type="password" id="ChangePassword" class="form-control" placeholder="New Password" required />
                         <input type="password" id="ChangePasswordConfirm" class="form-control" placeholder="Confirm Password" required />
-                        <button class="btn btn-sm btn-primary" type="submit">Change Password</button>
+                        <button class="btn btn-sm btn-primary" type="submit" >Change Password</button>
                     </form>
                 </div>
             </div>
@@ -160,142 +220,6 @@
     <script src="https://github.com/carhartl/jquery-cookie/releases/download/v1.4.1/jquery.cookie-1.4.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
-    <script type="text/javascript">
-        function checkLogin() {
-            $.get('/accounts/user-info/').success(function(data) {
-                loggedIn(data.email);
-            }).error(loggedOut);
-        }
-
-        function loggedIn(userEmail) {
-            isLoggedIn = true;
-            email = userEmail;
-
-            $('#EmailDisplay').html(userEmail);
-            $('#SignedInNav').removeClass('hidden');
-            $('#SignedOutNav').addClass('hidden');
-        }
-
-        function loggedOut() {
-            isLoggedIn = false;
-            email = null;
-
-            $('#SignedInNav').addClass('hidden');
-            $('#SignedOutNav').removeClass('hidden');
-        }
-
-        function login() {
-            var data = {
-                email: $('#LoginEmail').val(),
-                password: $('#LoginPassword').val()
-            };
-            $.post('/accounts/login/', data).success(function() {
-                $('#LoginModal').modal('hide');
-                checkLogin();
-            }).error(function() {
-                $('#LoginModal .alert').removeClass('hidden');
-            });
-        }
-
-        function logout() {
-            $.get('/accounts/logout/').success(loggedOut);
-        }
-
-        function createAccount() {
-            $('#RegisterModal .alert').addClass('hidden');
-
-            var password = $('#RegisterPassword').val();
-            var passwordConfirm = $('#RegisterPasswordConfirm').val();
-
-            if (password !== passwordConfirm) {
-                $('#RegisterModal .alert').html("Passwords don't match.").removeClass('hidden');
-                return;
-            }
-
-            var data = {
-                email: $('#RegisterEmail').val(),
-                password: password
-            };
-            $.post('/accounts/create-account/', data).success(function() {
-                $('#RegisterModal').modal('hide');
-                checkLogin();
-            }).error(function() {
-                $('#RegisterModal .alert')
-                        .html('This email address is used by an existing account.')
-                        .removeClass('hidden');
-            });
-        }
-
-        function changeEmail() {
-            $('#SettingsModal .alert').addClass('hidden');
-
-            var data = {
-                email: $('#ChangeEmail').val()
-            };
-            $.ajax({
-                type: 'PUT',
-                url: '/accounts/change-email/',
-                data: data
-            }).success(function() {
-                $('#SettingsModal').modal('hide');
-                checkLogin();
-            }).error(function() {
-                $('#SettingsModal .alert.email')
-                        .html('This email address is used by an existing account.')
-                        .removeClass('hidden');
-            });
-        }
-
-        function changePassword() {
-            $('#SettingsModal .alert').addClass('hidden');
-
-            var password = $('#ChangePassword').val();
-            var passwordConfirm = $('#ChangePasswordConfirm').val();
-
-            if (password !== passwordConfirm) {
-                $('#SettingsModal .alert.password').html("Passwords don't match.").removeClass('hidden');
-                return;
-            }
-
-            var data = {
-                password: password
-            };
-            $.ajax({
-                type: 'PUT',
-                url: '/accounts/change-password/',
-                data: data
-            }).success(function() {
-                $('#SettingsModal').modal('hide');
-            });
-        }
-
-        var isLoggedIn = false;
-        var email = null;
-
-        var map = L.map('Map', {
-            layers: [L.tileLayer('//{s}.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-                attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-                maxZoom: 16,
-                subdomains: ['server', 'services']
-            })],
-            zoom: 6,
-            center: [44.07, -118.78]
-        });
-        map.zoomControl.setPosition('topright');
-
-        checkLogin();
-
-        $('.modal').on('shown.bs.modal', function() {
-            $('.modal .alert').addClass('hidden');
-            $(this).find('input').val('');
-            $(this).find('input[type=text]:first, input[type=email]:first').focus();
-        });
-
-        $.ajaxSetup({
-            beforeSend: function(xhr, settings) {
-                xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
-            }
-        });
-    </script>
+    <script src="{% static "js/main.js" %}" type="text/babel"></script>
 </body>
 </html>
