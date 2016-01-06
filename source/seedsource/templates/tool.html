@@ -41,10 +41,21 @@
             overflow: auto;
         }
 
+        .sidebar .step {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+
+        .sidebar .step h4 {
+            margin-left: -20px;
+        }
+
         .main {
             position: fixed;
             top: 50px;
             bottom: 0;
+            padding: 0px;
+            border-left: 2px solid #888;
         }
 
         .navbar-brand img {
@@ -75,6 +86,20 @@
 
         .variableConfig div.transfer {
             float: right;
+        }
+
+        .variableConfig input.form-control {
+            display: inline;
+            padding: 2px;
+            height: 24px;
+        }
+
+        .variableConfig table {
+            width: 100%;
+        }
+
+        .variableConfig td.right {
+            text-align: right;
         }
 
         .variableConfig.focused {
@@ -119,25 +144,25 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3 sidebar">
-                <div>
-                    <h4>1. Select a point on the map</h4>
+                <div class="step">
+                    <h4><span class="badge">1</span> Select a point on the map</h4>
                     <p id="CoordsDisplay">No point selected.</p>
                 </div>
-                <div>
-                    <h4>2. Species</h4>
-                    <select id="SpeciesSelect">
+                <div class="step">
+                    <h4><span class="badge">2</span> Choose species</h4>
+                    <select id="SpeciesSelect" class="form-control">
                         <option value="species_1" selected>Species 1</option>
                         <option value="species_2">Species 2</option>
                         <option value="species_3">Species 3</option>
                     </select>
                 </div>
-                <div>
-                    <h4>3. Variable & Transfer Limits</h4>
+                <div class="step">
+                    <h4><span class="badge">3</span> Choose variables & transfer limits</h4>
                     <div id="Variables"></div>
                 </div>
                 <div>
-                    <h4>4. Run Tool</h4>
-                    <button class="btn btn-primary" id="RunButton" disabled>Run</button>
+                    <h4></h4>
+                    <button class="btn btn-lg btn-primary btn-block" id="RunButton" disabled>Run Tool</button>
                 </div>
             </div>
             <div class="col-md-9 col-md-offset-3 main">

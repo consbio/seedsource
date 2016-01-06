@@ -152,7 +152,7 @@ function changePassword() {
 
 function initMap() {
     map = L.map('Map', {
-        layers: [L.tileLayer('//{s}.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+        layers: [L.tileLayer('//{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
             maxZoom: 16,
             subdomains: ['server', 'services']
@@ -242,13 +242,20 @@ var VariableConfig = React.createClass({
         }
     },
 
+    componentDidMount: function() {
+        if (this.props.variable.autofocus) {
+            this.handleFocus();
+            this.props.variable.autofocus = false;
+        }
+    },
+
     render: function() {
-        var valueNode = <span>Value at point: N/A</span>;
+        var valueNode = <span>Value: N/A</span>;
         var transferNode;
 
         if (config.point) {
             if (this.props.variable.variable in values && values[this.props.variable.variable]) {
-                valueNode = <span>Value at point: {values[this.props.variable.variable]}</span>;
+                valueNode = <span>Value: {values[this.props.variable.variable]}</span>;
             }
             else {
                 var url = '/arcgis/rest/services/1961_1990Y_' + this.props.variable.variable + '/MapServer/identify/';
@@ -275,7 +282,13 @@ var VariableConfig = React.createClass({
         }
 
         if (this.state.focused) {
-            transferNode = <input onChange={this.handleInput} ref="input" type="text" value={this.props.variable.transfer} />
+            transferNode = <input
+                onChange={this.handleInput}
+                ref="input"
+                type="text"
+                value={this.props.variable.transfer}
+                className="form-control form"
+            />
         }
         else {
             transferNode = <span>{this.props.variable.transfer}</span>
@@ -292,12 +305,12 @@ var VariableConfig = React.createClass({
                     <strong>{labels[this.props.variable.variable]}</strong>
                 </div>
             </div>
-            <div className="transfer">
-                <span>Transfer limit (+/-): {transferNode}</span>
-            </div>
-            <div>
-                {valueNode}
-            </div>
+            <table>
+                <tr>
+                    <td>{valueNode}</td>
+                    <td className="right">Transfer limit (+/-): {transferNode}</td>
+                </tr>
+            </table>
         </div>;
     }
 });
@@ -309,15 +322,18 @@ var VariablesList = React.createClass({
         };
     },
 
-    addVariable: function(variable, transfer) {
+    addVariable: function(variable, transfer, autofocus) {
         if (!variable) {
             variable = variables[0];
         }
         if (!transfer) {
             transfer = 2;
         }
+        if (!autofocus) {
+            autofocus = false;
+        }
 
-        this.state.variables.push({'variable': variable, 'transfer': transfer});
+        this.state.variables.push({'variable': variable, 'transfer': transfer, 'autofocus': autofocus});
         this.forceUpdate();
     },
 
@@ -371,7 +387,7 @@ var VariablesList = React.createClass({
 
     handleVariableSelect: function(e) {
         if (e.target.value) {
-            this.addVariable(e.target.value);
+            this.addVariable(e.target.value, null, true);
             e.target.value = '';
         }
 
@@ -408,7 +424,7 @@ var VariablesList = React.createClass({
                 {rows}
             </div>
             <div>
-                <select ref="select" onChange={this.handleVariableSelect}>
+                <select ref="select" className="form-control" onChange={this.handleVariableSelect}>
                     <option value="" selected>Add a variable...</option>
                     {availableVariables}
                 </select>
