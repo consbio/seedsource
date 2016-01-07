@@ -213,13 +213,17 @@ var VariableConfig = React.createClass({
             return;
         }
 
+        this.blur();
+    },
+
+    blur: function() {
         if (this.state.focused) {
             this.setState({focused: false});
 
             window.removeEventListener('click', this.handleBlur);
         }
 
-        if (variableMapLayer.listIndex == this.props.index) {
+        if (variableMapLayer && variableMapLayer.listIndex == this.props.index) {
             map.removeLayer(variableMapLayer);
             variableMapLayer = null;
         }
@@ -234,6 +238,12 @@ var VariableConfig = React.createClass({
         if (e.key == 'Enter') {
             this.handleBlur(e);
         }
+    },
+
+    handleRemove: function(e) {
+        this.blur();
+        this.props.onRemove(this);
+        e.stopPropagation();
     },
 
     componentDidUpdate: function() {
@@ -300,6 +310,7 @@ var VariableConfig = React.createClass({
         }
 
         return <div onClick={this.handleFocus} onKeyPress={this.handleKey} className={className}>
+            <button type="button" className="close" onClick={this.handleRemove}><span aria-hidden="true">&times;</span></button>
             <div>
                 <div>
                     <strong>{labels[this.props.variable.variable]}</strong>
@@ -390,7 +401,11 @@ var VariablesList = React.createClass({
             this.addVariable(e.target.value, null, true);
             e.target.value = '';
         }
+    },
 
+    handleRemove: function(variableConfig) {
+        this.state.variables.splice(variableConfig.props.index, 1);
+        this.forceUpdate();
     },
 
     render: function() {
@@ -400,6 +415,7 @@ var VariablesList = React.createClass({
                 <VariableConfig
                     onTransferChange={this.handleTransferChange}
                     onValueUpdate={this.handleUpdate}
+                    onRemove={this.handleRemove}
                     variable={variable}
                     index={i}
                 />
