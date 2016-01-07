@@ -9,9 +9,10 @@
 
     <title>Seedlot Selection Tool</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.min.css" %}" />
+    <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap-theme.min.css" %}" />
+    <link rel="stylesheet" href="{% static "leaflet/leaflet.css" %}" />
+    <link rel="stylesheet" href="{% static "sst/css/tool.css" %}" />
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -19,104 +20,16 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <script src="{% static "js/react/react.min.js" %}"></script>
-    <script src="{% static "js/react/react-dom.min.js" %}"></script>
+    <script src="{% static "react/react.min.js" %}"></script>
+    <script src="{% static "react/react-dom.min.js" %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
-
-    <style type="text/css">
-        html {
-            height: 100%;
-        }
-
-        body {
-            height: 100%;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 50px;
-            bottom: 0;
-            z-index: 2;
-            background-color: #fff;
-            overflow: auto;
-        }
-
-        .sidebar .step {
-            margin-bottom: 20px;
-            padding-left: 20px;
-        }
-
-        .sidebar .step h4 {
-            margin-left: -20px;
-        }
-
-        .main {
-            position: fixed;
-            top: 50px;
-            bottom: 0;
-            padding: 0px;
-            border-left: 2px solid #888;
-        }
-
-        .navbar-brand img {
-            margin-top: -2px;
-            margin-right: 5px;
-        }
-
-        #Map {
-            height: 100%;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            z-index: 1;
-        }
-
-        .variableConfig {
-            padding: 5px;
-            border: 1px solid #999;
-            border-radius: 5px;
-            margin-bottom: 5px;
-        }
-
-        .variableConfig input {
-            width: 50px;
-            text-align: right;
-        }
-
-        .variableConfig div.transfer {
-            float: right;
-        }
-
-        .variableConfig input.form-control {
-            display: inline;
-            padding: 2px;
-            height: 24px;
-        }
-
-        .variableConfig table {
-            width: 100%;
-        }
-
-        .variableConfig td.right {
-            text-align: right;
-        }
-
-        .variableConfig.focused {
-            background-color: #EEF;
-        }
-
-        .variablesList select {
-            width: 100%;
-        }
-    </style>
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="{% url "tool_page" %}">
-                    <img src="{% static "images/logo.png" %}" align="left" />
+                    <img src="{% static "sst/images/logo.png" %}" align="left" />
                     <span style="color: #FFF">Seedlot</span> Selection Tool
                 </a>
             </div>
@@ -241,10 +154,10 @@
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://github.com/carhartl/jquery-cookie/releases/download/v1.4.1/jquery.cookie-1.4.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
-    <script src="{% static "js/main.js" %}" type="text/babel"></script>
+    <script src="{% static "jquery/jquery-2.1.4.min.js" %}"></script>
+    <script src="{% static "jquery/jquery.cookie-1.4.1.min.js" %}"></script>
+    <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "leaflet/leaflet.js" %}"></script>
+    <script src="{% static "sst/js/tool.js" %}" type="text/babel"></script>
 </body>
 </html>

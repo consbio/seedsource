@@ -1,0 +1,85 @@
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+}
+
+.sidebar {
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    z-index: 2;
+    background-color: #fff;
+    overflow: auto;
+}
+
+.sidebar .step {
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+
+.sidebar .step h4 {
+    margin-left: -20px;
+}
+
+.main {
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    padding: 0px;
+    border-left: 2px solid #888;
+}
+
+.navbar-brand img {
+    margin-top: -2px;
+    margin-right: 5px;
+}
+
+#Map {
+    height: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.variableConfig {
+    padding: 5px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.variableConfig input {
+    width: 50px;
+    text-align: right;
+}
+
+.variableConfig div.transfer {
+    float: right;
+}
+
+.variableConfig input.form-control {
+    display: inline;
+    padding: 2px;
+    height: 24px;
+}
+
+.variableConfig table {
+    width: 100%;
+}
+
+.variableConfig td.right {
+    text-align: right;
+}
+
+.variableConfig.focused {
+    background-color: #EEF;
+}
+
+.variablesList select {
+    width: 100%;
+}
