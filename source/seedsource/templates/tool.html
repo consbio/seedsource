@@ -57,6 +57,14 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3 sidebar">
+                <div id="JobStatusOverlay" class="overlay hidden">
+                    <div class="progressContainer">
+                        <h4>Calculating scores...</h4>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-info progress-bar-striped active" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
                 <div class="step">
                     <h4><span class="badge">1</span> Select a point on the map</h4>
                     <p id="CoordsDisplay">No point selected.</p>
@@ -75,7 +83,7 @@
                 </div>
                 <div>
                     <h4></h4>
-                    <button class="btn btn-lg btn-primary btn-block" id="RunButton" disabled>Run Tool</button>
+                    <button class="btn btn-lg btn-primary btn-block" id="RunButton" onClick="runJob()" disabled>Run Tool</button>
                 </div>
             </div>
             <div class="col-md-9 col-md-offset-3 main">
@@ -158,6 +166,7 @@
     <script src="{% static "jquery/jquery.cookie-1.4.1.min.js" %}"></script>
     <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
     <script src="{% static "leaflet/leaflet.js" %}"></script>
-    <script src="{% static "sst/js/tool.js" %}" type="text/babel"></script>
+    <script src="{% static "sst/js/tool.js" %}"></script>
+    <script src="{% static "sst/js/components.jsx" %}" type="text/babel"></script>
 </body>
 </html>

@@ -120,7 +120,7 @@ NC_REGISTERED_JOBS = {
         'type': 'workflow',
         'path': os.path.join(BASE_DIR, 'seedsource', 'workflows', 'generate_scores_workflow.json'),
         'publish_raster_results': True,
-        'results_renderer': StretchedRenderer([(0, Color(0, 255, 0)), (100, Color(255, 0, 0))])
+        'results_renderer': StretchedRenderer([(0, Color(255, 100, 0)), (100, Color(255, 255, 0))])
     }
 }
 

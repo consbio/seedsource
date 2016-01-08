@@ -1,6 +1,6 @@
 var variables = [
-    'AHM', 'bFFP', 'CMD', 'DD_0', 'DD5', 'DD18', 'eFFP', 'EMT', 'Eref', 'EXT', 'FFP', 'MAP', 'MAR', 'MAT',
-    'MCMT', 'MSP', 'MWMT', 'NFFD', 'PAS', 'RH', 'SHM', 'TD'
+    'AHM', 'bFFP', 'CMD', 'DD_0', 'DD5', 'DD18', 'eFFP', 'EMT', 'Eref', 'EXT', 'FFP', 'MAP', 'MAR', 'MAT', 'MCMT',
+    'MSP', 'MWMT', 'NFFD', 'PAS', 'RH', 'SHM', 'TD'
 ];
 var labels = {
     AHM: 'Annual heat­moisture index',
@@ -26,19 +26,18 @@ var labels = {
     SHM: 'Summer heat­moisture index',
     TD: 'Temperature difference between MWMT and MCMT, or continentality (°C)'
 };
-var values = {};
 var species = {
     species_1: ['AHM', 'bFFP', 'CMD'],
     species_2: ['MAR', 'MAP'],
     species_3: ['AHM', 'PAS', 'TD', 'MWMT']
 };
+var values = {};
 
 var isLoggedIn = false;
 var email = null;
-var config = {
-    point: null
-};
+var point = null;
 var map;
+var resultsMapLayer = null;
 var variableMapLayer;
 var variablesList;
 
@@ -163,7 +162,7 @@ function initMap() {
     map.zoomControl.setPosition('topright');
 
     map.on('click', function (e) {
-        config.point = {x: e.latlng.lng, y: e.latlng.lat};
+        point = {x: e.latlng.lng, y: e.latlng.lat};
         $('#CoordsDisplay').html('Lat: ' + e.latlng.lat.toFixed(2) + ', Lon: ' + e.latlng.lng.toFixed(2));
         values = {};
         variablesList.forceUpdate();
@@ -178,281 +177,65 @@ function setSpecies(id) {
     });
 }
 
-var VariableConfig = React.createClass({
-    getInitialState: function() {
-        return {
-            focused: false
-        };
-    },
+function showJobOverlay() {
+    $('#JobStatusOverlay').removeClass('hidden');
+}
 
-    handleFocus: function(e) {
-        if (!this.state.focused) {
-            this.setState({focused: true});
+function hideJobOverlay() {
+    $('#JobStatusOverlay').addClass('hidden');
+}
 
-            setTimeout(function() {
-                window.addEventListener('click', this.handleBlur);
-            }.bind(this), 1);
+function runJob() {
+    var configuration = variablesList.getConfiguration();
+    var inputs = {
+        variables: configuration.map(function(item) {
+            return 'service://1961_1990Y_' + item.variable + ':' + item.variable;
+        }),
+        limits: configuration.map(function(item) {
+            return {min: item.min, max: item.max};
+        })
+    };
 
-            var layerUrl = '/tiles/1961_1990Y_' + this.props.variable.variable + '/{z}/{x}/{y}.png';
-            if (variableMapLayer) {
-                variableMapLayer.setUrl(layerUrl);
+    var url = '/geoprocessing/rest/jobs/';
+    var data = {
+        job: 'generate_scores',
+        inputs: JSON.stringify(inputs)
+    };
+    $.post(url, data).done(function(data) {
+        pollJobStatus(data.uuid);
+    }).fail(function() {
+        alert('Sorry, there was an error running the job. Please try again.');
+        hideJobOverlay();
+    });
+
+    showJobOverlay();
+}
+
+function pollJobStatus(uuid) {
+    $.get('/geoprocessing/rest/jobs/' + uuid + '/').done(function(data) {
+        if (data.status === 'success') {
+            hideJobOverlay();
+            var layerUrl = '/tiles/' + JSON.parse(data.outputs).raster_out + '/{z}/{x}/{y}.png';
+
+            if (resultsMapLayer) {
+                resultsMapLayer.setUrl(layerUrl);
             }
             else {
-                variableMapLayer = L.tileLayer(layerUrl).addTo(map);
+                resultsMapLayer = L.tileLayer(layerUrl, {zIndex: 2}).addTo(map);
             }
-            variableMapLayer.listIndex = this.props.index;
+        }
+        else if (data.status === 'pending' || data.status == 'started') {
+            setTimeout(function() { pollJobStatus(uuid); }, 1000);
         }
         else {
-            e.stopPropagation();
+            alert('Sorry, there was an error running the job. Please try again.');
+            hideJobOverlay();
         }
-    },
-
-    handleBlur: function(e) {
-        // Ignore clicks on map
-        if (e.target.className.indexOf('leaflet') >= 0) {
-            return;
-        }
-
-        this.blur();
-    },
-
-    blur: function() {
-        if (this.state.focused) {
-            this.setState({focused: false});
-
-            window.removeEventListener('click', this.handleBlur);
-        }
-
-        if (variableMapLayer && variableMapLayer.listIndex == this.props.index) {
-            map.removeLayer(variableMapLayer);
-            variableMapLayer = null;
-        }
-    },
-
-    handleInput: function(e) {
-        this.props.variable.transfer = e.target.value;
-        this.props.onTransferChange(e.target.value);
-    },
-
-    handleKey: function(e) {
-        if (e.key == 'Enter') {
-            this.handleBlur(e);
-        }
-    },
-
-    handleRemove: function(e) {
-        this.blur();
-        this.props.onRemove(this);
-        e.stopPropagation();
-    },
-
-    componentDidUpdate: function() {
-        if (this.state.focused && ReactDOM.findDOMNode(this.refs.input) != document.activeElement) {
-            ReactDOM.findDOMNode(this.refs.input).select();
-        }
-    },
-
-    componentDidMount: function() {
-        if (this.props.variable.autofocus) {
-            this.handleFocus();
-            this.props.variable.autofocus = false;
-        }
-    },
-
-    render: function() {
-        var valueNode = <span>Value: N/A</span>;
-        var transferNode;
-
-        if (config.point) {
-            if (this.props.variable.variable in values && values[this.props.variable.variable]) {
-                valueNode = <span>Value: {values[this.props.variable.variable]}</span>;
-            }
-            else {
-                var url = '/arcgis/rest/services/1961_1990Y_' + this.props.variable.variable + '/MapServer/identify/';
-                var geometry = config.point;
-                url += '?f=json&tolerance=2&imageDisplay=1600%2C1031%2C96&&geometryType=esriGeometryPoint&' +
-                        'mapExtent=-12301562.058352625%2C6293904.1727356175%2C-12056963.567839967%2C6451517.325059711' +
-                        '&geometry=' + JSON.stringify(geometry);
-
-                $.get(url).success(function(data) {
-                    var value;
-
-                    if (data.results[0]) {
-                        value = data.results[0].attributes['Pixel value'];
-                    }
-                    else {
-                        value = null;
-                    }
-
-                    values[this.props.variable.variable] = value;
-                    this.forceUpdate();
-                    this.props.onValueUpdate(value);
-                }.bind(this));
-            }
-        }
-
-        if (this.state.focused) {
-            transferNode = <input
-                onChange={this.handleInput}
-                ref="input"
-                type="text"
-                value={this.props.variable.transfer}
-                className="form-control form"
-            />
-        }
-        else {
-            transferNode = <span>{this.props.variable.transfer}</span>
-        }
-
-        var className = "variableConfig";
-        if (this.state.focused) {
-            className += " focused";
-        }
-
-        return <div onClick={this.handleFocus} onKeyPress={this.handleKey} className={className}>
-            <button type="button" className="close" onClick={this.handleRemove}><span aria-hidden="true">&times;</span></button>
-            <div>
-                <div>
-                    <strong>{labels[this.props.variable.variable]}</strong>
-                </div>
-            </div>
-            <table>
-                <tr>
-                    <td>{valueNode}</td>
-                    <td className="right">Transfer limit (+/-): {transferNode}</td>
-                </tr>
-            </table>
-        </div>;
-    }
-});
-
-var VariablesList = React.createClass({
-    getInitialState: function() {
-        return {
-            variables: []
-        };
-    },
-
-    addVariable: function(variable, transfer, autofocus) {
-        if (!variable) {
-            variable = variables[0];
-        }
-        if (!transfer) {
-            transfer = 2;
-        }
-        if (!autofocus) {
-            autofocus = false;
-        }
-
-        this.state.variables.push({'variable': variable, 'transfer': transfer, 'autofocus': autofocus});
-        this.forceUpdate();
-    },
-
-    clearVariables: function() {
-        this.setState({variables: []});
-    },
-
-    handleTransferChange: function() {
-        this.forceUpdate();
-    },
-
-    getConfiguration: function() {
-        return this.state.variables.map(function(variable) {
-            var item = {'variable': variable.variable, min: null, max: null};
-
-            if (variable.variable in values) {
-                var value = values[variable.variable];
-                var transfer = parseFloat(variable.transfer);
-                if (value === null) {
-                    item.min = null;
-                    item.max = null;
-                }
-                else {
-                    item.min = value - transfer;
-                    item.max = value + transfer;
-                }
-            }
-
-            return item;
-        });
-    },
-
-    componentDidUpdate: function() {
-        this.handleUpdate();
-    },
-
-    handleUpdate: function() {
-        var disabled = true;
-
-        if (config.point) {
-            disabled = !this.getConfiguration().every(function(item) {
-                var validMin = !isNaN(item.min) && item.min !== null;
-                var validMax = !isNaN(item.max) && item.max !== null;
-
-                return validMin && validMax;
-            });
-        }
-
-        $('#RunButton').prop('disabled', disabled);
-    },
-
-    handleVariableSelect: function(e) {
-        if (e.target.value) {
-            this.addVariable(e.target.value, null, true);
-            e.target.value = '';
-        }
-    },
-
-    handleRemove: function(variableConfig) {
-        this.state.variables.splice(variableConfig.props.index, 1);
-        this.forceUpdate();
-    },
-
-    render: function() {
-        var rows = [];
-        this.state.variables.forEach(function(variable, i) {
-            rows.push(
-                <VariableConfig
-                    onTransferChange={this.handleTransferChange}
-                    onValueUpdate={this.handleUpdate}
-                    onRemove={this.handleRemove}
-                    variable={variable}
-                    index={i}
-                />
-            );
-        }.bind(this));
-
-        var availableVariables = [];
-        variables.forEach(function(variable) {
-            var variableInList = this.state.variables.some(function(item) {
-                return item.variable == variable;
-            });
-
-            if (!variableInList) {
-                availableVariables.push(
-                    <option value={variable}>{labels[variable]}</option>
-                );
-            }
-        }.bind(this));
-
-        return <div className="variablesList">
-            <div>
-                {rows}
-            </div>
-            <div>
-                <select ref="select" className="form-control" onChange={this.handleVariableSelect}>
-                    <option value="" selected>Add a variable...</option>
-                    {availableVariables}
-                </select>
-            </div>
-        </div>
-    }
-});
-
-var variablesList = ReactDOM.render(
-    <VariablesList />,
-    $('#Variables')[0]
-);
+    }).fail(function() {
+        alert('Sorry, there was an error running the job. Please try again.');
+        hideJobOverlay();
+    });
+}
 
 $('#SpeciesSelect').change(function(e) {
     setSpecies(e.target.value);
@@ -472,4 +255,3 @@ $.ajaxSetup({
 
 initMap();
 checkLogin();
-setSpecies('species_1');
