@@ -103,6 +103,10 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_STORAGE = 'seedsource_project.storage.SSTStaticFilesStorage'
+BABEL_CMD = '/usr/local/bin/babel'
+UGLIFY_CMD = '/usr/local/bin/uglifyjs'
 
 CELERY_TRACK_STARTED = True
 CELERYBEAT_SCHEDULE = {

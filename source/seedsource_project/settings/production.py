@@ -69,5 +69,7 @@ SOCKET_LOGGING = {
     }
 }
 
+STATIC_ROOT = '/var/www/static/'
+
 NC_SERVICE_DATA_ROOT = '/ncdjango/services/'
 NC_TEMPORARY_FILE_LOCATION = '/ncdjango/tmp/'

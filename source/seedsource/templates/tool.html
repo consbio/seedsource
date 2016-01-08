@@ -22,7 +22,10 @@
 
     <script src="{% static "react/react.min.js" %}"></script>
     <script src="{% static "react/react-dom.min.js" %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+
+    {% if debug %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    {% endif %}
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -165,8 +168,14 @@
     <script src="{% static "jquery/jquery-2.1.4.min.js" %}"></script>
     <script src="{% static "jquery/jquery.cookie-1.4.1.min.js" %}"></script>
     <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
-    <script src="{% static "leaflet/leaflet.js" %}"></script>
-    <script src="{% static "sst/js/tool.js" %}"></script>
-    <script src="{% static "sst/js/components.jsx" %}" type="text/babel"></script>
+    <script src="{% static "leaflet/leaflet.min.js" %}"></script>
+
+    {% if debug %}
+        <script src="{% static "sst/js/tool.js" %}"></script>
+        <script src="{% static "sst/js/components.jsx" %}" type="text/babel"></script>
+    {% else %}
+        <script src="{% static "sst/js/tool.min.js" %}"></script>
+        <script src="{% static "sst/js/components.min.js" %}" type="text/babel"></script>
+    {% endif %}
 </body>
 </html>
