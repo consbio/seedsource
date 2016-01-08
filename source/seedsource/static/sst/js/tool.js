@@ -39,6 +39,7 @@ var point = null;
 var map;
 var resultsMapLayer = null;
 var variableMapLayer;
+var variablesList;
 
 function checkLogin() {
     $.get('/accounts/user-info/').success(function(data) {
