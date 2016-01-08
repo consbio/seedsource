@@ -17,12 +17,13 @@ class SSTStaticFilesStorage(StaticFilesStorage):
                 print('Building {}...'.format(path))
 
                 new_path = '{}.js'.format(os.path.splitext(path)[0])
-                errno = subprocess.call([
+                p = subprocess.Popen(' '.join([
                     BABEL_CMD, '--presets', 'react', os.path.join(STATIC_ROOT, path), '--out-file',
                     os.path.join(STATIC_ROOT, new_path)
-                ], shell=True)
-                if errno:
-                    raise IOError('Babel command failed for file {} (exit code {})'.format(path, errno))
+                ]), shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+                p.wait()
+                if p.returncode:
+                    raise IOError('Babel command failed for file {} (exit code {})'.format(path, p.returncode))
 
                 path = new_path
 
@@ -30,10 +31,11 @@ class SSTStaticFilesStorage(StaticFilesStorage):
                 print('Minifying {}...'.format(path))
 
                 new_path = '{}.min.js'.format(os.path.splitext(path)[0])
-                errno = subprocess.call([
+                p = subprocess.Popen(' '.join([
                     UGLIFY_CMD, os.path.join(STATIC_ROOT, path), '-o', os.path.join(STATIC_ROOT, new_path)
-                ], shell=True)
-                if errno:
-                    raise IOError('Uglify command failed for file {} (exit code {})'.format(path, errno))
+                ]), shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+                p.wait()
+                if p.returncode:
+                    raise IOError('Uglify command failed for file {} (exit code {})'.format(path, p.returncode))
 
                 path = new_path
