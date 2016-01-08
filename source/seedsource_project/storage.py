@@ -15,6 +15,9 @@ class SSTStaticFilesStorage(StaticFilesStorage):
         results = []
 
         for path in paths:
+            orig_path = path
+            processed = False
+
             if path.endswith('.jsx'):
                 print('Building {}...'.format(path))
 
@@ -27,7 +30,7 @@ class SSTStaticFilesStorage(StaticFilesStorage):
                 if p.returncode:
                     raise IOError('Babel command failed for file {} (exit code {})'.format(path, p.returncode))
 
-                results.append((path, new_path, True))
+                processed = True
                 path = new_path
 
             if path.endswith('.js') and not path.endswith('.min.js'):
@@ -41,6 +44,9 @@ class SSTStaticFilesStorage(StaticFilesStorage):
                 if p.returncode:
                     raise IOError('Uglify command failed for file {} (exit code {})'.format(path, p.returncode))
 
-                results.append((path, new_path, True))
+                processed = True
+                path = new_path
+
+            results.append((orig_path, path, processed))
 
         return results
