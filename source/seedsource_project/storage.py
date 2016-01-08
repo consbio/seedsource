@@ -12,6 +12,8 @@ STATIC_ROOT = settings.STATIC_ROOT
 
 class SSTStaticFilesStorage(StaticFilesStorage):
     def post_process(self, paths, **options):
+        results = []
+
         for path in paths:
             if path.endswith('.jsx'):
                 print('Building {}...'.format(path))
@@ -25,6 +27,7 @@ class SSTStaticFilesStorage(StaticFilesStorage):
                 if p.returncode:
                     raise IOError('Babel command failed for file {} (exit code {})'.format(path, p.returncode))
 
+                results.append((path, new_path, True))
                 path = new_path
 
             if path.endswith('.js') and not path.endswith('.min.js'):
@@ -38,4 +41,6 @@ class SSTStaticFilesStorage(StaticFilesStorage):
                 if p.returncode:
                     raise IOError('Uglify command failed for file {} (exit code {})'.format(path, p.returncode))
 
-                path = new_path
+                results.append((path, new_path, True))
+
+        return results
