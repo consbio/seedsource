@@ -73,7 +73,7 @@
         },
         "expression": {
           "source": "literal",
-          "input": "x + y"
+          "input": "mask(x + y, get_mask(x) or get_mask(y))"
         }
       }
     },
