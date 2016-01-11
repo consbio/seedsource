@@ -28,6 +28,8 @@
     {% endif %}
 </head>
 <body>
+    <!-- Navbar -->
+
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -57,6 +59,8 @@
         </div>
     </nav>
 
+    <!-- Main body -->
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3 sidebar">
@@ -70,7 +74,12 @@
                 </div>
                 <div class="step">
                     <h4><span class="badge">1</span> Select a point on the map</h4>
-                    <p id="CoordsDisplay">No point selected.</p>
+                    <div class="coords">
+                        <strong>Lat: </strong>
+                        <input type="text" id="LatInput" class="form-control form-inline" />
+                        <strong>Lon: </strong>
+                        <input type="text" id="LonInput" class="form-control form-inline" />
+                    </div>
                 </div>
                 <div class="step">
                     <h4><span class="badge">2</span> Choose species</h4>

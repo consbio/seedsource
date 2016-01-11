@@ -1,7 +1,8 @@
 var VariableConfig = React.createClass({
     getInitialState: function() {
         return {
-            focused: false
+            focused: false,
+            identifyXhr: null
         };
     },
 
@@ -84,8 +85,9 @@ var VariableConfig = React.createClass({
         var transferNode;
 
         if (point) {
-            if (this.props.variable.variable in values && values[this.props.variable.variable]) {
-                valueNode = <span>Value: {values[this.props.variable.variable]}</span>;
+            if (this.props.variable.variable in values) {
+                var value = values[this.props.variable.variable];
+                valueNode = <span>Value: {value === null ? 'N/A' : value}</span>;
             }
             else {
                 var url = '/arcgis/rest/services/1961_1990Y_' + this.props.variable.variable + '/MapServer/identify/';
@@ -94,7 +96,11 @@ var VariableConfig = React.createClass({
                         'mapExtent=-12301562.058352625%2C6293904.1727356175%2C-12056963.567839967%2C6451517.325059711' +
                         '&geometry=' + JSON.stringify(geometry);
 
-                $.get(url).success(function(data) {
+                if (this.state.identifyXhr !== null) {
+                    this.state.identifyXhr.abort();
+                }
+
+                this.state.identifyXhr = $.get(url).success(function(data) {
                     var value;
 
                     if (data.results[0]) {
@@ -107,6 +113,8 @@ var VariableConfig = React.createClass({
                     values[this.props.variable.variable] = value;
                     this.forceUpdate();
                     this.props.onValueUpdate(value);
+                }.bind(this)).complete(function() {
+                    this.state.identifyXhr = null;
                 }.bind(this));
             }
         }

@@ -37,6 +37,7 @@ var isLoggedIn = false;
 var email = null;
 var point = null;
 var map;
+var pointMarker = null;
 var resultsMapLayer = null;
 var variableMapLayer;
 var variablesList;
@@ -163,9 +164,10 @@ function initMap() {
 
     map.on('click', function (e) {
         point = {x: e.latlng.lng, y: e.latlng.lat};
-        $('#CoordsDisplay').html('Lat: ' + e.latlng.lat.toFixed(2) + ', Lon: ' + e.latlng.lng.toFixed(2));
-        values = {};
-        variablesList.forceUpdate();
+        $('#LatInput').val(e.latlng.lat.toFixed(2));
+        $('#LonInput').val(e.latlng.lng.toFixed(2));
+
+        resetMapPoint();
     });
 }
 
@@ -236,6 +238,41 @@ function pollJobStatus(uuid) {
         hideJobOverlay();
     });
 }
+
+function resetMapPoint() {
+    values = {};
+    variablesList.forceUpdate();
+
+    if (pointMarker !== null) {
+        map.removeLayer(pointMarker);
+    }
+
+    pointMarker = L.marker([point.y, point.x]).addTo(map);
+}
+
+$('.coords input').keypress(function(e) {
+    if (e.keyCode === 13) {
+        e.target.blur();
+    }
+});
+
+$('.coords input').blur(function(e) {
+    var value = parseFloat(e.target.value);
+    var changed = false;
+
+    if (e.target.id === 'LatInput' && value !== point.y) {
+        point.y = value;
+        changed = true;
+    }
+    else if (e.target.id === 'LonInput' && value !== point.x) {
+        point.x = value;
+        changed = true;
+    }
+
+    if (changed) {
+        resetMapPoint();
+    }
+});
 
 $('#SpeciesSelect').change(function(e) {
     setSpecies(e.target.value);

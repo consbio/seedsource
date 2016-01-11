@@ -37,6 +37,15 @@ body {
     margin-top: 50%;
 }
 
+.sidebar .coords input {
+    width: 75px;
+    padding: 2px;
+    height: 24px;
+    display: inline;
+    margin-right: 10px;
+    text-align: right;
+}
+
 .main {
     position: fixed;
     top: 50px;
