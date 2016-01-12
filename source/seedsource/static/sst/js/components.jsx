@@ -6,13 +6,9 @@ var VariableConfig = React.createClass({
         };
     },
 
-    handleFocus: function(e) {
+    focus: function() {
         if (!this.state.focused) {
             this.setState({focused: true});
-
-            setTimeout(function() {
-                window.addEventListener('click', this.handleBlur);
-            }.bind(this), 1);
 
             var layerUrl = '/tiles/1961_1990Y_' + this.props.variable.variable + '/{z}/{x}/{y}.png';
             if (variableMapLayer) {
@@ -23,30 +19,31 @@ var VariableConfig = React.createClass({
             }
             variableMapLayer.listIndex = this.props.index;
         }
-        else {
-            e.stopPropagation();
-        }
-    },
-
-    handleBlur: function(e) {
-        // Ignore clicks on map
-        if (e.target.className.indexOf('leaflet') >= 0) {
-            return;
-        }
-
-        this.blur();
     },
 
     blur: function() {
         if (this.state.focused) {
             this.setState({focused: false});
-
-            window.removeEventListener('click', this.handleBlur);
         }
 
         if (variableMapLayer && variableMapLayer.listIndex == this.props.index) {
             map.removeLayer(variableMapLayer);
             variableMapLayer = null;
+        }
+    },
+
+    handleClick: function(e) {
+        if (e.target == this.refs.input) {
+            return;
+        }
+
+        if (this.state.focused) {
+            this.blur();
+            this.props.onBlur(this);
+        }
+        else {
+            this.focus();
+            this.props.onFocus(this);
         }
     },
 
@@ -57,7 +54,8 @@ var VariableConfig = React.createClass({
 
     handleKey: function(e) {
         if (e.key == 'Enter') {
-            this.handleBlur(e);
+            this.blur();
+            this.props.onBlur(this);
         }
     },
 
@@ -75,7 +73,8 @@ var VariableConfig = React.createClass({
 
     componentDidMount: function() {
         if (this.props.variable.autofocus) {
-            this.handleFocus();
+            this.focus();
+            this.props.onFocus(this);
             this.props.variable.autofocus = false;
         }
     },
@@ -137,7 +136,7 @@ var VariableConfig = React.createClass({
             className += " focused";
         }
 
-        return <div onClick={this.handleFocus} onKeyPress={this.handleKey} className={className}>
+        return <div onClick={this.handleClick} onKeyPress={this.handleKey} className={className}>
             <button type="button" className="close" onClick={this.handleRemove}><span aria-hidden="true">&times;</span></button>
             <div>
                 <div>
@@ -157,7 +156,8 @@ var VariableConfig = React.createClass({
 var VariablesList = React.createClass({
     getInitialState: function() {
         return {
-            variables: []
+            variables: [],
+            focusedConfig: null
         };
     },
 
@@ -205,6 +205,13 @@ var VariablesList = React.createClass({
         });
     },
 
+    blur: function() {
+        if (this.state.focusedConfig) {
+            this.state.focusedConfig.blur();
+            this.state.focusedConfig = null;
+        }
+    },
+
     componentDidUpdate: function() {
         this.handleUpdate();
     },
@@ -236,6 +243,17 @@ var VariablesList = React.createClass({
         this.forceUpdate();
     },
 
+    handleFocus: function(variableConfig) {
+        if (this.state.focusedConfig) {
+            this.state.focusedConfig.blur();
+        }
+        this.state.focusedConfig = variableConfig;
+    },
+
+    handleBlur: function() {
+        this.state.focusedConfig = null;
+    },
+
     render: function() {
         var rows = [];
         this.state.variables.forEach(function(variable, i) {
@@ -244,6 +262,8 @@ var VariablesList = React.createClass({
                     onTransferChange={this.handleTransferChange}
                     onValueUpdate={this.handleUpdate}
                     onRemove={this.handleRemove}
+                    onFocus={this.handleFocus}
+                    onBlur={this.handleBlur}
                     variable={variable}
                     index={i}
                 />

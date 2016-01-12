@@ -225,6 +225,8 @@ function pollJobStatus(uuid) {
             else {
                 resultsMapLayer = L.tileLayer(layerUrl, {zIndex: 2}).addTo(map);
             }
+
+            variablesList.blur();
         }
         else if (data.status === 'pending' || data.status == 'started') {
             setTimeout(function() { pollJobStatus(uuid); }, 1000);

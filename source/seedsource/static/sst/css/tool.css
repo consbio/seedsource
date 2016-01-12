@@ -46,6 +46,10 @@ body {
     text-align: right;
 }
 
+.sidebar .btn-group .btn.active {
+    background-color: #164a78;
+}
+
 .main {
     position: fixed;
     top: 50px;
