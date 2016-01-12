@@ -36,6 +36,7 @@ var values = {};
 var isLoggedIn = false;
 var email = null;
 var point = null;
+var selectedSpecies = 'species_1';
 var map;
 var pointMarker = null;
 var resultsMapLayer = null;
@@ -277,7 +278,16 @@ $('.coords input').blur(function(e) {
 });
 
 $('#SpeciesSelect').change(function(e) {
+    if (variablesList.state.isDirty) {
+        var message = 'Do you want pick a new species? This will overwrite your current variable configuration.';
+        if (!confirm(message)) {
+            e.target.value = selectedSpecies;
+            return;
+        }
+    }
+
     setSpecies(e.target.value);
+    selectedSpecies = e.target.value;
 });
 
 $('.modal').on('shown.bs.modal', function() {

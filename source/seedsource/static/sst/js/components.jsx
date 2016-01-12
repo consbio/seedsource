@@ -80,13 +80,13 @@ var VariableConfig = React.createClass({
     },
 
     render: function() {
-        var valueNode = <span>Value: N/A</span>;
+        var valueAtPoint = <span>Value: N/A</span>;
         var transferNode;
 
         if (point) {
             if (this.props.variable.variable in values) {
                 var value = values[this.props.variable.variable];
-                valueNode = <span>Value: {value === null ? 'N/A' : value}</span>;
+                valueAtPoint = value === null ? 'N/A' : value;
             }
             else {
                 var url = '/arcgis/rest/services/1961_1990Y_' + this.props.variable.variable + '/MapServer/identify/';
@@ -94,6 +94,8 @@ var VariableConfig = React.createClass({
                 url += '?f=json&tolerance=2&imageDisplay=1600%2C1031%2C96&&geometryType=esriGeometryPoint&' +
                         'mapExtent=-12301562.058352625%2C6293904.1727356175%2C-12056963.567839967%2C6451517.325059711' +
                         '&geometry=' + JSON.stringify(geometry);
+
+                valueAtPoint = '';
 
                 if (this.state.identifyXhr !== null) {
                     this.state.identifyXhr.abort();
@@ -145,7 +147,7 @@ var VariableConfig = React.createClass({
             </div>
             <table>
                 <tr>
-                    <td>{valueNode}</td>
+                    <td>Value: {valueAtPoint}</td>
                     <td className="right">Transfer limit (+/-): {transferNode}</td>
                 </tr>
             </table>
@@ -157,7 +159,8 @@ var VariablesList = React.createClass({
     getInitialState: function() {
         return {
             variables: [],
-            focusedConfig: null
+            focusedConfig: null,
+            isDirty: false
         };
     },
 
@@ -177,11 +180,11 @@ var VariablesList = React.createClass({
     },
 
     clearVariables: function() {
-        this.setState({variables: []});
+        this.setState({variables: [], isDirty: false});
     },
 
     handleTransferChange: function() {
-        this.forceUpdate();
+        this.setState({isDirty: true});
     },
 
     getConfiguration: function() {
@@ -235,12 +238,13 @@ var VariablesList = React.createClass({
         if (e.target.value) {
             this.addVariable(e.target.value, null, true);
             e.target.value = '';
+            this.setState({isDirty: true});
         }
     },
 
     handleRemove: function(variableConfig) {
         this.state.variables.splice(variableConfig.props.index, 1);
-        this.forceUpdate();
+        this.setState({isDirty: true});
     },
 
     handleFocus: function(variableConfig) {
