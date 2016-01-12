@@ -80,9 +80,30 @@
                         <strong>Lon: </strong>
                         <input type="text" id="LonInput" class="form-control form-inline" />
                     </div>
+                    <div>&nbsp;</div>
+                    <div>
+                        <label for="RegionSelect" class="control-label">Region</label>
+                        <select id="RegionSelect" class="form-control">
+                            <option>Region 1</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="step">
-                    <h4><span class="badge">2</span> Choose species</h4>
+                    <h4><span class="badge">4</span> Choose time period</h4>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary active">
+                            <input type="radio" name="time_period" value="current" checked /> Current
+                        </label>
+                        <label class="btn btn-primary">
+                            <input type="radio" name="time_period" value="future_1" /> Future 1
+                        </label>
+                        <label class="btn btn-primary">
+                            <input type="radio" name="time_period" value="future_2" /> Future 2
+                        </label>
+                    </div>
+                </div>
+                <div class="step">
+                    <h4><span class="badge">3</span> Choose species</h4>
                     <select id="SpeciesSelect" class="form-control">
                         <option value="species_1" selected>Species 1</option>
                         <option value="species_2">Species 2</option>
@@ -90,7 +111,7 @@
                     </select>
                 </div>
                 <div class="step">
-                    <h4><span class="badge">3</span> Choose variables & transfer limits</h4>
+                    <h4><span class="badge">4</span> Choose variables & transfer limits</h4>
                     <div id="Variables"></div>
                 </div>
                 <div>
