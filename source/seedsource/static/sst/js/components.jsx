@@ -10,7 +10,7 @@ var VariableConfig = React.createClass({
         if (!this.state.focused) {
             this.setState({focused: true});
 
-            var layerUrl = '/tiles/west1_1961_1990Y_' + this.props.variable.variable + '/{z}/{x}/{y}.png';
+            var layerUrl = '/tiles/west1_1981_2010Y_' + this.props.variable.variable + '/{z}/{x}/{y}.png';
             if (variableMapLayer) {
                 variableMapLayer.setUrl(layerUrl);
             }
@@ -89,7 +89,7 @@ var VariableConfig = React.createClass({
                 valueAtPoint = value === null ? 'N/A' : value;
             }
             else {
-                var url = '/arcgis/rest/services/west1_1961_1990Y_' + this.props.variable.variable + '/MapServer/identify/';
+                var url = '/arcgis/rest/services/west1_1981_2010Y_' + this.props.variable.variable + '/MapServer/identify/';
                 var geometry = point;
                 url += '?f=json&tolerance=2&imageDisplay=1600%2C1031%2C96&&geometryType=esriGeometryPoint&' +
                         'mapExtent=-12301562.058352625%2C6293904.1727356175%2C-12056963.567839967%2C6451517.325059711' +
