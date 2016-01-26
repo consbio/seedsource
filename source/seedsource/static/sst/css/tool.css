@@ -64,6 +64,10 @@ body {
     border-color: #8c8c8c;
 }
 
+.sidebar .nav.nav-tabs {
+    margin: 0px -15px;
+}
+
 .main {
     position: fixed;
     top: 50px;

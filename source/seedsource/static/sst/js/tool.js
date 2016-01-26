@@ -192,7 +192,7 @@ function runJob() {
     var configuration = variablesList.getConfiguration();
     var inputs = {
         variables: configuration.map(function(item) {
-            return 'service://1961_1990Y_' + item.variable + ':' + item.variable;
+            return 'service://west1_1961_1990Y_' + item.variable + ':' + item.variable;
         }),
         limits: configuration.map(function(item) {
             return {min: item.min, max: item.max};
