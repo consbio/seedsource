@@ -6,6 +6,11 @@ body {
     height: 100%;
 }
 
+.form-inline {
+    display: inline;
+    width: auto;
+}
+
 .sidebar {
     position: fixed;
     top: 50px;

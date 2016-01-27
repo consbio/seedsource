@@ -82,7 +82,22 @@
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="ToolTab">
                         <div class="step">
-                            <h4><span class="badge">1</span> Select a point on the map</h4>
+                            <h4><span class="badge">1</span> Choose an objective</h4>
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn active">
+                                    <input type="radio" name="objective" value="seedlots" checked />
+                                    Find seedlots
+                                </label>
+                                <label class="btn">
+                                    <input type="radio" name="objective" value="site" />
+                                    Find planting sites
+                                </label>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <h4>
+                                <span class="badge">2</span> <span id="SelectPointLabel">Select a planting site</span>
+                            </h4>
                             <div class="coords">
                                 <strong>Lat: </strong>
                                 <input type="text" id="LatInput" class="form-control form-inline" />
@@ -98,21 +113,23 @@
                             </div>
                         </div>
                         <div class="step">
-                            <h4><span class="badge">2</span> Choose time period</h4>
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn active">
-                                    <input type="radio" name="time_period" value="current" checked /> Current
-                                </label>
-                                <label class="btn">
-                                    <input type="radio" name="time_period" value="future_1" /> Future 1
-                                </label>
-                                <label class="btn">
-                                    <input type="radio" name="time_period" value="future_2" /> Future 2
-                                </label>
+                            <h4><span class="badge">3</span> Select planting site climate</h4>
+                            <div>
+                                <select id="TimeSelect" class="form-control form-inline">
+                                    <option value="current">Current</option>
+                                    <option value="future_1">Future 1</option>
+                                    <option value="future_2">Future 2</option>
+                                    <option value="future_3">Future 3</option>
+                                </select>
+                                <select id="RCPSelect" class="hidden form-control form-inline">
+                                    <option value="rcp_1">RCP 1</option>
+                                    <option value="rcp_1">RCP 2</option>
+                                    <option value="rcp_1">RCP 3</option>
+                                </select>
                             </div>
                         </div>
                         <div class="step">
-                            <h4><span class="badge">3</span> Choose species</h4>
+                            <h4><span class="badge">4</span> Choose species</h4>
                             <select id="SpeciesSelect" class="form-control">
                                 <option value="species_1" selected>Species 1</option>
                                 <option value="species_2">Species 2</option>
@@ -120,7 +137,7 @@
                             </select>
                         </div>
                         <div class="step">
-                            <h4><span class="badge">4</span> Choose variables & transfer limits</h4>
+                            <h4><span class="badge">5</span> Choose variables & transfer limits</h4>
                             <div id="Variables"></div>
                         </div>
                         <div>

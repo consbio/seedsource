@@ -39,13 +39,17 @@ var SST = {
 
     isLoggedIn: false,
     email: null,
-    point: null,
     selectedSpecies: 'species_1',
     map: null,
     pointMarker: null,
     resultsMapLayer: null,
     variableMapLayer: null,
-    variablesList: null
+    variablesList: null,
+
+    point: null,
+    objective: 'seedlots',
+    time: 'current',
+    RCP: 'rcp_1'
 };
 
 function checkLogin() {
@@ -280,6 +284,34 @@ $('.coords input').blur(function(e) {
     if (changed) {
         resetMapPoint();
     }
+});
+
+$('input[name=objective]').change(function(e) {
+    var objective = e.target.value;
+    SST.objective = objective;
+
+    if (objective === 'seedlots') {
+        $('#SelectPointLabel').html('Select a planting site');
+    }
+    else {
+        $('#SelectPointLabel').html('Select a seedlot location');
+    }
+});
+
+$('#TimeSelect').change(function(e) {
+    var time = e.target.value;
+    SST.time = time;
+
+    if (time === 'current') {
+        $('#RCPSelect').addClass('hidden');
+    }
+    else {
+        $('#RCPSelect').removeClass('hidden');
+    }
+});
+
+$('#RCPSelect').change(function(e) {
+    SST.RCP = e.target.value;
 });
 
 $('#SpeciesSelect').change(function(e) {
