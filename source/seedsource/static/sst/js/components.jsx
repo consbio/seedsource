@@ -11,13 +11,13 @@ var VariableConfig = React.createClass({
             this.setState({focused: true});
 
             var layerUrl = '/tiles/west1_1981_2010Y_' + this.props.variable.variable + '/{z}/{x}/{y}.png';
-            if (variableMapLayer) {
-                variableMapLayer.setUrl(layerUrl);
+            if (SST.variableMapLayer) {
+                SST.variableMapLayer.setUrl(layerUrl);
             }
             else {
-                variableMapLayer = L.tileLayer(layerUrl, {zIndex: 1}).addTo(map);
+                SST.variableMapLayer = L.tileLayer(layerUrl, {zIndex: 1}).addTo(SST.map);
             }
-            variableMapLayer.listIndex = this.props.index;
+            SST.variableMapLayer.listIndex = this.props.index;
         }
     },
 
@@ -26,9 +26,9 @@ var VariableConfig = React.createClass({
             this.setState({focused: false});
         }
 
-        if (variableMapLayer && variableMapLayer.listIndex == this.props.index) {
-            map.removeLayer(variableMapLayer);
-            variableMapLayer = null;
+        if (SST.variableMapLayer && SST.variableMapLayer.listIndex == this.props.index) {
+            SST.map.removeLayer(SST.variableMapLayer);
+            SST.variableMapLayer = null;
         }
     },
 
@@ -83,14 +83,14 @@ var VariableConfig = React.createClass({
         var valueAtPoint = <span>Value: N/A</span>;
         var transferNode;
 
-        if (point) {
-            if (this.props.variable.variable in values) {
-                var value = values[this.props.variable.variable];
+        if (SST.point) {
+            if (this.props.variable.variable in SST.values) {
+                var value = SST.values[this.props.variable.variable];
                 valueAtPoint = value === null ? 'N/A' : value;
             }
             else {
                 var url = '/arcgis/rest/services/west1_1981_2010Y_' + this.props.variable.variable + '/MapServer/identify/';
-                var geometry = point;
+                var geometry = SST.point;
                 url += '?f=json&tolerance=2&imageDisplay=1600%2C1031%2C96&&geometryType=esriGeometryPoint&' +
                         'mapExtent=-12301562.058352625%2C6293904.1727356175%2C-12056963.567839967%2C6451517.325059711' +
                         '&geometry=' + JSON.stringify(geometry);
@@ -111,7 +111,7 @@ var VariableConfig = React.createClass({
                         value = null;
                     }
 
-                    values[this.props.variable.variable] = value;
+                    SST.values[this.props.variable.variable] = value;
                     this.forceUpdate();
                     this.props.onValueUpdate(value);
                 }.bind(this)).complete(function() {
@@ -142,7 +142,7 @@ var VariableConfig = React.createClass({
             <button type="button" className="close" onClick={this.handleRemove}><span aria-hidden="true">&times;</span></button>
             <div>
                 <div>
-                    <strong>{labels[this.props.variable.variable]}</strong>
+                    <strong>{this.props.variable.variable}: {SST.labels[this.props.variable.variable]}</strong>
                 </div>
             </div>
             <table>
@@ -166,7 +166,7 @@ var VariablesList = React.createClass({
 
     addVariable: function(variable, transfer, autofocus) {
         if (!variable) {
-            variable = variables[0];
+            variable = SST.variables[0];
         }
         if (!transfer) {
             transfer = 2;
@@ -191,8 +191,8 @@ var VariablesList = React.createClass({
         return this.state.variables.map(function(variable) {
             var item = {'variable': variable.variable, min: null, max: null};
 
-            if (variable.variable in values) {
-                var value = values[variable.variable];
+            if (variable.variable in SST.values) {
+                var value = SST.values[variable.variable];
                 var transfer = parseFloat(variable.transfer);
                 if (value === null) {
                     item.min = null;
@@ -222,7 +222,7 @@ var VariablesList = React.createClass({
     handleUpdate: function() {
         var disabled = true;
 
-        if (point) {
+        if (SST.point) {
             disabled = !this.getConfiguration().every(function(item) {
                 var validMin = !isNaN(item.min) && item.min !== null;
                 var validMax = !isNaN(item.max) && item.max !== null;
@@ -275,14 +275,14 @@ var VariablesList = React.createClass({
         }.bind(this));
 
         var availableVariables = [];
-        variables.forEach(function(variable) {
+        SST.variables.forEach(function(variable) {
             var variableInList = this.state.variables.some(function(item) {
                 return item.variable == variable;
             });
 
             if (!variableInList) {
                 availableVariables.push(
-                    <option value={variable}>{labels[variable]}</option>
+                    <option value={variable}>{variable}: {SST.labels[variable]}</option>
                 );
             }
         }.bind(this));
@@ -301,7 +301,7 @@ var VariablesList = React.createClass({
     }
 });
 
-variablesList = ReactDOM.render(
+SST.variablesList = ReactDOM.render(
     <VariablesList />,
     $('#Variables')[0]
 );

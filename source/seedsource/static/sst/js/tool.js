@@ -1,47 +1,52 @@
-var variables = [
-    'AHM', 'bFFP', 'CMD', 'DD_0', 'DD5', 'DD18', 'eFFP', 'EMT', 'Eref', 'EXT', 'FFP', 'MAP', 'MAR', 'MAT', 'MCMT',
-    'MSP', 'MWMT', 'NFFD', 'PAS', 'RH', 'SHM', 'TD'
-];
-var labels = {
-    AHM: 'Annual heat­moisture index',
-    bFFP: 'The day of the year on which FPP (frost-free period) begins',
-    CMD: 'Hargreaves climatic moisture deficit (mm)',
-    DD_0: 'Degree­days below 0°C, chilling degree­days',
-    DD5: 'Degree­days above 5°C, growing degree­days',
-    DD18: 'DD18',
-    eFFP: 'The day of the year on which FFP (frost-free period) ends',
-    EMT: 'Extreme minimum temperature over 30 years',
-    Eref: 'Hargreaves reference evaporation (mm)',
-    EXT: 'Extreme maximum temperature over 30 years',
-    FFP: 'Frost­free period',
-    MAP: 'Mean annual precipitation (mm)',
-    MAR: 'Mean annual solar radiation (MJ m-2 d-1)',
-    MAT: 'Mean annual temperature (°C)',
-    MCMT: 'Mean coldest month temperature (°C)',
-    MSP: 'May to September precipitation (mm)',
-    MWMT: 'Mean warmest month temperature (°C)',
-    NFFD: 'The number of frost­free days',
-    PAS: 'Precipitation as snow (mm) between August in previous year and July in current year',
-    RH: 'Mean annual relative humidity (%)',
-    SHM: 'Summer heat­moisture index',
-    TD: 'Temperature difference between MWMT and MCMT, or continentality (°C)'
-};
-var species = {
-    species_1: ['AHM', 'bFFP', 'CMD'],
-    species_2: ['MAR', 'MAP'],
-    species_3: ['AHM', 'PAS', 'TD', 'MWMT']
-};
-var values = {};
+var SST = {
+    variables: [
+        'AHM', 'bFFP', 'CMD', 'DD_0', 'DD5', 'DD18', 'eFFP', 'EMT', 'Eref', 'EXT', 'FFP', 'MAP', 'MAR', 'MAT', 'MCMT',
+        'MSP', 'MWMT', 'NFFD', 'PAS', 'RH', 'SHM', 'TD'
+    ],
 
-var isLoggedIn = false;
-var email = null;
-var point = null;
-var selectedSpecies = 'species_1';
-var map;
-var pointMarker = null;
-var resultsMapLayer = null;
-var variableMapLayer;
-var variablesList;
+    labels: {
+        AHM: 'Annual heat­moisture index',
+        bFFP: 'The day of the year on which FPP (frost-free period) begins',
+        CMD: 'Hargreaves climatic moisture deficit (mm)',
+        DD_0: 'Degree­days below 0°C, chilling degree­days',
+        DD5: 'Degree­days above 5°C, growing degree­days',
+        DD18: 'DD18',
+        eFFP: 'The day of the year on which FFP (frost-free period) ends',
+        EMT: 'Extreme minimum temperature over 30 years',
+        Eref: 'Hargreaves reference evaporation (mm)',
+        EXT: 'Extreme maximum temperature over 30 years',
+        FFP: 'Frost­free period',
+        MAP: 'Mean annual precipitation (mm)',
+        MAR: 'Mean annual solar radiation (MJ m-2 d-1)',
+        MAT: 'Mean annual temperature (°C)',
+        MCMT: 'Mean coldest month temperature (°C)',
+        MSP: 'May to September precipitation (mm)',
+        MWMT: 'Mean warmest month temperature (°C)',
+        NFFD: 'The number of frost­free days',
+        PAS: 'Precipitation as snow (mm) between August in previous year and July in current year',
+        RH: 'Mean annual relative humidity (%)',
+        SHM: 'Summer heat­moisture index',
+        TD: 'Temperature difference between MWMT and MCMT, or continentality (°C)'
+    },
+
+    species: {
+        species_1: ['AHM', 'bFFP', 'CMD'],
+        species_2: ['MAR', 'MAP'],
+        species_3: ['AHM', 'PAS', 'TD', 'MWMT']
+    },
+
+    values: {},
+
+    isLoggedIn: false,
+    email: null,
+    point: null,
+    selectedSpecies: 'species_1',
+    map: null,
+    pointMarker: null,
+    resultsMapLayer: null,
+    variableMapLayer: null,
+    variablesList: null
+};
 
 function checkLogin() {
     $.get('/accounts/user-info/').success(function(data) {
@@ -50,8 +55,8 @@ function checkLogin() {
 }
 
 function loggedIn(userEmail) {
-    isLoggedIn = true;
-    email = userEmail;
+    SST.isLoggedIn = true;
+    SST.email = userEmail;
 
     $('#EmailDisplay').html(userEmail);
     $('#SignedInNav').removeClass('hidden');
@@ -59,8 +64,8 @@ function loggedIn(userEmail) {
 }
 
 function loggedOut() {
-    isLoggedIn = false;
-    email = null;
+    SST.isLoggedIn = false;
+    SST.email = null;
 
     $('#SignedInNav').addClass('hidden');
     $('#SignedOutNav').removeClass('hidden');
@@ -152,7 +157,7 @@ function changePassword() {
 }
 
 function initMap() {
-    map = L.map('Map', {
+    SST.map = L.map('Map', {
         layers: [L.tileLayer('//{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
             maxZoom: 16,
@@ -161,10 +166,10 @@ function initMap() {
         zoom: 8,
         center: [49.67, -109.95]
     });
-    map.zoomControl.setPosition('topright');
+    SST.map.zoomControl.setPosition('topright');
 
-    map.on('click', function (e) {
-        point = {x: e.latlng.lng, y: e.latlng.lat};
+    SST.map.on('click', function (e) {
+        SST.point = {x: e.latlng.lng, y: e.latlng.lat};
         $('#LatInput').val(e.latlng.lat.toFixed(2));
         $('#LonInput').val(e.latlng.lng.toFixed(2));
 
@@ -173,10 +178,10 @@ function initMap() {
 }
 
 function setSpecies(id) {
-    variablesList.clearVariables();
+    SST.variablesList.clearVariables();
 
-    species[id].forEach(function(variable) {
-        variablesList.addVariable(variable);
+    SST.species[id].forEach(function(variable) {
+        SST.variablesList.addVariable(variable);
     });
 }
 
@@ -189,7 +194,7 @@ function hideJobOverlay() {
 }
 
 function runJob() {
-    var configuration = variablesList.getConfiguration();
+    var configuration = SST.variablesList.getConfiguration();
     var inputs = {
         variables: configuration.map(function(item) {
             return 'service://west1_1981_2010Y_' + item.variable + ':' + item.variable;
@@ -220,14 +225,14 @@ function pollJobStatus(uuid) {
             hideJobOverlay();
             var layerUrl = '/tiles/' + JSON.parse(data.outputs).raster_out + '/{z}/{x}/{y}.png';
 
-            if (resultsMapLayer) {
-                resultsMapLayer.setUrl(layerUrl);
+            if (SST.resultsMapLayer) {
+                SST.resultsMapLayer.setUrl(layerUrl);
             }
             else {
-                resultsMapLayer = L.tileLayer(layerUrl, {zIndex: 2}).addTo(map);
+                SST.resultsMapLayer = L.tileLayer(layerUrl, {zIndex: 2}).addTo(SST.map);
             }
 
-            variablesList.blur();
+            SST.variablesList.blur();
         }
         else if (data.status === 'pending' || data.status == 'started') {
             setTimeout(function() { pollJobStatus(uuid); }, 1000);
@@ -243,14 +248,14 @@ function pollJobStatus(uuid) {
 }
 
 function resetMapPoint() {
-    values = {};
-    variablesList.forceUpdate();
+    SST.values = {};
+    SST.variablesList.forceUpdate();
 
-    if (pointMarker !== null) {
-        map.removeLayer(pointMarker);
+    if (SST.pointMarker !== null) {
+        SST.map.removeLayer(SST.pointMarker);
     }
 
-    pointMarker = L.marker([point.y, point.x]).addTo(map);
+    SST.pointMarker = L.marker([SST.point.y, SST.point.x]).addTo(SST.map);
 }
 
 $('.coords input').keypress(function(e) {
@@ -263,12 +268,12 @@ $('.coords input').blur(function(e) {
     var value = parseFloat(e.target.value);
     var changed = false;
 
-    if (e.target.id === 'LatInput' && value !== point.y) {
-        point.y = value;
+    if (e.target.id === 'LatInput' && value !== SST.point.y) {
+        SST.point.y = value;
         changed = true;
     }
-    else if (e.target.id === 'LonInput' && value !== point.x) {
-        point.x = value;
+    else if (e.target.id === 'LonInput' && value !== SST.point.x) {
+        SST.point.x = value;
         changed = true;
     }
 
@@ -278,16 +283,16 @@ $('.coords input').blur(function(e) {
 });
 
 $('#SpeciesSelect').change(function(e) {
-    if (variablesList.state.isDirty) {
+    if (SST.variablesList.state.isDirty) {
         var message = 'Do you want pick a new species? This will overwrite your current variable configuration.';
         if (!confirm(message)) {
-            e.target.value = selectedSpecies;
+            e.target.value = SST.selectedSpecies;
             return;
         }
     }
 
     setSpecies(e.target.value);
-    selectedSpecies = e.target.value;
+    SST.selectedSpecies = e.target.value;
 });
 
 $('.modal').on('shown.bs.modal', function() {
