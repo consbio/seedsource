@@ -1,38 +1,30 @@
 var SST = {
     variables: [
-        'AHM', 'bFFP', 'CMD', 'DD_0', 'DD5', 'DD18', 'eFFP', 'EMT', 'Eref', 'EXT', 'FFP', 'MAP', 'MAR', 'MAT', 'MCMT',
-        'MSP', 'MWMT', 'NFFD', 'PAS', 'RH', 'SHM', 'TD'
+        'MAT', 'MWMT', 'MCMT', 'TD', 'MAP', 'MSP', 'AHM', 'SHM', 'DD_0', 'FFP', 'PAS', 'EMT', 'EXT', 'Eref', 'CMD'
     ],
 
     labels: {
-        AHM: 'Annual heat­moisture index',
-        bFFP: 'The day of the year on which FPP (frost-free period) begins',
-        CMD: 'Hargreaves climatic moisture deficit (mm)',
-        DD_0: 'Degree­days below 0°C, chilling degree­days',
-        DD5: 'Degree­days above 5°C, growing degree­days',
-        DD18: 'DD18',
-        eFFP: 'The day of the year on which FFP (frost-free period) ends',
-        EMT: 'Extreme minimum temperature over 30 years',
-        Eref: 'Hargreaves reference evaporation (mm)',
-        EXT: 'Extreme maximum temperature over 30 years',
-        FFP: 'Frost­free period',
-        MAP: 'Mean annual precipitation (mm)',
-        MAR: 'Mean annual solar radiation (MJ m-2 d-1)',
         MAT: 'Mean annual temperature (°C)',
-        MCMT: 'Mean coldest month temperature (°C)',
-        MSP: 'May to September precipitation (mm)',
         MWMT: 'Mean warmest month temperature (°C)',
-        NFFD: 'The number of frost­free days',
-        PAS: 'Precipitation as snow (mm) between August in previous year and July in current year',
-        RH: 'Mean annual relative humidity (%)',
+        MCMT: 'Mean coldest month temperature (°C)',
+        TD: 'Temperature difference between MWMT and MCMT, or continentality (°C)',
+        MAP: 'Mean annual precipitation (mm)',
+        MSP: 'May to September precipitation (mm)',
+        AHM: 'Annual heat­moisture index',
         SHM: 'Summer heat­moisture index',
-        TD: 'Temperature difference between MWMT and MCMT, or continentality (°C)'
+        DD_0: 'Degree­days below 0°C, chilling degree­days',
+        FFP: 'Frost­free period',
+        PAS: 'Precipitation as snow (mm) between August in previous year and July in current year',
+        EMT: 'Extreme minimum temperature over 30 years',
+        EXT: 'Extreme maximum temperature over 30 years',
+        Eref: 'Hargreaves reference evaporation (mm)',
+        CMD: 'Hargreaves climatic moisture deficit (mm)'
     },
 
     species: {
-        species_1: ['AHM', 'bFFP', 'CMD'],
-        species_2: ['MAR', 'MAP'],
-        species_3: ['AHM', 'PAS', 'TD', 'MWMT']
+        species_1: ['MAT', 'MWMT', 'MCMT'],
+        species_2: ['TD', 'MSP'],
+        species_3: ['MAT', 'PAS', 'TD', 'MWMT']
     },
 
     values: {},
