@@ -1,8 +1,6 @@
 import json
 import os
 
-
-# Starting at this file, walk back up the directory tree to the project root
 import random
 import string
 from datetime import timedelta
@@ -10,6 +8,8 @@ from datetime import timedelta
 from clover.render.renderers.stretched import StretchedRenderer
 from clover.utilities.color import Color
 
+
+# Starting at this file, walk back up the directory tree to the project root
 BASE_DIR = os.path.abspath(__file__)
 for __ in range(3):
     BASE_DIR = os.path.dirname(BASE_DIR)

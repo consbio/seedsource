@@ -325,6 +325,13 @@ $('.modal').on('shown.bs.modal', function() {
     $(this).find('input[type=text]:first, input[type=email]:first').focus();
 });
 
+$('#InfoModal').on('show.bs.modal', function(event) {
+    var button = $(event.relatedTarget);
+    $('#InfoModal .modal-title').html(button.data('title'));
+    $('#InfoModal .modal-body').addClass('hidden');
+    $(button.data('content')).removeClass('hidden');
+});
+
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
         xhr.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));

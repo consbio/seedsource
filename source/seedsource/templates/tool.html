@@ -52,8 +52,60 @@
                     </li>
                 </ul>
                 <ul id="SignedOutNav" class="nav navbar-nav navbar-right hidden">
-                    <li><a href="#" data-toggle="modal" data-target="#RegisterModal">Create Account</a></li>
-                    <li><a href="#" data-toggle="modal" data-target="#LoginModal">Sign In</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            Account
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" data-toggle="modal" data-target="#RegisterModal">Create Account</a></li>
+                            <li><a href="#" data-toggle="modal" data-target="#LoginModal">Sign In</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="Purpose" data-content="#PurposeContent">
+                            Purpose
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="Get Started" data-content="#GetStartedContent">
+                            Get Started
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="People" data-content="#PeopleContent">People</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            Details
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="Instructions" data-content="#InstructionsContent">
+                                    Instructions
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="Approach" data-content="#ApproachContent">
+                                    Approach
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="ClimateNA" data-content="#ClimateNAContent">
+                                    ClimateNA
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="Forest genetics and climate change" data-content="#ForestGeneticsContent">
+                                    Forest genetics and climate change
+                                </a>
+                            </li>
+                            <li><a href="https://github.com/consbio/seedsource" target="_blank">Source Code</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -76,7 +128,6 @@
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#ToolTab" aria-controls="ToolTab" data-toggle="tab">Configuration</a></li>
                     <li role="presentation"><a href="#SavedTab" aria-controls="SavedTab" data-toggle="tab">Saved Runs</a></li>
-                    <li role="presentation"><a href="#AboutTab" aria-controls="AboutTab" data-toggle="tab">About</a></li>
                 </ul>
 
                 <div class="tab-content">
@@ -147,58 +198,6 @@
                     </div>
                     <div role="tabpanel" class="tab-pane" id="SavedTab">
 
-                    </div>
-                    <div role="tabpanel" class="tab-pane" id="AboutTab">
-                        <h4>Planting healthy forests</h4>
-                        <p>
-                            The seedlot selection tool (SST) is a GIS mapping program designed to help forest managers
-                            match seedlots with planting sites based on climatic information. The tool can be used to
-                            map current climates, or future climates based on selected climate change scenarios.
-                            Although it is tailored for matching seedlots and planting sites, it can be used by anyone
-                            interested in mapping present or future climates defined by temperature and precipitation.
-                        </p>
-
-                        <h4>Purpose</h4>
-                        <p>
-                            Forest managers can use this tool to help choose seedlots that are appropriate for planting
-                            on a particular site, or planting sites that are appropriate for a particular seedlot.
-                            This can be done using current climate models (i.e., ignoring potential climate change) or
-                            by choosing a climate change model, emissions scenario, and future target year. Because of
-                            the uncertainty in climate change projections, the tool is really a planning and educational
-                            tool. It can be used to explore alternative future conditions, assess risk, and plan
-                            potential responses, but cannot tell the user exactly which seedlots will be optimally
-                            adapted to a particular planting site in the future. The tool allows the user to control
-                            many input parameters so the results are appropriate for the management practices, climate
-                            change assumptions, and risk tolerance of the user.
-                        </p>
-
-                        <h4>Background</h4>
-                        <p>
-                            Populations of trees, such as those from native stands or seed orchards, are genetically
-                            different from one another, and are adapted to different climatic conditions. Therefore,
-                            forest managers must match the climatic adaptability of their seedlots to the climatic
-                            conditions of their planting sites. Typically, this has been done using geographically
-                            defined seed zones or breeding zones. However, current climate models are now available
-                            that can be used to define zones based on climate, rather than geography. These climate
-                            models can also be used to calculate climatically based seed transfer distances and define
-                            focal point seed zones. Once acceptable climatic transfer limits have been defined using
-                            seed zones, breeding zones, or some other approach, the user can explore how within-species
-                            assisted migration might be used to help adapt forests to climate change.
-                        </p>
-
-                        <h4>A join project</h4>
-                        <p>
-                            The Seedlot Selection Tool is a joint effort of the Department of Forest Ecosystems and
-                            Society at the Oregon State University College of Forestry and the U.S. Forest Service
-                            Pacific Northwest Research Station. Funding comes from the U.S. Forest Service.
-                        </p>
-
-                        <h4>Source code</h4>
-                        <p>
-                            The Seedlot Selection Tool is open source and is built using open-source frameworks and
-                            libraries. The source code for this project is available
-                            <a href="https://github.com/consbio/seedsource">here</a>.
-                        </p>
                     </div>
                 </div>
             </div>
@@ -273,6 +272,56 @@
                         <input type="password" id="ChangePasswordConfirm" class="form-control" placeholder="Confirm Password" required />
                         <button class="btn btn-sm btn-primary" type="submit" >Change Password</button>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="InfoModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body" id="PurposeContent">
+                    <p>
+                        The seedlot selection tool (SST) is a GIS mapping program designed to help forest managers
+                        match seedlots with planting sites based on climatic information. The tool can be used to map
+                        current climates, or future climates based on selected climate change scenarios. Although it
+                        is tailored for matching seedlots and planting sites, it can be used by anyone interested in
+                        mapping present or future climates defined by temperature and precipitation.
+                    </p>
+                    <p>
+                        Forest managers can use this tool to help choose seedlots that are appropriate for planting on
+                        a particular site, or planting sites that are appropriate for a particular seedlot. This can
+                        be done using current climate models (i.e., ignoring potential climate change) or by choosing
+                        a climate change model, emissions scenario, and future target year. Because of the uncertainty
+                        in climate change projections, the tool is really a planning and educational tool. It can be
+                        used to explore alternative future conditions, assess risk, and plan potential responses, but
+                        cannot tell the user exactly which seedlots will be optimally adapted to a particular planting
+                        site in the future. The tool allows the user to control many input parameters so the results
+                        are appropriate for the management practices, climate change assumptions, and risk tolerance of
+                        the user.
+                    </p>
+                </div>
+                <div class="modal-body" id="GetStartedContent">
+                    Todo... <em>Just enough information needed to get started…and some tips.</em>
+                </div>
+                <div class="modal-body" id="PeopleContent">
+                    Todo... <em>People and their contact information, including sources of funding.</em>
+                </div>
+                <div class="modal-body" id="InstructionsContent">
+                    Todo... <em>Detailed instructions and a link to the instruction manual (PDF).</em>
+                </div>
+                <div class="modal-body" id="ApproachContent">
+                    Todo... <em>Detailed information on the methods used and caveats.</em>
+                </div>
+                <div class="modal-body" id="ClimateNAContent">
+                    Todo... <em>Overview of ClimateNA data (present and future) and links to relevant papers.</em>
+                </div>
+                <div class="modal-body" id="ForestGeneticsContent">
+                    Todo... <em>Overview of genetic variation in forest trees, potential effects of climate change, and links to key papers.</em>
                 </div>
             </div>
         </div>
