@@ -1,10 +1,12 @@
 import mercantile
 from clover.geometry.bbox import BBox
-from ncdjango.config import RenderConfiguration
+from clover.utilities.color import Color
+from ncdjango.config import RenderConfiguration, ImageConfiguration
 from ncdjango.views import GetImageViewBase
 from pyproj import Proj
 
 TILE_SIZE = (256, 256)
+TRANSPARENT_BACKGROUND_COLOR = Color(255, 255, 255, 0)
 
 
 class GetImageView(GetImageViewBase):
@@ -19,7 +21,14 @@ class GetImageView(GetImageViewBase):
             )
         )
 
-        return [
+        base_config = ImageConfiguration(
+            extent=extent,
+            size=TILE_SIZE,
+            image_format='png',
+            background_color=TRANSPARENT_BACKGROUND_COLOR
+        )
+
+        return base_config, [
             RenderConfiguration(
                 variable=x,
                 extent=extent,
