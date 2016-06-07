@@ -20,7 +20,7 @@ def test_generate_scores_workflow_sanity():
     workflow(variables=[raster_1, raster_2], limits=limits)
 
 
-def test_generate_scroes_workflow_validity():
+def test_generate_scores_workflow_validity():
     """Test simple 2x2 grid against pre-calculated values"""
 
     with open(os.path.join(WORKFLOWS_DIR, 'generate_scores_workflow.json'), 'r') as f:
