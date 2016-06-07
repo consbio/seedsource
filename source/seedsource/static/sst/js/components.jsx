@@ -9,8 +9,8 @@ var VariableConfig = React.createClass({
     focus: function() {
         if (!this.state.focused) {
             this.setState({focused: true});
-
-            var layerUrl = '/tiles/west1_1981_2010Y_' + this.props.variable.variable + '/{z}/{x}/{y}.png';
+            
+            var layerUrl = '/tiles/' + getServiceName(this.props.variable.variable) + '/{z}/{x}/{y}.png';
             if (SST.variableMapLayer) {
                 SST.variableMapLayer.setUrl(layerUrl);
             }
@@ -18,12 +18,14 @@ var VariableConfig = React.createClass({
                 SST.variableMapLayer = L.tileLayer(layerUrl, {zIndex: 1}).addTo(SST.map);
             }
             SST.variableMapLayer.listIndex = this.props.index;
+            SST.selectedVariable = this.props.variable.variable;
         }
     },
 
     blur: function() {
         if (this.state.focused) {
             this.setState({focused: false});
+            SST.selectedVariable = null;
         }
 
         if (SST.variableMapLayer && SST.variableMapLayer.listIndex == this.props.index) {
@@ -89,7 +91,8 @@ var VariableConfig = React.createClass({
                 valueAtPoint = value === null ? 'N/A' : value;
             }
             else {
-                var url = '/arcgis/rest/services/west1_1981_2010Y_' + this.props.variable.variable + '/MapServer/identify/';
+                var url = '/arcgis/rest/services/' + getServiceName(this.props.variable.variable) +
+                    '/MapServer/identify/';
                 var geometry = SST.point;
                 url += '?f=json&tolerance=2&imageDisplay=1600%2C1031%2C96&&geometryType=esriGeometryPoint&' +
                         'mapExtent=-12301562.058352625%2C6293904.1727356175%2C-12056963.567839967%2C6451517.325059711' +

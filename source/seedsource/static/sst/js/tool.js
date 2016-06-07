@@ -37,11 +37,12 @@ var SST = {
     resultsMapLayer: null,
     variableMapLayer: null,
     variablesList: null,
+    selectedVariable: null,
 
     point: null,
     objective: 'seedlots',
-    time: 'current',
-    RCP: 'rcp_1'
+    time: '1961_1990',
+    RCP: 'rcp45'
 };
 
 function checkLogin() {
@@ -193,7 +194,14 @@ function runJob() {
     var configuration = SST.variablesList.getConfiguration();
     var inputs = {
         variables: configuration.map(function(item) {
-            return 'service://west1_1981_2010Y_' + item.variable + ':' + item.variable;
+            /* Run the tool against the current time period when looking for seedlots, against the target time period
+             * when looking for planting sites. */
+            var year = '1961_1990';
+            if (SST.objective === 'site') {
+                year = SST.RCP + '_' + SST.time;
+            }
+
+            return 'service://west1_' + year + 'Y_' + item.variable + ':' + item.variable;
         }),
         limits: configuration.map(function(item) {
             return {min: item.min, max: item.max};
@@ -254,6 +262,30 @@ function resetMapPoint() {
     SST.pointMarker = L.marker([SST.point.y, SST.point.x]).addTo(SST.map);
 }
 
+function getServiceName(variable) {
+    var serviceName = 'west1_';
+
+    if (SST.objective === 'site') {
+        return serviceName + '1961_1990Y_' + variable;
+    }
+    else {
+        if (SST.time !== '1961_1990') { // "Current" time period
+            serviceName += SST.RCP + '_';
+        }
+
+        return serviceName + SST.time + 'Y_' + variable;
+    }
+}
+
+function resetMapLayer() {
+    if (SST.variableMapLayer) {
+        SST.variableMapLayer.setUrl('/tiles/' + getServiceName(SST.selectedVariable) + '/{z}/{x}/{y}.png');
+    }
+
+    SST.values = {};
+    SST.variablesList.forceUpdate();
+}
+
 $('.coords input').keypress(function(e) {
     if (e.keyCode === 13) {
         e.target.blur();
@@ -288,22 +320,27 @@ $('input[name=objective]').change(function(e) {
     else {
         $('#SelectPointLabel').html('Select a seedlot location');
     }
+
+    resetMapLayer();
 });
 
 $('#TimeSelect').change(function(e) {
     var time = e.target.value;
     SST.time = time;
 
-    if (time === 'current') {
+    if (time === '1961_1990') {  // "Current" time period
         $('#RCPSelect').addClass('hidden');
     }
     else {
         $('#RCPSelect').removeClass('hidden');
     }
+
+    resetMapLayer();
 });
 
 $('#RCPSelect').change(function(e) {
     SST.RCP = e.target.value;
+    resetMapLayer();
 });
 
 $('#SpeciesSelect').change(function(e) {
