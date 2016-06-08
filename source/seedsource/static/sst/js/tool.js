@@ -155,15 +155,36 @@ function changePassword() {
 
 function initMap() {
     SST.map = L.map('Map', {
-        layers: [L.tileLayer('//{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-            maxZoom: 16,
-            subdomains: ['server', 'services']
-        })],
         zoom: 5,
         center: [44.68, -109.36]
     });
     SST.map.zoomControl.setPosition('topright');
+
+    SST.map.addControl(L.control.basemaps({
+        basemaps: [
+            L.tileLayer('//{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+                maxZoom: 16,
+                subdomains: ['server', 'services']
+            }),
+            L.tileLayer(
+                '//{s}.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+                maxZoom: 16,
+                subdomains: ['server', 'services']
+            }),
+            L.tileLayer(
+                '//{s}.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+                maxZoom: 16,
+                subdomains: ['server', 'services']
+            })
+        ],
+        tileX: 0,
+        tileY: 0,
+        tileZ: 1,
+        position: 'bottomleft'
+    }));
 
     SST.map.on('click', function (e) {
         SST.point = {x: e.latlng.lng, y: e.latlng.lat};
