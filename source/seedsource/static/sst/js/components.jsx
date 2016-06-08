@@ -19,18 +19,22 @@ var VariableConfig = React.createClass({
             }
             SST.variableMapLayer.listIndex = this.props.index;
             SST.selectedVariable = this.props.variable.variable;
+
+            $('#TimeOverlay').removeClass('hidden');
         }
     },
 
     blur: function() {
         if (this.state.focused) {
             this.setState({focused: false});
-            SST.selectedVariable = null;
         }
 
         if (SST.variableMapLayer && SST.variableMapLayer.listIndex == this.props.index) {
             SST.map.removeLayer(SST.variableMapLayer);
             SST.variableMapLayer = null;
+            SST.selectedVariable = null;
+
+            $('#TimeOverlay').addClass('hidden');
         }
     },
 

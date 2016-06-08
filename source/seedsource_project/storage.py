@@ -1,6 +1,5 @@
 import os
 import subprocess
-from collections import OrderedDict
 
 from django.conf import settings
 from django.contrib.staticfiles.storage import StaticFilesStorage

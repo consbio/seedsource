@@ -95,6 +95,18 @@ body {
     z-index: 1;
 }
 
+#TimeOverlay {
+    z-index: 2;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, .8);
+    color: #fff;
+    font-size: 1.3em;
+}
+
 .variableConfig {
     padding: 5px;
     border: 1px solid #999;

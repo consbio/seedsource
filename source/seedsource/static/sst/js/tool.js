@@ -160,8 +160,8 @@ function initMap() {
             maxZoom: 16,
             subdomains: ['server', 'services']
         })],
-        zoom: 8,
-        center: [49.67, -109.95]
+        zoom: 5,
+        center: [44.68, -109.36]
     });
     SST.map.zoomControl.setPosition('topright');
 
@@ -286,6 +286,23 @@ function resetMapLayer() {
     SST.variablesList.forceUpdate();
 }
 
+function resetTimeLabel() {
+    var label;
+
+    if (SST.objective === 'site') {
+        label = '1961 - 1990';
+    }
+    else {
+        var label = SST.time.replace('_', ' - ');
+
+        if (SST.time !== '1961_1990') {
+            label += ' ' + $('option[value=' + SST.RCP + ']').html();
+        }
+    }
+
+    $('#TimeLabel').html(label);
+}
+
 $('.coords input').keypress(function(e) {
     if (e.keyCode === 13) {
         e.target.blur();
@@ -322,6 +339,7 @@ $('input[name=objective]').change(function(e) {
     }
 
     resetMapLayer();
+    resetTimeLabel();
 });
 
 $('#TimeSelect').change(function(e) {
@@ -336,11 +354,13 @@ $('#TimeSelect').change(function(e) {
     }
 
     resetMapLayer();
+    resetTimeLabel();
 });
 
 $('#RCPSelect').change(function(e) {
     SST.RCP = e.target.value;
     resetMapLayer();
+    resetTimeLabel();
 });
 
 $('#SpeciesSelect').change(function(e) {
