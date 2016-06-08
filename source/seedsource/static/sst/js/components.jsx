@@ -15,7 +15,7 @@ var VariableConfig = React.createClass({
                 SST.variableMapLayer.setUrl(layerUrl);
             }
             else {
-                SST.variableMapLayer = L.tileLayer(layerUrl, {zIndex: 1}).addTo(SST.map);
+                SST.variableMapLayer = L.tileLayer(layerUrl, {zIndex: 1, opacity: SST.layerOpacity}).addTo(SST.map);
             }
             SST.variableMapLayer.listIndex = this.props.index;
             SST.selectedVariable = this.props.variable.variable;

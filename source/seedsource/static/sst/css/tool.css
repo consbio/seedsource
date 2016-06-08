@@ -35,6 +35,8 @@ body {
     height: 100%;
     background-color: rgba(255, 255, 255, .92);
     z-index: 3;
+    left: 0px;
+    padding-left: 20px;
 }
 
 .sidebar .overlay .progressContainer {
@@ -143,4 +145,25 @@ body {
 
 .variablesList select {
     width: 100%;
+}
+
+.leaflet-opacity-control {
+    width: 26px;
+    background-color: #fff;
+    font-size: 1.3em;
+    text-align: center;
+    padding-bottom: 5px;
+}
+
+.leaflet-opacity-control input[type=range] {
+    height: 150px;
+
+    writing-mode: bt-lr; /* For IE */
+
+    /*
+     * -webkit-appearance is non-standard and may break in the future:
+     * https://developer.mozilla.org/en-US/docs/Web/CSS/-moz-appearance
+     * However, for now it's the only way to get a vertical range input on Chrome.
+     */
+    -webkit-appearance: slider-vertical;
 }

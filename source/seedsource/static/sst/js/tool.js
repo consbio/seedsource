@@ -33,6 +33,7 @@ var SST = {
     email: null,
     selectedSpecies: 'species_1',
     map: null,
+    layerOpacity: 1,
     pointMarker: null,
     resultsMapLayer: null,
     variableMapLayer: null,
@@ -186,6 +187,18 @@ function initMap() {
         position: 'bottomleft'
     }));
 
+    var opacityControl = L.control.opacity();
+    SST.map.addControl(opacityControl);
+    opacityControl.on('change', function(e) {
+        SST.layerOpacity = e.value / 100;
+        if (SST.variableMapLayer) {
+            SST.variableMapLayer.setOpacity(SST.layerOpacity);
+        }
+        if (SST.resultsMapLayer) {
+            SST.resultsMapLayer.setOpacity(SST.layerOpacity);
+        }
+    });
+
     SST.map.on('click', function (e) {
         SST.point = {x: e.latlng.lng, y: e.latlng.lat};
         $('#LatInput').val(e.latlng.lat.toFixed(2));
@@ -254,7 +267,7 @@ function pollJobStatus(uuid) {
                 SST.resultsMapLayer.setUrl(layerUrl);
             }
             else {
-                SST.resultsMapLayer = L.tileLayer(layerUrl, {zIndex: 2}).addTo(SST.map);
+                SST.resultsMapLayer = L.tileLayer(layerUrl, {zIndex: 2, opacity: SST.layerOpacity}).addTo(SST.map);
             }
 
             SST.variablesList.blur();

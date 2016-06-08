@@ -3,7 +3,7 @@ python:
   - "3.5"
 
 install:
-  - "pip install -r requirements.txt"
+  - "pip install -r other/requirements.txt"
   - "pip install pytest-django"
 
 script: "py.test ."
