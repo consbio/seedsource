@@ -20,7 +20,7 @@ body {
     z-index: 2;
     background-color: #fff;
     overflow: auto;
-    padding: 0px 15px;
+    padding: 0px 15px 10px 15px;
 }
 
 .sidebar .step {
@@ -83,7 +83,7 @@ body {
     top: 50px;
     bottom: 0;
     padding: 0px;
-    margin-left: 400px;
+    padding-left: 400px;
     width: 100%;
     border-left: 2px solid #888;
 }
@@ -171,4 +171,16 @@ body {
      * However, for now it's the only way to get a vertical range input on Chrome.
      */
     -webkit-appearance: slider-vertical;
+}
+
+.leaflet-button {
+    width: 26px;
+    background-color: #fff;
+    font-size: 1.3em;
+    text-align: center;
+}
+
+.leaflet-button:hover {
+    background-color: #eee;
+    cursor: pointer;
 }

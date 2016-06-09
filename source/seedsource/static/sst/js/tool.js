@@ -39,6 +39,7 @@ var SST = {
     variableMapLayer: null,
     variablesList: null,
     selectedVariable: null,
+    visibilityButton: null,
 
     point: null,
     objective: 'seedlots',
@@ -199,6 +200,24 @@ function initMap() {
         }
     });
 
+    SST.visibilityButton = L.control.button({'icon': 'eye-close'});
+    SST.visibilityButton.on('click', function(e) {
+        if (e.target.options.icon === 'eye-close') {
+            e.target.setIcon('eye-open');
+
+            if (SST.resultsMapLayer) {
+                SST.map.removeLayer(SST.resultsMapLayer);
+            }
+        }
+        else {
+            e.target.setIcon('eye-close');
+
+            if (SST.resultsMapLayer) {
+                SST.map.addLayer(SST.resultsMapLayer);
+            }
+        }
+    });
+
     SST.map.on('click', function (e) {
         SST.point = {x: e.latlng.lng, y: e.latlng.lat};
         $('#LatInput').val(e.latlng.lat.toFixed(2));
@@ -271,6 +290,9 @@ function pollJobStatus(uuid) {
             }
 
             SST.variablesList.blur();
+            SST.map.addControl(SST.visibilityButton);
+            
+            $('#SaveButton, #ExportButton').removeAttr('disabled');
         }
         else if (data.status === 'pending' || data.status == 'started') {
             setTimeout(function() { pollJobStatus(uuid); }, 1000);

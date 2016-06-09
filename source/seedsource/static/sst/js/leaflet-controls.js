@@ -32,3 +32,36 @@ L.Control.Opacity = L.Control.extend({
 L.control.opacity = function (options) {
   return new L.Control.Opacity(options);
 };
+
+L.Control.Button = L.Control.extend({
+    options: {
+        position: 'topright',
+        icon: ''
+    },
+
+    onAdd: function(map) {
+        var container = L.DomUtil.create('div', 'leaflet-button leaflet-bar');
+        var button = L.DomUtil.create('span', 'glyphicon glyphicon-' + this.options.icon, container);
+
+        L.DomEvent
+            .on(button, 'click', function(e) {
+                this.fire('click', {target: this});
+            }.bind(this))
+            .on(button, 'mousedown mouseup click', L.DomEvent.stopPropagation);
+
+        this._button = button;
+        this._container = container;
+        return this._container;
+    },
+
+    setIcon: function(icon) {
+        this.options.icon = icon;
+        this._button.setAttribute('class', 'glyphicon glyphicon-' + icon);
+    },
+
+    includes: L.Mixin.Events
+});
+
+L.control.button = function(options) {
+    return new L.Control.Button(options);
+}
