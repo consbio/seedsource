@@ -105,7 +105,7 @@ body {
 #TimeOverlay {
     z-index: 2;
     position: absolute;
-    left: 20px;
+    left: 420px;
     top: 20px;
     padding: 5px;
     border-radius: 5px;
