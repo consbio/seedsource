@@ -1,8 +1,7 @@
 language: python
 
 env:
-  - CPLUS_INCLUDE_PATH=/usr/include/gdal
-  - C_INCLUDE_PATH=/usr/include/gdal
+  - CPLUS_INCLUDE_PATH=/usr/include/gdal C_INCLUDE_PATH=/usr/include/gdal
 
 addons:
   apt:
