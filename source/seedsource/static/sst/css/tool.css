@@ -15,9 +15,12 @@ body {
     position: fixed;
     top: 50px;
     bottom: 0;
+    width: 400px;
+    float: left;
     z-index: 2;
     background-color: #fff;
     overflow: auto;
+    padding: 0px 15px;
 }
 
 .sidebar .step {
@@ -80,6 +83,8 @@ body {
     top: 50px;
     bottom: 0;
     padding: 0px;
+    margin-left: 400px;
+    width: 100%;
     border-left: 2px solid #888;
 }
 

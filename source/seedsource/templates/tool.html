@@ -116,7 +116,7 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-3 sidebar">
+            <div class="sidebar">
                 <div id="JobStatusOverlay" class="overlay hidden">
                     <div class="progressContainer">
                         <h4>Calculating scores...</h4>
@@ -128,6 +128,7 @@
 
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#ToolTab" aria-controls="ToolTab" data-toggle="tab">Configuration</a></li>
+                    <li role="presentation"><a href="#ResultsTab" aria-controls="ResultsTab" data-toggle="tab">Results</a></li>
                     <li role="presentation"><a href="#SavedTab" aria-controls="SavedTab" data-toggle="tab">Saved Runs</a></li>
                 </ul>
 
@@ -160,7 +161,7 @@
                             <div>
                                 <label for="RegionSelect" class="control-label">Region</label>
                                 <select id="RegionSelect" class="form-control">
-                                    <option>Region 1</option>
+                                    <option>West</option>
                                 </select>
                             </div>
                         </div>
@@ -195,13 +196,19 @@
                             <h4></h4>
                             <button class="btn btn-lg btn-primary btn-block" id="RunButton" onClick="runJob()" disabled>Run Tool</button>
                         </div>
+                        <div>
+
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="ResultsTab">
+
                     </div>
                     <div role="tabpanel" class="tab-pane" id="SavedTab">
 
                     </div>
                 </div>
             </div>
-            <div class="col-md-9 col-md-offset-3 main">
+            <div class="main">
                 <div id="TimeOverlay" class="hidden"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> Showing: <span id="TimeLabel">1961 - 1990</span></div>
                 <div id="Map"></div>
             </div>
@@ -333,12 +340,13 @@
     <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
     <script src="{% static "leaflet/leaflet.js" %}"></script>
     <script src="{% static "leaflet/controls/leaflet-basemaps/L.Control.Basemaps-min.js" %}"></script>
-    <script src="{% static "sst/js/leaflet-controls.js" %}"></script>
 
     {% if debug %}
+        <script src="{% static "sst/js/leaflet-controls.js" %}"></script>
         <script src="{% static "sst/js/tool.js" %}"></script>
         <script src="{% static "sst/js/components.jsx" %}" type="text/babel"></script>
     {% else %}
+        <script src="{% static "sst/js/leaflet-controls.min.js" %}"></script>
         <script src="{% static "sst/js/tool.min.js" %}"></script>
         <script src="{% static "sst/js/components.min.js" %}"></script>
     {% endif %}
