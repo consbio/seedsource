@@ -47,7 +47,8 @@ var SST = {
     time: '1961_1990',
     RCP: 'rcp45',
 
-    lastRunConfiguration: null
+    lastRunConfiguration: null,
+    lastSave: null
 };
 
 function checkLogin() {
@@ -253,7 +254,7 @@ function runJob() {
             /* Run the tool against the current time period when looking for seedlots, against the target time period
              * when looking for planting sites. */
             var year = '1961_1990';
-            if (SST.objective === 'site') {
+            if (SST.objective === 'site' && SST.time !== '1961_1990') {
                 year = SST.RCP + '_' + SST.time;
             }
 
@@ -329,6 +330,17 @@ function pollJobStatus(uuid) {
     });
 }
 
+function handleSave() {
+    if (SST.lastSave) {
+        $('#CurrentSaveTitle').html(SST.lastSave.title);
+        $('#OverwriteModal').modal('show');
+        $('#OverwriteModal button').removeAttr('disabled');
+    }
+    else {
+        showSaveDialog();
+    }
+}
+
 function showSaveDialog() {
     var months = [
         'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November',
@@ -339,6 +351,7 @@ function showSaveDialog() {
 
     $('#RunTitle').val(title);
     $('#SaveModal').modal('show');
+    $('#OverwriteModal').modal('hide');
 }
 
 function saveConfiguration() {
@@ -347,12 +360,36 @@ function saveConfiguration() {
         configuration: JSON.stringify(SST.lastRunConfiguration)
     };
 
-    $.post('/sst/run-configurations/', data).done(function() {
+    $.post('/sst/run-configurations/', data).done(function(data) {
+        SST.lastSave = data;
+
         $('#SaveModal button').removeAttr('disabled');
         $('#SaveModal').modal('hide');
+        $('#SaveButton').attr('disabled', true);
     });
 
     $('#SaveModal button').attr('disabled', true);
+}
+
+function updateConfiguration() {
+    var data = {
+        title: SST.lastSave.title,
+        configuration: JSON.stringify(SST.lastRunConfiguration)
+    };
+
+    $.ajax({
+        type: 'PUT',
+        url: '/sst/run-configurations/' + SST.lastSave.uuid,
+        data: data,
+        success: function (data) {
+            SST.lastSave = data;
+
+            $('#OverwriteModal').modal('hide');
+            $('#SaveButton').attr('disabled', true);
+        }
+    });
+
+    $('#OverwriteModal button').attr('disabled', true);
 }
 
 function resetMapPoint() {

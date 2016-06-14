@@ -12,7 +12,6 @@ django-celery==3.1.17
 django-tastypie==0.13.3
 djangorestframework==3.3.3
 Fiona==1.6.3
-GDAL==2.0.1
 Jinja2==2.8
 kombu==3.0.35
 MarkupSafe==0.23
