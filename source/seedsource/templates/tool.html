@@ -160,7 +160,7 @@
                             <div>
                                 <label for="RegionSelect" class="control-label">Region</label>
                                 <select id="RegionSelect" class="form-control">
-                                    <option>West</option>
+                                    <option value="west1">West</option>
                                 </select>
                             </div>
                         </div>
@@ -198,7 +198,7 @@
                         <div>
                             <h4></h4>
                             <div>
-                                <button class="btn btn-default pull-left" id="SaveButton" disabled><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save Run</button>
+                                <button class="btn btn-default pull-left" id="SaveButton" onClick="showSaveDialog()" disabled><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save Last Run</button>
                                 <button class="btn btn-default pull-right" id="ExportButton" disabled><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Export PDF</button>
                             </div>
                             <div style="clear: both;"></div>
@@ -280,6 +280,25 @@
                         <input type="password" id="ChangePassword" class="form-control" placeholder="New Password" required />
                         <input type="password" id="ChangePasswordConfirm" class="form-control" placeholder="Confirm Password" required />
                         <button class="btn btn-sm btn-primary" type="submit" >Change Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="SaveModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Save Run Configuration</h4>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="saveConfiguration(); return false;">
+                        <label for="RunTitle" class="control-label">Title</label>
+                        <input type="text" id="RunTitle" class="form-control" required />
+                        <div>&nbsp;</div>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
                     </form>
                 </div>
             </div>

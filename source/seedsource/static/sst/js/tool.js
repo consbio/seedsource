@@ -43,8 +43,11 @@ var SST = {
 
     point: null,
     objective: 'seedlots',
+    region: 'west1',
     time: '1961_1990',
-    RCP: 'rcp45'
+    RCP: 'rcp45',
+
+    lastRunConfiguration: null
 };
 
 function checkLogin() {
@@ -274,6 +277,25 @@ function runJob() {
     });
 
     showJobOverlay();
+
+    SST.lastRunConfiguration = {
+        objective: SST.objective,
+        point: SST.point,
+        region: SST.region,
+        time: SST.time,
+        model: SST.RCP,
+        species: SST.selectedSpecies,
+        variables: SST.variablesList.getConfiguration().map(function(item) {
+            return {
+                variable: item.variable,
+                value: SST.values[item.variable],
+                min: item.min,
+                max: item.max
+            };
+        })
+    };
+
+    $('#SaveButton, #ExportButton').attr('disabled', true);
 }
 
 function pollJobStatus(uuid) {
@@ -305,6 +327,32 @@ function pollJobStatus(uuid) {
         alert('Sorry, there was an error running the job. Please try again.');
         hideJobOverlay();
     });
+}
+
+function showSaveDialog() {
+    var months = [
+        'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November',
+        'December'
+    ];
+    var today = new Date();
+    var title = 'Saved run - ' + months[today.getMonth()] + ' ' + today.getDay() + ', ' + today.getFullYear();
+
+    $('#RunTitle').val(title);
+    $('#SaveModal').modal('show');
+}
+
+function saveConfiguration() {
+    var data = {
+        title: $('#RunTitle').val(),
+        configuration: JSON.stringify(SST.lastRunConfiguration)
+    };
+
+    $.post('/sst/run-configurations/', data).done(function() {
+        $('#SaveModal button').removeAttr('disabled');
+        $('#SaveModal').modal('hide');
+    });
+
+    $('#SaveModal button').attr('disabled', true);
 }
 
 function resetMapPoint() {
@@ -398,6 +446,10 @@ $('input[name=objective]').change(function(e) {
     resetTimeLabel();
 });
 
+$('#RegionSelect').change(function(e) {
+    SST.region = e.target.value;
+});
+
 $('#TimeSelect').change(function(e) {
     var time = e.target.value;
     SST.time = time;
@@ -431,6 +483,11 @@ $('#SpeciesSelect').change(function(e) {
     setSpecies(e.target.value);
     SST.selectedSpecies = e.target.value;
 });
+
+$('#SaveModal').on('shown.bs.modal', function(e) {
+     e.stopImmediatePropagation();
+    $('#RunTitle').select();
+ });
 
 $('.modal').on('shown.bs.modal', function() {
     $('.modal .alert').addClass('hidden');
