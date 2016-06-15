@@ -40,6 +40,7 @@ var SST = {
     variablesList: null,
     selectedVariable: null,
     visibilityButton: null,
+    configurationsList: null,
 
     point: null,
     objective: 'seedlots',
@@ -231,6 +232,18 @@ function initMap() {
     });
 }
 
+function loadConfigurations() {
+    $.get('/sst/run-configurations/').done(function(data) {
+        data.forEach(function(item) {
+            item.configuration = JSON.parse(item.configuration);
+            item.created = new Date(item.created);
+            item.modified = new Date(item.modified);
+        });
+
+        SST.configurationsList.setState({configurations: data});
+    });
+}
+
 function setSpecies(id) {
     SST.variablesList.clearVariables();
 
@@ -347,7 +360,7 @@ function showSaveDialog() {
         'December'
     ];
     var today = new Date();
-    var title = 'Saved run - ' + months[today.getMonth()] + ' ' + today.getDay() + ', ' + today.getFullYear();
+    var title = 'Saved run - ' + months[today.getMonth()] + ' ' + today.getDate() + ', ' + today.getFullYear();
 
     $('#RunTitle').val(title);
     $('#SaveModal').modal('show');

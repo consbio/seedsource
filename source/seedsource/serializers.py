@@ -8,5 +8,5 @@ class RunConfigurationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RunConfiguration
-        fields = ('uuid', 'created', 'title', 'configuration')
-        read_only_fields = ('uuid', 'created')
+        fields = ('uuid', 'created', 'modified', 'title', 'configuration')
+        read_only_fields = ('uuid', 'created', 'modified')

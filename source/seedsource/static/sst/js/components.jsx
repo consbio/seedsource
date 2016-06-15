@@ -314,3 +314,81 @@ SST.variablesList = ReactDOM.render(
 );
 
 setSpecies('species_1');
+
+var Configuration = React.createClass({
+    getInitialState: function() {
+        return {
+            focused: false
+        }
+    },
+
+    focus: function() {
+        if (!this.state.focused) {
+            this.setState({focused: true});
+            this.props.onFocus(this);
+       }
+    },
+
+    blur: function() {
+        if (this.state.focused) {
+            this.setState({focused: false});
+        }
+    },
+
+    handleClick: function(e) {
+        this.focus();
+    },
+
+    render: function() {
+        var config = this.props.configuration;
+        var date = config.modified;
+        var className = 'configurationItem';
+
+        if (this.state.focused) {
+            className += ' focused';
+        }
+
+        return <div className={className} onClick={this.handleClick}>
+            <div className="pull-right buttons">
+                <button><span className="glyphicon glyphicon-open" aria-hidden="true"></span> Load</button>
+                <button><span className="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</button>
+            </div>
+            <div className="title">{config.title}</div>
+            <div className="date">Last changed: {date.getMonth()+1}/{date.getDate()}/{date.getYear()}</div>
+            <div style={{clear: 'both'}}></div>
+        </div>;
+    }
+});
+
+var ConfigurationsList = React.createClass({
+    getInitialState: function() {
+        return {
+            configurations: [],
+            focusedItem: null
+        }
+    },
+
+    handleFocus: function(item) {
+        if (this.state.focusedItem) {
+            this.state.focusedItem.blur();
+        }
+        this.state.focusedItem = item
+    },
+
+    render: function() {
+        var items = this.state.configurations.map(function(item) {
+            return <Configuration configuration={item} onFocus={this.handleFocus} />;
+        }, this);
+
+        return <div className="configurationList">
+            {items}
+        </div>
+    }
+});
+
+SST.configurationsList = ReactDOM.render(
+    <ConfigurationsList />,
+    $('#Configurations')[0]
+);
+
+loadConfigurations();
