@@ -193,6 +193,8 @@ function initMap() {
         position: 'bottomleft'
     }));
 
+    SST.map.addControl(L.control.zoomBox({position: 'topright'}));
+
     var opacityControl = L.control.opacity();
     SST.map.addControl(opacityControl);
     opacityControl.on('change', function(e) {
