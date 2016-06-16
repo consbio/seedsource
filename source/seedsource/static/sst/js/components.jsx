@@ -335,8 +335,16 @@ var Configuration = React.createClass({
         }
     },
 
-    handleClick: function(e) {
+    handleClick: function() {
         this.focus();
+    },
+
+    handleLoad: function() {
+        loadConfiguration(this.props.configuration);
+    },
+
+    handleDelete: function() {
+        deleteConfiguration(this.props.configuration);
     },
 
     render: function() {
@@ -350,11 +358,11 @@ var Configuration = React.createClass({
 
         return <div className={className} onClick={this.handleClick}>
             <div className="pull-right buttons">
-                <button><span className="glyphicon glyphicon-open" aria-hidden="true"></span> Load</button>
-                <button><span className="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</button>
+                <button onClick={this.handleLoad}><span className="glyphicon glyphicon-open" aria-hidden="true"></span> Load</button>
+                <button onClick={this.handleDelete}><span className="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</button>
             </div>
             <div className="title">{config.title}</div>
-            <div className="date">Last changed: {date.getMonth()+1}/{date.getDate()}/{date.getYear()}</div>
+            <div className="date">Last modified: {date.getMonth()+1}/{date.getDate()}/{date.getYear()}</div>
             <div style={{clear: 'both'}}></div>
         </div>;
     }

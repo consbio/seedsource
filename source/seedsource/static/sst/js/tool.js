@@ -233,8 +233,8 @@ function initMap() {
 }
 
 function loadConfigurations() {
-    $.get('/sst/run-configurations/').done(function(data) {
-        data.forEach(function(item) {
+    $.get('/sst/run-configurations/').done(function (data) {
+        data.forEach(function (item) {
             item.configuration = JSON.parse(item.configuration);
             item.created = new Date(item.created);
             item.modified = new Date(item.modified);
@@ -379,6 +379,8 @@ function saveConfiguration() {
         $('#SaveModal button').removeAttr('disabled');
         $('#SaveModal').modal('hide');
         $('#SaveButton').attr('disabled', true);
+
+        loadConfigurations();
     });
 
     $('#SaveModal button').attr('disabled', true);
@@ -399,10 +401,119 @@ function updateConfiguration() {
 
             $('#OverwriteModal').modal('hide');
             $('#SaveButton').attr('disabled', true);
+
+            loadConfigurations();
         }
     });
 
     $('#OverwriteModal button').attr('disabled', true);
+}
+
+function loadConfiguration(configuration) {
+    if (!confirm('Load this saved configuration? This will replace your current settings.')) {
+        return;
+    }
+
+    resetConfiguration();
+
+    var config = configuration.configuration;
+
+    if (config.objective !== 'seedlots') {
+        $('input[name=objective][value=site]').click();
+    }
+
+    SST.point = config.point;
+    SST.objective = config.objective;
+    SST.region = config.region;
+    SST.time = config.time;
+    SST.RCP = config.model;
+    SST.lastSave = configuration;
+
+    resetMapPoint();
+
+    $('#LatInput').val(config.point.y.toFixed(2));
+    $('#LonInput').val(config.point.x.toFixed(2));
+    $('#RegionSelect').val(config.region);
+    $('#TimeSelect').val(config.time);
+    $('#RCPSelect').val(config.model);
+    $('#SpeciesSelect').val(config.species);
+
+    if (config.time !== '1961_1990') {
+        $('#RCPSelect').removeClass('hidden');
+    }
+
+    SST.variablesList.setState({
+        variables: config.variables.map(function(variable) {
+            SST.values[variable.variable] = variable.value;
+            return {'variable': variable.variable, 'transfer': variable.max - variable.value, 'autofocus': false};
+        })
+    });
+
+    SST.variablesList.setState({variable: []});
+
+    $('#RunButton').removeAttr('disabled');
+    
+    $('a[href=#ToolTab]').tab('show');
+}
+
+function deleteConfiguration(configuration) {
+    if (!confirm('Delete this saved configuration?')) {
+        return;
+    }
+
+    $.ajax({
+        type: 'DELETE',
+        url: '/sst/run-configurations/' + configuration.uuid,
+        success: function() {
+            loadConfigurations();
+        }
+    });
+
+    if (configuration.uuid == SST.lastSave.uuid) {
+        SST.lastSave = null;
+    }
+}
+
+function resetConfiguration() {
+    if (SST.variableMapLayer) {
+        SST.map.removeLayer(SST.variableMapLayer);
+    }
+    if (SST.resultsMapLayer) {
+        SST.map.removeLayer(SST.resultsMapLayer);
+    }
+    if (SST.pointMarker) {
+        SST.map.removeLayer(SST.pointMarker);
+    }
+
+    SST.map.removeControl(SST.visibilityButton);
+
+    SST.selectedSpecies = 'species_1';
+    SST.pointMarker = null;
+    SST.resultsMapLayer = null;
+    SST.variableMapLayer = null;
+    SST.selectedVariable = null;
+
+    SST.point = null;
+    SST.objective = 'seedlots';
+    SST.region = 'west1';
+    SST.time = '1961_1990';
+    SST.RCP = 'rcp45';
+
+    SST.lastRunConfiguration = null;
+    SST.lastSave = null;
+
+    $('input[name=objective][value=seedlots]').click();
+    $('#LatInput, #LonInput').val('');
+    $('#RegionSelect').val('west1');
+    $('#TimeSelect').val('1961_1990');
+    $('#RCPSelect').val('rcp45').addClass('hidden');
+    $('#SpeciesSelect').val('species_1');
+
+    SST.variablesList.clearVariables();
+
+    $('#RunButton').attr('disabled', true);
+    $('#SaveButton').attr('disabled', true);
+    $('#ExportButton').attr('disabled', true);
 }
 
 function resetMapPoint() {

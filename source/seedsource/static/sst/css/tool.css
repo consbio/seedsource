@@ -184,6 +184,7 @@ body {
     box-shadow: -2px 0px 5px -2px;
     width: 0px;
     transition: width .5s;
+    overflow: hidden;
 }
 
 .configurationItem.focused .buttons {
