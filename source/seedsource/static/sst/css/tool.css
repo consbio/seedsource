@@ -19,9 +19,19 @@ body {
     float: left;
     z-index: 2;
     background-color: #fff;
-    overflow: auto;
-    padding: 0px 15px 10px 15px;
+    overflow: hidden;
+    /*padding: 0px 15px 10px 15px;*/
     box-shadow: 2px 0px 10px;
+}
+
+.sidebar .nav-tabs {
+    padding-left: 15px;
+}
+
+.sidebar .tab-content {
+    max-height: 100%;
+    overflow: auto;
+    padding: 0px 15px 50px 15px;
 }
 
 .sidebar .step {
