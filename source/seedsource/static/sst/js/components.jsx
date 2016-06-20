@@ -54,8 +54,9 @@ var VariableConfig = React.createClass({
     },
 
     handleInput: function(e) {
-        this.props.variable.transfer = e.target.value;
-        this.props.onTransferChange(e.target.value);
+        var value = e.target.value * this.props.multiplier;
+        this.props.variable.transfer = value;
+        this.props.onTransferChange(value);
     },
 
     handleKey: function(e) {
@@ -86,13 +87,13 @@ var VariableConfig = React.createClass({
     },
 
     render: function() {
-        var valueAtPoint = <span>Value: N/A</span>;
+        var valueAtPoint = <span>N/A</span>;
         var transferNode;
 
         if (SST.point) {
             if (this.props.variable.variable in SST.values) {
                 var value = SST.values[this.props.variable.variable];
-                valueAtPoint = value === null ? 'N/A' : value;
+                valueAtPoint = value === null ? 'N/A' : value / this.props.multiplier;
             }
             else {
                 var url = '/arcgis/rest/services/' + getServiceName(this.props.variable.variable) +
@@ -132,12 +133,12 @@ var VariableConfig = React.createClass({
                 onChange={this.handleInput}
                 ref="input"
                 type="text"
-                value={this.props.variable.transfer}
+                value={this.props.variable.transfer / this.props.multiplier}
                 className="form-control form"
             />
         }
         else {
-            transferNode = <span>{this.props.variable.transfer}</span>
+            transferNode = <span>{this.props.variable.transfer / this.props.multiplier}</span>
         }
 
         var className = "variableConfig";
@@ -276,6 +277,7 @@ var VariablesList = React.createClass({
                     onFocus={this.handleFocus}
                     onBlur={this.handleBlur}
                     variable={variable}
+                    multiplier={SST.scaled.indexOf(variable.variable) < 0 ? 1 : 10}
                     index={i}
                 />
             );

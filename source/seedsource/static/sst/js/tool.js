@@ -3,6 +3,8 @@ var SST = {
         'MAT', 'MWMT', 'MCMT', 'TD', 'MAP', 'MSP', 'AHM', 'SHM', 'DD_0', 'FFP', 'PAS', 'EMT', 'EXT', 'Eref', 'CMD'
     ],
 
+    scaled: ['MAT', 'MWMT', 'MCMT', 'TD', 'AHM', 'SHM', 'EMT', 'EXT', 'MAR'],
+
     labels: {
         MAT: 'Mean annual temperature (°C)',
         MWMT: 'Mean warmest month temperature (°C)',
