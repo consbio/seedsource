@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'tastypie',
     'djcelery',
+    'webpack_loader',
 
     'seedsource',
     'accounts'
@@ -107,6 +108,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_STORAGE = 'seedsource_project.storage.SSTStaticFilesStorage'
 BABEL_CMD = '/usr/local/bin/babel'
 UGLIFY_CMD = '/usr/local/bin/uglifyjs'
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'sst/bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'seedsource', 'static', 'sst', 'webpack-stats.json')
+    }
+}
 
 CELERY_TRACK_STARTED = True
 CELERYBEAT_SCHEDULE = {
