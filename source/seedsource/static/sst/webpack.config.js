@@ -21,7 +21,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 include: path.resolve('./js'),
-                loader: 'babel-loader'
+                loader: 'babel'
             }
         ]
     },
