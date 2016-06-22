@@ -1,10 +1,20 @@
 import { connect } from 'react-redux'
 import RunConfiguration from '../componenets/RunConfiguration'
+import { selectSpecies } from '../actions/species'
 
-const mapStateToProps = (state, { name }) => {
+const mapStateToProps = ({ runConfiguration }) => {
     return {
-        objective: state.runConfiguration.objective
+        objective: runConfiguration.objective,
+        species: runConfiguration.species
     }
 }
 
-export default connect(mapStateToProps)(RunConfiguration)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onSpeciesChange: species => {
+            dispatch(selectSpecies(species))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RunConfiguration)
