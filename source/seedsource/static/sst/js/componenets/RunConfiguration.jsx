@@ -1,8 +1,9 @@
 import { PropTypes } from 'react'
+import { species as speciesList } from '../config'
 import ObjectiveButton from '../containers/ObjectiveButton'
 import PointChooser from '../containers/PointChooser'
 import ClimateChooser from '../containers/ClimateChooser'
-import { species as speciesList } from '../config'
+import Variables from '../containers/Variables'
 
 let getObjectiveLabel = objective => (
     objective == 'seedlots' ? 'Select a planting site' : 'Select a seedlot location'
@@ -52,6 +53,11 @@ const RunConfiguration = ({ objective, species, onSpeciesChange }) => (
                     <option value={item.name}>{item.label}</option>
                 ))}
             </select>
+        </div>
+
+        <div className="step">
+            <h4><span className="badge">5</span> Choose variables & transfer limits</h4>
+            <Variables />
         </div>
     </div>
 )

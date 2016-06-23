@@ -2,77 +2,92 @@ export const variables = [
     {
         name: 'MAT',
         label: 'Mean annual temperature',
-        multiplier: 10
+        multiplier: 10,
+        isTemperature: true
     },
     {
         name: 'MWMT',
         label: 'Mean warmest month temperature',
-        multiplier: 10
+        multiplier: 10,
+        isTemperature: true
     },
     {
         name: 'MCMT',
         label: 'Mean coldest month temperature',
-        multiplier: 10
+        multiplier: 10,
+        isTemperature: true
     },
     {
         name: 'TD',
         label: 'Temperature difference between MWMT and MCMT, or continentality',
-        multiplier: 10
+        multiplier: 10,
+        isTemperature: true
     },
     {
         name: 'MAP',
         label: 'Mean annual precipitation (mm)',
-        multiplier: 1
+        multiplier: 1,
+        isTemperature: false
     },
     {
         name: 'MSP',
         label: 'May to September precipitation (mm)',
-        multiplier: 1
+        multiplier: 1,
+        isTemperature: false
     },
     {
         name: 'AHM',
         label: 'Annual heat­moisture index',
-        multiplier: 10
+        multiplier: 10,
+        isTemperature: false
     },
     {
         name: 'SHM',
         label: 'Summer heat­moisture index',
-        multiplier: 10
+        multiplier: 10,
+        isTemperature: false
     },
     {
         name: 'DD_0',
         label: 'Degree­days below 0°C, chilling degree­days',
-        multiplier: 1
+        multiplier: 1,
+        isTemperature: false
     },
     {
         name: 'FFP',
         label: 'Frost­free period',
-        multiplier: 1
+        multiplier: 1,
+        isTemperature: false
     },
     {
         name: 'PAS',
         label: 'Precipitation as snow (mm) between August in previous year and July in current year',
-        multiplier: 1
+        multiplier: 1,
+        isTemperature: false
     },
     {
         name: 'EMT',
         label: 'Extreme minimum temperature over 30 years',
-        multiplier: 10
+        multiplier: 10,
+        isTemperature: true
     },
     {
         name: 'EXT',
         label: 'Extreme maximum temperature over 30 years',
-        multiplier: 10
+        multiplier: 10,
+        isTemperature: true
     },
     {
         name: 'Eref',
         label: 'Hargreaves reference evaporation (mm)',
-        multiplier: 1
+        multiplier: 1,
+        isTemperature: false
     },
     {
         name: 'CMD',
         label: 'Hargreaves climatic moisture deficit (mm)',
-        multiplier: 1
+        multiplier: 1,
+        isTemperature: false
     }
 ];
 

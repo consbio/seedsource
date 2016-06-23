@@ -1,4 +1,5 @@
 import point from './point'
+import variables from './variables'
 
 const defaultConfiguration = {
     objective: 'seedlots',
@@ -6,7 +7,8 @@ const defaultConfiguration = {
     point: null,
     region: 'west1',
     time: '1961_1990',
-    model: 'rcp45'
+    model: 'rcp45',
+    variables: []
 }
 
 export default (state = defaultConfiguration, action) => {
@@ -22,6 +24,10 @@ export default (state = defaultConfiguration, action) => {
             return Object.assign({}, state, {model: action.model})
         case 'SELECT_SPECIES':
             return Object.assign({}, state, {species: action.species})
+        case 'ADD_VARIABLE':
+        case 'REMOVE_VARIABLE':
+        case 'MODIFY_VARIABLE':
+            return Object.assign({}, state, {variables: variables(state.variables, action)})
         default:
             return state
     }
