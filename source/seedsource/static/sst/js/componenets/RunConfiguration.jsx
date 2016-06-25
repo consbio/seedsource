@@ -59,6 +59,23 @@ const RunConfiguration = ({ objective, species, onSpeciesChange }) => (
             <h4><span className="badge">5</span> Choose variables & transfer limits</h4>
             <Variables />
         </div>
+
+        <div>
+            <h4></h4>
+            <button className="btn btn-lg btn-primary btn-block">Run Tool</button>
+        </div>
+        <div>
+            <h4></h4>
+            <div>
+                <button className="btn btn-default pull-left" disabled>
+                    <span className="glyphicon glyphicon-save" aria-hidden="true"></span> Save Last Run
+                </button>
+                <button className="btn btn-default pull-right" disabled>
+                    <span className="glyphicon glyphicon-file" aria-hidden="true"></span> Export PDF
+                </button>
+            </div>
+            <div style={{clear: 'both'}}></div>
+        </div>
     </div>
 )
 

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { modifyVariable, toggleVariable } from '../actions/variables'
+import { modifyVariable, toggleVariable, removeVariable } from '../actions/variables'
 import Variable from '../componenets/Variable'
 import { species } from '../config'
 
@@ -39,6 +39,10 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
 
         onClick: () => {
             dispatch(toggleVariable(variable.name))
+        },
+
+        onRemove: () => {
+            dispatch(removeVariable(index))
         }
     }
 }

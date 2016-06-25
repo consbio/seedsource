@@ -12,10 +12,10 @@ export default (state = [], action) => {
             return [...state, {
                 name,
                 label,
+                multiplier,
+                isTemperature,
                 value: null,
                 transfer: null,
-                multiplier,
-                isTemperature
             }]
 
         case 'REMOVE_VARIABLE':
