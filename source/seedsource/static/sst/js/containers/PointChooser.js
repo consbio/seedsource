@@ -13,13 +13,19 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onChange: (type, value) => {
+        onBlur: (type, value) => {
+            let number = parseFloat(value)
+
+            if (isNaN(number)) {
+                return
+            }
+
             switch (type) {
                 case 'lat':
-                    dispatch(setLatitude(value))
+                    dispatch(setLatitude(number))
                     break
                 case 'lon':
-                    dispatch(setLongitude(value))
+                    dispatch(setLongitude(number))
                     break
             }
 

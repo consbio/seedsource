@@ -7,11 +7,15 @@ export default (state = [], action) => {
         case 'ADD_VARIABLE':
             variable = variables.find((item) => item.name === action.variable)
 
+            let {name, label, multiplier, isTemperature} = variable
+
             return [...state, {
-                name: variable.name,
-                label: variable.label,
+                name,
+                label,
                 value: null,
-                transfer: null
+                transfer: null,
+                multiplier,
+                isTemperature
             }]
 
         case 'REMOVE_VARIABLE':

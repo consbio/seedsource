@@ -5,7 +5,7 @@ import { species } from '../config'
 
 const mapStateToProps = (state, { variable, index }) => {
     let active = state.activeVariable === variable.name
-    let { name, label, value, transfer } = variable
+    let { name, label, value, transfer, multiplier, isTemperature } = variable
 
     if (value === null) {
         value = 'N/A'
@@ -22,6 +22,8 @@ const mapStateToProps = (state, { variable, index }) => {
         }
     }
 
+    transfer /= multiplier
+
     return {active, index, name, label, value, transfer}
 }
 
@@ -31,7 +33,7 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
             let value = parseFloat(transfer)
 
             if (!isNaN(value)) {
-                dispatch(modifyVariable(index, value))
+                dispatch(modifyVariable(index, value * variable.multiplier))
             }
         },
 
