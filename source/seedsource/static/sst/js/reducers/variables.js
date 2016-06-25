@@ -24,5 +24,11 @@ export default (state = [], action) => {
 }
 
 export const activeVariable = (state = null, action) => {
-    return state // todo
+    switch(action.type) {
+        case 'TOGGLE_VARIABLE':
+            return state === action.variable ? null : action.variable
+
+        default:
+            return state
+    }
 }

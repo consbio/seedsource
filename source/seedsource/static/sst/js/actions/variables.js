@@ -1,11 +1,11 @@
-export const addVariable = (variable) => {
+export const addVariable = variable => {
     return {
         type: 'ADD_VARIABLE',
         variable
     }
 }
 
-export const removeVariable = (index) => {
+export const removeVariable = index => {
     return {
         type: 'REMOVE_VARIABLE',
         index
@@ -17,5 +17,12 @@ export const modifyVariable = (index, transfer) => {
         type: 'MODIFY_VARIABLE',
         index,
         transfer
+    }
+}
+
+export const toggleVariable = variable => {
+    return {
+        type: 'TOGGLE_VARIABLE',
+        variable
     }
 }

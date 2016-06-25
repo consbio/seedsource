@@ -3,7 +3,7 @@ import TabContent from '../containers/TabContent'
 import RunConfiguration from '../containers/RunConfiguration'
 
 export default () => (
-    <div>
+    <div className="sidebar">
         <ul className="nav nav-tabs">
             <TabHeader name="configuration">Configuration</TabHeader>
             <TabHeader name="saves">Saved Runs</TabHeader>
