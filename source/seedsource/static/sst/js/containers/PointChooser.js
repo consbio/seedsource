@@ -4,11 +4,14 @@ import { setLatitude, setLongitude } from '../actions/point'
 
 const mapStateToProps = (state) => {
     let point = state.runConfiguration.point
+    let lat = '', lon = ''
 
-    return {
-        lat: point ? point.y : '',
-        lon: point ? point.x : ''
+    if (point !== null) {
+        lat = point.y ? point.y.toFixed(4) : ''
+        lon = point.x ? point.x.toFixed(4) : ''
     }
+
+    return {lat, lon}
 }
 
 const mapDispatchToProps = (dispatch) => {

@@ -17,6 +17,7 @@ export default (state = defaultConfiguration, action) => {
             return Object.assign({}, state, {objective: action.objective})
         case 'SET_LATITUDE':
         case 'SET_LONGITUDE':
+        case 'SET_POINT':
             return Object.assign({}, state, {point: point(state.point, action)})
         case 'SELECT_CLIMATE_YEAR':
             return Object.assign({}, state, {time: action.year})

@@ -16,6 +16,7 @@ export default (state = [], action) => {
                 isTemperature,
                 value: null,
                 transfer: null,
+                isFetching: false
             }]
 
         case 'REMOVE_VARIABLE':

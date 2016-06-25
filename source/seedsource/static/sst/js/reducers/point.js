@@ -6,6 +6,9 @@ export default (state = null, action) => {
         case 'SET_LONGITUDE':
             return {x: action.value, y: state ? state.y : ''}
 
+        case 'SET_POINT':
+            return {x: action.lon, y: action.lat}
+
         default:
             return state
     }

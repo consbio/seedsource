@@ -11,3 +11,11 @@ export const setLongitude = (value) => {
         value
     }
 }
+
+export const setPoint = (lat, lon) => {
+    return {
+        type: 'SET_POINT',
+        lat,
+        lon
+    }
+}
