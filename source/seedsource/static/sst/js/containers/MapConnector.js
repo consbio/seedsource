@@ -89,7 +89,7 @@ class MapConnector extends React.Component {
             if (this.variableLayer === null) {
                 this.variableLayer = L.tileLayer(layerUrl, {zIndex: 1, opacity: 1}).addTo(this.map)
             }
-            else {
+            else if(layerUrl !== this.variableLayer._url) {
                 this.variableLayer.setUrl(layerUrl)
             }
         }

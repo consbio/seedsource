@@ -1,15 +1,11 @@
 import { connect } from 'react-redux'
-import { modifyVariable, toggleVariable, removeVariable } from '../actions/variables'
+import { modifyVariable, toggleVariable, removeVariable, fetchValue } from '../actions/variables'
 import Variable from '../componenets/Variable'
 import { species } from '../config'
 
 const mapStateToProps = (state, { variable, index }) => {
     let active = state.activeVariable === variable.name
     let { name, label, value, transfer, multiplier, isTemperature } = variable
-
-    if (value === null) {
-        value = 'N/A'
-    }
 
     if (transfer === null) {
         let activeSpecies = species.find(item => item.name === state.runConfiguration.species)
@@ -43,6 +39,10 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
 
         onRemove: () => {
             dispatch(removeVariable(index))
+        },
+
+        onRequestValue: () => {
+            dispatch(fetchValue(variable.name))
         }
     }
 }

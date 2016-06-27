@@ -8,10 +8,15 @@ class Variable extends React.Component {
     }
 
     componentDidMount() {
-        this.props.onClick()
+        let { onRequestValue, onClick } = this.props
+
+        onClick()
+        onRequestValue()
     }
 
-    componentDidUpdate({active}) {
+    componentDidUpdate({active, value}) {
+        this.props.onRequestValue()
+        
         if (!active && this.props.active) {
             ReactDOM.findDOMNode(this.refs.transferInput).select()
         }
@@ -22,6 +27,10 @@ class Variable extends React.Component {
         let { transferValue } = this.state
         let className = 'variableConfig'
         let transferNode
+
+        if (value === null) {
+            value = 'N/A'
+        }
 
         if (!active) {
             transferNode = <span>{transfer}</span>
@@ -86,11 +95,12 @@ Variable.propTypes = {
     index: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     transfer: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     onTransferBlur: PropTypes.func.isRequired,
     onClick: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired
+    onRemove: PropTypes.func.isRequired,
+    onRequestValue: PropTypes.func.isRequired
 }
 
 export default Variable

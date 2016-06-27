@@ -14,21 +14,41 @@ const defaultConfiguration = {
 export default (state = defaultConfiguration, action) => {
     switch(action.type) {
         case 'SELECT_OBJECTIVE':
-            return Object.assign({}, state, {objective: action.objective})
+            return Object.assign({}, state, {
+                objective: action.objective,
+                variables: variables(state.variables, action)
+            })
+
         case 'SET_LATITUDE':
         case 'SET_LONGITUDE':
         case 'SET_POINT':
-            return Object.assign({}, state, {point: point(state.point, action)})
+            return Object.assign({}, state, {
+                point: point(state.point, action),
+                variables: variables(state.variables, action)
+            })
+
         case 'SELECT_CLIMATE_YEAR':
-            return Object.assign({}, state, {time: action.year})
+            return Object.assign({}, state, {
+                time: action.year,
+                variables: variables(state.variables, action)
+            })
+
         case 'SELECT_CLIMATE_MODEL':
-            return Object.assign({}, state, {model: action.model})
+            return Object.assign({}, state, {
+                model: action.model,
+                variables: variables(state.variables, action)
+            })
+
         case 'SELECT_SPECIES':
             return Object.assign({}, state, {species: action.species})
+
         case 'ADD_VARIABLE':
         case 'REMOVE_VARIABLE':
         case 'MODIFY_VARIABLE':
+        case 'REQUEST_VALUE':
+        case 'RECEIVE_VALUE':
             return Object.assign({}, state, {variables: variables(state.variables, action)})
+        
         default:
             return state
     }
