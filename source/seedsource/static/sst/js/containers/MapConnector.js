@@ -99,11 +99,18 @@ class MapConnector extends React.Component {
         }
     }
 
+    updateOpacity(opacity) {
+        if (this.variableLayer !== null && this.variableLayer.options.opacity !== opacity) {
+            this.variableLayer.setOpacity(opacity)
+        }
+    }
+
     render() {
-        let {activeVariable, objective, point, region, time, model} = this.props
+        let {activeVariable, objective, point, region, time, model, opacity} = this.props
 
         this.updatePointMarker(point)
         this.updateVariableLayer(activeVariable, objective, region, time, model)
+        this.updateOpacity(opacity)
 
         return null
     }
@@ -115,10 +122,11 @@ MapConnector.propTypes = {
 }
 
 const mapStatetoProps = state => {
-    let { runConfiguration, activeVariable } = state
+    let { runConfiguration, activeVariable, map } = state
+    let { opacity } = map
     let { objective, point, region, time, model } = runConfiguration
 
-    return {activeVariable, objective, point, region, time, model}
+    return {activeVariable, objective, point, region, time, model, opacity}
 }
 
 const mapDispatchToProps = dispatch => {

@@ -20,6 +20,10 @@ const mapStateToProps = (state, { variable, index }) => {
 
     transfer /= multiplier
 
+    if (value !== null) {
+        value /= multiplier
+    }
+
     return {active, index, name, label, value, transfer}
 }
 
