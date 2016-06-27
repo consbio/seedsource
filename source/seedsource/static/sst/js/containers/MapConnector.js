@@ -9,6 +9,17 @@ import { setMapOpacity } from '../actions/map'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
 
+const timeLabels = {
+    '1961_1990': '1961 - 1990',
+    '1981_2010': '1981 - 2010',
+    '2025rcp45': '2025 RCP 4.5',
+    '2025rcp85': '2025 RCP 8.5',
+    '2055rcp45': '2055 RCP 4.5',
+    '2055rcp85': '2055 RCP 8.5',
+    '2085rcp45': '2085 RCP 4.5',
+    '2085rcp85': '2085 RCP 8.5'
+}
+
 class MapConnector extends React.Component {
     constructor(props) {
         super(props)
@@ -83,7 +94,7 @@ class MapConnector extends React.Component {
         }
     }
 
-    updateVariableLayer(variable, objective, region, time, model) {
+    updateVariableLayer(variable, objective, time, model) {
         if (variable !== null) {
             let layerUrl = '/tiles/' + getServiceName(variable, objective, time, model) + '/{z}/{x}/{y}.png'
             if (this.variableLayer === null) {
@@ -105,12 +116,47 @@ class MapConnector extends React.Component {
         }
     }
 
+    updateTimeOverlay(variable, objective, time, model) {
+        let overlayNode = document.getElementById('TimeOverlay')
+
+        if (variable === null) {
+            if (!overlayNode.classList.contains('hidden')) {
+                overlayNode.classList.add('hidden')
+            }
+        }
+        else {
+            if (overlayNode.classList.contains('hidden')) {
+                overlayNode.classList.remove('hidden')
+            }
+
+            let labelKey
+
+            if (objective === 'sites') {
+                labelKey = '1961_1990'
+            }
+            else {
+                labelKey = time
+                if (time !== '1961_1990' && time !== '1981_2010') {
+                    labelKey += model
+                }
+            }
+
+            let label = timeLabels[labelKey]
+            let labelNode = document.getElementById('TimeLabel')
+
+            if (labelNode.innerHTML !== label) {
+                labelNode.innerHTML = label
+            }
+        }
+    }
+
     render() {
-        let {activeVariable, objective, point, region, time, model, opacity} = this.props
+        let {activeVariable, objective, point, time, model, opacity} = this.props
 
         this.updatePointMarker(point)
-        this.updateVariableLayer(activeVariable, objective, region, time, model)
+        this.updateVariableLayer(activeVariable, objective, time, model)
         this.updateOpacity(opacity)
+        this.updateTimeOverlay(activeVariable, objective, time, model)
 
         return null
     }
