@@ -5,7 +5,7 @@
 
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { setMapOpacity } from '../actions/map'
+import { setMapOpacity, toggleVisibility } from '../actions/map'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
 
@@ -27,6 +27,7 @@ class MapConnector extends React.Component {
         this.pointMarker = null
         this.variableLayer = null
         this.resultsLayer = null
+        this.visibilityButton = null
     }
 
     // Initial map setup
@@ -112,12 +113,12 @@ class MapConnector extends React.Component {
         }
     }
 
-    updateResultsLayer(serviceId) {
-        if (serviceId !== null) {
+    updateResultsLayer(serviceId, showResults) {
+        if (serviceId !== null && showResults) {
             let layerUrl = '/tiles/' + serviceId + '/{z}/{x}/{y}.png'
 
             if (this.resultsLayer === null) {
-                this.resultsLayer = L.tileLayer(layerUrl, {zIndex: 1, opacity: 1}).addTo(this.map)
+                this.resultsLayer = L.tileLayer(layerUrl, {zIndex: 2, opacity: 1}).addTo(this.map)
             }
             else if (layerUrl !== this.resultsLayer._url) {
                 this.resultsLayer.setUrl(layerUrl)
@@ -136,6 +137,27 @@ class MapConnector extends React.Component {
 
         if (this.resultsLayer !== null && this.resultsLayer.options.opacity !== opacity) {
             this.resultsLayer.setOpacity(opacity)
+        }
+    }
+
+    updateVisibilityButton(serviceId, showResults) {
+        if (serviceId !== null) {
+            let icon = showResults ? 'eye-close' : 'eye-open';
+
+            if (this.visibilityButton === null) {
+                this.visibilityButton = L.control.button({'icon': icon})
+                this.visibilityButton.on('click', e => {
+                    this.props.onToggleVisibility()
+                })
+                this.map.addControl(this.visibilityButton)
+            }
+            else if (this.visibilityButton.options.icon !== icon) {
+                this.visibilityButton.setIcon(icon)
+            }
+        }
+        else if (this.visibilityButton !== null) {
+            this.map.removeControl(this.visibilityButton)
+            this.visibilityButton = null
         }
     }
 
@@ -174,12 +196,13 @@ class MapConnector extends React.Component {
     }
 
     render() {
-        let {activeVariable, objective, point, time, model, opacity, job} = this.props
+        let { activeVariable, objective, point, time, model, opacity, job, showResults } = this.props
 
         this.updatePointMarker(point)
         this.updateVariableLayer(activeVariable, objective, time, model)
-        this.updateResultsLayer(job.serviceId)
+        this.updateResultsLayer(job.serviceId, showResults)
         this.updateOpacity(opacity)
+        this.updateVisibilityButton(job.serviceId, showResults)
         this.updateTimeOverlay(activeVariable, objective, time, model)
 
         return null
@@ -193,10 +216,10 @@ MapConnector.propTypes = {
 
 const mapStatetoProps = state => {
     let { runConfiguration, activeVariable, map, job } = state
-    let { opacity } = map
+    let { opacity, showResults } = map
     let { objective, point, region, time, model } = runConfiguration
 
-    return {activeVariable, objective, point, region, time, model, opacity, job}
+    return {activeVariable, objective, point, region, time, model, opacity, job, showResults}
 }
 
 const mapDispatchToProps = dispatch => {
@@ -204,8 +227,13 @@ const mapDispatchToProps = dispatch => {
         onOpacityChange: opacity => {
             dispatch(setMapOpacity(opacity))
         },
+
         onMapClick: (lat, lon) => {
             dispatch(setPoint(lat, lon))
+        },
+
+        onToggleVisibility: () => {
+            dispatch(toggleVisibility())
         }
     }
 }

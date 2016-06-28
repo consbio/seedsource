@@ -4,3 +4,9 @@ export const setMapOpacity = opacity => {
         opacity
     }
 }
+
+export const toggleVisibility = () => {
+    return {
+        type: 'TOGGLE_VISIBILITY'
+    }
+}
