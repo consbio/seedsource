@@ -8,9 +8,10 @@ export const addVariable = variable => {
     }
 }
 
-export const removeVariable = index => {
+export const removeVariable = (variable, index) => {
     return {
         type: 'REMOVE_VARIABLE',
+        variable,
         index
     }
 }

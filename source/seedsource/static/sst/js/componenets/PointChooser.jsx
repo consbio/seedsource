@@ -24,6 +24,11 @@ class PointChooser extends React.Component {
                         this.setState({latValue: null})
                         onBlur('lat', e.target.value)
                     }}
+                    onKeyPress={e => {
+                        if (e.key === 'Enter') {
+                            e.target.blur()
+                        }
+                    }}
                 />
                 <strong>Lon: </strong>
                 <input
@@ -36,6 +41,11 @@ class PointChooser extends React.Component {
                     onBlur={e => {
                         this.setState({lonValue: null})
                         onBlur('lon', e.target.value)
+                    }}
+                    onKeyPress={e => {
+                        if (e.key === 'Enter') {
+                            e.target.blur()
+                        }
                     }}
                 />
             </div>

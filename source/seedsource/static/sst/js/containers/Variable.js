@@ -42,7 +42,7 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
         },
 
         onRemove: () => {
-            dispatch(removeVariable(index))
+            dispatch(removeVariable(variable.name, index))
         },
 
         onRequestValue: () => {

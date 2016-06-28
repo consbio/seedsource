@@ -60,6 +60,12 @@ export const activeVariable = (state = null, action) => {
         case 'TOGGLE_VARIABLE':
             return state === action.variable ? null : action.variable
 
+        case 'REMOVE_VARIABLE':
+            return action.variable === state ? null : state
+
+        case 'FINISH_JOB':
+            return null
+
         default:
             return state
     }

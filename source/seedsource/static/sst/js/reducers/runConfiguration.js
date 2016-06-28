@@ -53,3 +53,13 @@ export default (state = defaultConfiguration, action) => {
             return state
     }
 }
+
+export const lastRun = (state = null, action) => {
+    switch (action.type) {
+        case 'FINISH_JOB':
+            return action.configuration
+
+        default:
+            return state
+    }
+}

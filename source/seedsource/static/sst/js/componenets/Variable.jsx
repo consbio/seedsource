@@ -62,11 +62,17 @@ class Variable extends React.Component {
                     e.preventDefault()
                     onClick()
                 }}
+                onKeyPress={e => {
+                    if (e.key === 'Enter') {
+                        onClick()
+                    }
+                }}
             >
                 <button
                     type="button"
                     className="close"
                     onClick={e => {
+                        e.stopPropagation()
                         onRemove()
                     }}
                 >

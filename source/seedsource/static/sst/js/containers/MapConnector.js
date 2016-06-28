@@ -26,6 +26,7 @@ class MapConnector extends React.Component {
         this.map = null
         this.pointMarker = null
         this.variableLayer = null
+        this.resultsLayer = null
     }
 
     // Initial map setup
@@ -97,6 +98,7 @@ class MapConnector extends React.Component {
     updateVariableLayer(variable, objective, time, model) {
         if (variable !== null) {
             let layerUrl = '/tiles/' + getServiceName(variable, objective, time, model) + '/{z}/{x}/{y}.png'
+
             if (this.variableLayer === null) {
                 this.variableLayer = L.tileLayer(layerUrl, {zIndex: 1, opacity: 1}).addTo(this.map)
             }
@@ -110,9 +112,30 @@ class MapConnector extends React.Component {
         }
     }
 
+    updateResultsLayer(serviceId) {
+        if (serviceId !== null) {
+            let layerUrl = '/tiles/' + serviceId + '/{z}/{x}/{y}.png'
+
+            if (this.resultsLayer === null) {
+                this.resultsLayer = L.tileLayer(layerUrl, {zIndex: 1, opacity: 1}).addTo(this.map)
+            }
+            else if (layerUrl !== this.resultsLayer._url) {
+                this.resultsLayer.setUrl(layerUrl)
+            }
+        }
+        else if (this.resultsLayer !== null) {
+            this.map.removeLayer(this.resultsLayer)
+            this.resultsLayer = null
+        }
+    }
+
     updateOpacity(opacity) {
         if (this.variableLayer !== null && this.variableLayer.options.opacity !== opacity) {
             this.variableLayer.setOpacity(opacity)
+        }
+
+        if (this.resultsLayer !== null && this.resultsLayer.options.opacity !== opacity) {
+            this.resultsLayer.setOpacity(opacity)
         }
     }
 
@@ -151,10 +174,11 @@ class MapConnector extends React.Component {
     }
 
     render() {
-        let {activeVariable, objective, point, time, model, opacity} = this.props
+        let {activeVariable, objective, point, time, model, opacity, job} = this.props
 
         this.updatePointMarker(point)
         this.updateVariableLayer(activeVariable, objective, time, model)
+        this.updateResultsLayer(job.serviceId)
         this.updateOpacity(opacity)
         this.updateTimeOverlay(activeVariable, objective, time, model)
 
@@ -168,11 +192,11 @@ MapConnector.propTypes = {
 }
 
 const mapStatetoProps = state => {
-    let { runConfiguration, activeVariable, map } = state
+    let { runConfiguration, activeVariable, map, job } = state
     let { opacity } = map
     let { objective, point, region, time, model } = runConfiguration
 
-    return {activeVariable, objective, point, region, time, model, opacity}
+    return {activeVariable, objective, point, region, time, model, opacity, job}
 }
 
 const mapDispatchToProps = dispatch => {
