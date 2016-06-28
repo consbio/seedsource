@@ -1,7 +1,8 @@
 import { connect } from 'react-redux'
 import RunConfiguration from '../componenets/RunConfiguration'
 import { selectSpecies } from '../actions/species'
-import { fetchJob, fetchJobStatus, finishJob } from '../actions/job'
+import { createJob, fetchJobStatus, finishJob } from '../actions/job'
+import { showSaveModal } from '../actions/saves'
 
 const configurationCanRun = ({point, variables}) =>  {
     if (point === null || point.x === null || point.y === null) {
@@ -29,7 +30,7 @@ const mapDispatchToProps = (dispatch) => {
         },
 
         onRun: configuration => {
-            dispatch(fetchJob(configuration))
+            dispatch(createJob(configuration))
         },
 
         onPoll: jobId => {
@@ -38,6 +39,10 @@ const mapDispatchToProps = (dispatch) => {
 
         onDone: configuration => {
             dispatch(finishJob(configuration))
+        },
+
+        onSave: () => {
+            dispatch(showSaveModal())
         }
     }
 }

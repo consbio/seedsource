@@ -4,6 +4,7 @@ import ObjectiveButton from '../containers/ObjectiveButton'
 import PointChooser from '../containers/PointChooser'
 import ClimateChooser from '../containers/ClimateChooser'
 import Variables from '../containers/Variables'
+import SaveModal from '../containers/SaveModal'
 
 let getObjectiveLabel = objective => (
     objective == 'seedlots' ? 'Select a planting site' : 'Select a seedlot location'
@@ -24,7 +25,7 @@ class RunConfiguration extends React.Component {
     }
 
     render() {
-        let { objective, species, canRun, canSave, configuration, job, onSpeciesChange, onRun } = this.props
+        let { objective, species, canRun, canSave, configuration, job, onSpeciesChange, onRun, onSave } = this.props
         let overlay = null
 
         if (job.isRunning) {
@@ -111,7 +112,13 @@ class RunConfiguration extends React.Component {
                 <div>
                     <h4></h4>
                     <div>
-                        <button className="btn btn-default pull-left" disabled={!canSave}>
+                        <button
+                            className="btn btn-default pull-left"
+                            disabled={!canSave}
+                            onClick={() => {
+                                onSave()
+                            }}
+                        >
                             <span className="glyphicon glyphicon-save" aria-hidden="true"></span> Save Last Run
                         </button>
                         <button className="btn btn-default pull-right" disabled={!canSave}>
@@ -120,6 +127,8 @@ class RunConfiguration extends React.Component {
                     </div>
                     <div style={{clear: 'both'}}></div>
                 </div>
+
+                <SaveModal />
             </div>
         )
     }
@@ -135,7 +144,8 @@ RunConfiguration.propTypes = {
     onSpeciesChange: PropTypes.func.isRequired,
     onRun: PropTypes.func.isRequired,
     onPoll: PropTypes.func.isRequired,
-    onDone: PropTypes.func.isRequired
+    onDone: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired
 }
 
 export default RunConfiguration

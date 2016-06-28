@@ -14,7 +14,7 @@ export const requestJob = configuration => {
     }
 }
 
-export const fetchJob = configuration => {
+export const createJob = configuration => {
     return dispatch => {
         let { variables, objective, time, model } = configuration
 

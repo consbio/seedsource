@@ -5,6 +5,7 @@ import tabs from './tabs'
 import { activeVariable } from './variables'
 import map from './map'
 import job from './job'
+import saves from './saves'
 
 export default combineReducers({
     isLoggedIn: auth,
@@ -13,5 +14,6 @@ export default combineReducers({
     runConfiguration,
     lastRun,
     map,
-    job
+    job,
+    saves
 })
