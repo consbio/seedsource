@@ -2,6 +2,7 @@ import TabHeader from '../containers/TabHeader'
 import TabContent from '../containers/TabContent'
 import RunConfiguration from '../containers/RunConfiguration'
 import MapConnector from '../containers/MapConnector'
+import SavedRuns from '../containers/SavedRuns'
 
 export default () => (
     <div className="sidebar">
@@ -15,7 +16,7 @@ export default () => (
             <RunConfiguration />
         </TabContent>
         <TabContent name="saves">
-            <span>Saved runs</span>
+            <SavedRuns />
         </TabContent>
     </div>
 )

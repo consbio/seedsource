@@ -3,6 +3,9 @@ export default (state = 'configuration', action) => {
         case 'SELECT_TAB':
             return action.tab
 
+        case 'LOAD_CONFIGURATION':
+            return 'configuration'
+
         default:
             return state
     }

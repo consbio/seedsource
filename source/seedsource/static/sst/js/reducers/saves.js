@@ -1,6 +1,7 @@
 const defaultState = {
     showModal: false,
     isSaving: false,
+    isFetching: false,
     lastSave: null,
     saves: []
 }
@@ -24,6 +25,16 @@ export default (state = defaultState, action) => {
 
         case 'REQUEST_SAVE':
             return Object.assign({}, state, {isSaving: true})
+
+        case 'REQUEST_SAVES':
+            return Object.assign({}, state, {isFetching: true})
+
+        case 'RECEIVE_SAVES':
+            return Object.assign({}, state, {isFetching: false, saves: action.saves})
+
+        case 'LOAD_CONFIGURATION':
+            let { save } = action
+            return Object.assign({}, state, {lastSave: {title: save.title, saveId: save.uuid}})
 
         default:
             return state

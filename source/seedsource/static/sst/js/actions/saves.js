@@ -21,6 +21,14 @@ export const receiveSave = json => {
     }
 }
 
+export const loadConfiguration = (configuration, save) => {
+    return {
+        type: 'LOAD_CONFIGURATION',
+        configuration,
+        save
+    }
+}
+
 export const requestSave = () => {
     return {
         type: 'REQUEST_SAVE'
@@ -44,7 +52,10 @@ export const createSave = (configuration, title) => {
                 'X-CSRFToken': getCookies().csrftoken
             },
             body: JSON.stringify(data)
-        }).then(response => response.json()).then(json => dispatch(receiveSave(json)))
+        }).then(response => response.json()).then(json => {
+            dispatch(receiveSave(json))
+            dispatch(fetchSaves())
+        })
     }
 }
 
@@ -67,6 +78,39 @@ export const updateSave = (configuration, lastSave) => {
                 'X-CSRFToken': getCookies().csrftoken
             },
             body: JSON.stringify(data)
-        }).then(response => response.json()).then(json => dispatch(receiveSave(json)))
+        }).then(response => response.json()).then(json => {
+            dispatch(receiveSave(json))
+            dispatch(fetchSaves())
+        })
+    }
+}
+
+export const receiveSaves = saves => {
+    return {
+        type: 'RECEIVE_SAVES',
+        saves: saves.map(item => {
+            let { modified, configuration } = item
+
+            return Object.assign(item, {
+                modified: new Date(modified),
+                configuration: JSON.parse(configuration)
+            })
+        })
+    }
+}
+
+export const requestSaves = () => {
+    return {
+        type: 'REQUEST_SAVES'
+    }
+}
+
+export const fetchSaves = () => {
+    return dispatch => {
+        dispatch(requestSaves())
+
+        return fetch('/sst/run-configurations/', {
+            credentials: 'same-origin'
+        }).then(response => response.json()).then(json => dispatch(receiveSaves(json)))
     }
 }

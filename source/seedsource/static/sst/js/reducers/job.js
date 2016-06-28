@@ -28,6 +28,9 @@ export default (state = defaultState, action) => {
 
             return Object.assign({}, state, {isFetching: false})
 
+        case 'LOAD_CONFIGURATION':
+            return defaultState
+
         default:
             return state
     }

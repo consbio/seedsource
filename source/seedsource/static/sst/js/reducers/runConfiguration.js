@@ -48,6 +48,9 @@ export default (state = defaultConfiguration, action) => {
         case 'REQUEST_VALUE':
         case 'RECEIVE_VALUE':
             return Object.assign({}, state, {variables: variables(state.variables, action)})
+
+        case 'LOAD_CONFIGURATION':
+            return Object.assign({}, defaultConfiguration, action.configuration)
         
         default:
             return state
@@ -58,6 +61,9 @@ export const lastRun = (state = null, action) => {
     switch (action.type) {
         case 'FINISH_JOB':
             return action.configuration
+
+        case 'LOAD_CONFIGURATION':
+            return null
 
         default:
             return state
