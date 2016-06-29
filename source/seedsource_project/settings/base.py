@@ -111,7 +111,7 @@ UGLIFY_CMD = '/usr/local/bin/uglifyjs'
 
 WEBPACK_LOADER = {
     'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'sst/bundles/',
+        'BUNDLE_DIR_NAME': 'sst/build/',
         'STATS_FILE': os.path.join(BASE_DIR, 'seedsource', 'static', 'sst', 'webpack-stats.json')
     }
 }

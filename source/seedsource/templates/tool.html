@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load render_bundle from webpack_loader %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,19 +17,6 @@
     <link rel="stylesheet" href="{% static "leaflet/controls/leaflet-zoombox/L.Control.ZoomBox.css" %}" />
     <link rel="stylesheet" href="{% static "font-awesome/css/font-awesome.min.css" %}" />
     <link rel="stylesheet" href="{% static "sst/css/tool.css" %}" />
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-    <script src="{% static "react/react.min.js" %}"></script>
-    <script src="{% static "react/react-dom.min.js" %}"></script>
-
-    {% if debug %}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
-    {% endif %}
 </head>
 <body>
     <!-- Navbar -->
@@ -119,99 +107,7 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="sidebar">
-                <div id="JobStatusOverlay" class="overlay hidden">
-                    <div class="progressContainer">
-                        <h4>Calculating scores...</h4>
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-info progress-bar-striped active" style="width: 100%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#ToolTab" aria-controls="ToolTab" data-toggle="tab">Configuration</a></li>
-                    <li role="presentation"><a href="#SavedTab" aria-controls="SavedTab" data-toggle="tab">Saved Runs</a></li>
-                </ul>
-
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="ToolTab">
-                        <div class="step">
-                            <h4><span class="badge">1</span> Choose an objective</h4>
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn active">
-                                    <input type="radio" name="objective" value="seedlots" checked />
-                                    Find seedlots
-                                </label>
-                                <label class="btn">
-                                    <input type="radio" name="objective" value="site" />
-                                    Find planting sites
-                                </label>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <h4>
-                                <span class="badge">2</span> <span id="SelectPointLabel">Select a planting site</span>
-                            </h4>
-                            <div class="coords">
-                                <strong>Lat: </strong>
-                                <input type="text" id="LatInput" class="form-control form-inline" />
-                                <strong>Lon: </strong>
-                                <input type="text" id="LonInput" class="form-control form-inline" />
-                            </div>
-                            <div>&nbsp;</div>
-                            <div>
-                                <label for="RegionSelect" class="control-label">Region</label>
-                                <select id="RegionSelect" class="form-control">
-                                    <option value="west1">West</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <h4><span class="badge">3</span> Target climate</h4>
-                            <div>
-                                <select id="TimeSelect" class="form-control form-inline">
-                                    <option value="1961_1990">1961 - 1990</option>
-                                    <option value="2025">2025</option>
-                                    <option value="2055">2055</option>
-                                    <option value="2085">2085</option>
-                                </select>
-                                <select id="RCPSelect" class="hidden form-control form-inline">
-                                    <option value="rcp45">RCP 4.5</option>
-                                    <option value="rcp85">RCP 8.5</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <h4><span class="badge">4</span> Choose species</h4>
-                            <select id="SpeciesSelect" class="form-control">
-                                <option value="species_1" selected>Species 1</option>
-                                <option value="species_2">Species 2</option>
-                                <option value="species_3">Species 3</option>
-                            </select>
-                        </div>
-                        <div class="step">
-                            <h4><span class="badge">5</span> Choose variables & transfer limits</h4>
-                            <div id="Variables"></div>
-                        </div>
-                        <div>
-                            <h4></h4>
-                            <button class="btn btn-lg btn-primary btn-block" id="RunButton" onClick="runJob()" disabled>Run Tool</button>
-                        </div>
-                        <div>
-                            <h4></h4>
-                            <div>
-                                <button class="btn btn-default pull-left" id="SaveButton" onClick="handleSave()" disabled><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save Last Run</button>
-                                <button class="btn btn-default pull-right" id="ExportButton" disabled><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Export PDF</button>
-                            </div>
-                            <div style="clear: both;"></div>
-                        </div>
-                    </div>
-                    <div role="tabpanel" class="tab-pane" id="SavedTab">
-                        <div id="Configurations"></div>
-                    </div>
-                </div>
-            </div>
+            <div class="sidebar" id="Sidebar"></div>
             <div class="main">
                 <div id="TimeOverlay" class="hidden"><span class="glyphicon glyphicon-time" aria-hidden="true"></span> Showing: <span id="TimeLabel">1961 - 1990</span></div>
                 <div id="Map"></div>
@@ -387,12 +283,12 @@
 
     {% if debug %}
         <script src="{% static "sst/js/leaflet-controls.js" %}"></script>
-        <script src="{% static "sst/js/tool.js" %}"></script>
-        <script src="{% static "sst/js/components.jsx" %}" type="text/babel"></script>
+        <script src="{% static "sst/js/auth.js" %}"></script>
     {% else %}
         <script src="{% static "sst/js/leaflet-controls.min.js" %}"></script>
-        <script src="{% static "sst/js/tool.min.js" %}"></script>
-        <script src="{% static "sst/js/components.min.js" %}"></script>
+        <script src="{% static "sst/js/auth.min.js" %}"></script>
     {% endif %}
+
+    {% render_bundle 'main' %}
 </body>
 </html>

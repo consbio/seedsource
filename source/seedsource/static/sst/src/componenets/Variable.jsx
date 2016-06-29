@@ -1,4 +1,5 @@
-import React, { ReactDom } from 'react'
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { PropTypes } from 'react'
 
 class Variable extends React.Component {

@@ -1,4 +1,4 @@
-import { PropTypes } from 'react'
+import React, { PropTypes } from 'react'
 import Variable from '../containers/Variable'
 
 const Variables = ({ variables, unusedVariables, onChange }) => (
@@ -19,7 +19,7 @@ const Variables = ({ variables, unusedVariables, onChange }) => (
             >
                 <option value="none">Add a variable...</option>
                 {unusedVariables.map(item => (
-                    <option value={item.name}>{item.label}</option>
+                    <option value={item.name} key={item.name}>{item.label}</option>
                 ))}
             </select>
         </div>

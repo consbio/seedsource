@@ -1,4 +1,4 @@
-import { PropTypes } from 'react'
+import React, { PropTypes } from 'react'
 
 const GroupedButton = ({ active, children, onClick }) => {
     let className = active ? 'btn active' : 'btn'

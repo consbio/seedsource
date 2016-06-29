@@ -12,3 +12,14 @@ export const getServiceName = (variable, objective, time, model) => {
         return serviceName + time + 'Y_' + variable;
     }
 }
+
+export const getCookies = () => {
+    let cookies = {}
+
+    document.cookie.split(';').forEach(item => {
+        let [name, value] = item.trim().split('=')
+        cookies[name] = decodeURIComponent(value)
+    })
+
+    return cookies
+}
