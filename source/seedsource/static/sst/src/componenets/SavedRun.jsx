@@ -1,4 +1,4 @@
-import { PropTypes } from 'react'
+import React, { PropTypes } from 'react'
 
 const SavedRun = ({ active, save, onClick, onLoad, onDelete }) => {
     let className = 'configurationItem'
