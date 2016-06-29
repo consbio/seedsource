@@ -5,10 +5,10 @@ var BundleTracker = require('webpack-bundle-tracker');
 module.exports = {
     context: __dirname,
 
-    entry: './src/index',
+    entry: './assets/index',
 
     output: {
-        path: path.resolve('./build/'),
+        path: path.resolve('./source/seedsource/static/sst/build/'),
         filename: '[name].js'
     },
 
@@ -20,8 +20,11 @@ module.exports = {
         loaders: [
             {
                 test: /\.jsx?$/,
-                include: path.resolve('./src'),
-                loader: 'babel'
+                include: path.resolve('./assets'),
+                loader: 'babel',
+                query: {
+                    presets: ['es2015', 'react']
+                }
             }
         ]
     },
