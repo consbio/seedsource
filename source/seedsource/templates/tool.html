@@ -289,6 +289,10 @@
         <script src="{% static "sst/js/auth.min.js" %}"></script>
     {% endif %}
 
-    {% render_bundle 'main' %}
+    {% if debug %}
+        {% render_bundle 'main' %}
+    {% else %}
+        <script src="{% static "sst/build/main.min.js" %}"></script>
+    {% endif %}
 </body>
 </html>
