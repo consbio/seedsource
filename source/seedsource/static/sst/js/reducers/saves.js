@@ -36,6 +36,14 @@ export default (state = defaultState, action) => {
             let { save } = action
             return Object.assign({}, state, {lastSave: {title: save.title, saveId: save.uuid}})
 
+        case 'REMOVE_SAVE':
+            let { lastSave, saves } = state
+            
+            return Object.assign({}, state, {
+                saves: saves.filter(item => item.uuid !== action.uuid),
+                lastSave: lastSave !== null && lastSave.saveId === action.uuid ? null : lastSave
+            })
+
         default:
             return state
     }

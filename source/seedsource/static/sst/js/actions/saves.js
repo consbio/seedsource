@@ -52,9 +52,23 @@ export const createSave = (configuration, title) => {
                 'X-CSRFToken': getCookies().csrftoken
             },
             body: JSON.stringify(data)
-        }).then(response => response.json()).then(json => {
+        }).then(response => {
+            let { status } = response
+
+            if (status >= 200 && status < 300) {
+                return response.json()
+            }
+            else {
+                throw new Error('Bad status creating save: ' + response.status)
+            }
+
+            return response.json()
+        }).then(json => {
             dispatch(receiveSave(json))
             dispatch(fetchSaves())
+        }).catch(err => {
+            console.log(err)
+            alert('There was an error saving the configuration.')
         })
     }
 }
@@ -78,9 +92,23 @@ export const updateSave = (configuration, lastSave) => {
                 'X-CSRFToken': getCookies().csrftoken
             },
             body: JSON.stringify(data)
-        }).then(response => response.json()).then(json => {
+        }).then(response => {
+            let { status } = response
+
+            if (status >= 200 && status < 300) {
+                return response.json()
+            }
+            else {
+                throw new Error('Bad status creating save: ' + response.status)
+            }
+
+            return response.json()
+        }).then(json => {
             dispatch(receiveSave(json))
             dispatch(fetchSaves())
+        }).catch(err => {
+            console.log(err)
+            alert('There was an error updating the configuration.')
         })
     }
 }
@@ -111,6 +139,46 @@ export const fetchSaves = () => {
 
         return fetch('/sst/run-configurations/', {
             credentials: 'same-origin'
-        }).then(response => response.json()).then(json => dispatch(receiveSaves(json)))
+        }).then(response => {
+            let { status } = response
+
+            if (status >= 200 && status < 300) {
+                return response.json()
+            }
+            else {
+                throw new Error('Bad status loading saves: ' + response.status)
+            }
+        }).then(json => dispatch(receiveSaves(json))).catch(err => {
+            console.log(err)
+            dispatch(receiveSaves([]))
+        })
+    }
+}
+
+export const removeSave = uuid => {
+    return {
+        type: 'REMOVE_SAVE',
+        uuid
+    }
+}
+
+export const deleteSave = uuid => {
+    return dispatch => {
+        let url = '/sst/run-configurations/' + uuid + '/'
+
+        return fetch(url, {
+            method: 'DELETE',
+            credentials: 'same-origin',
+            headers: {'X-CSRFToken': getCookies().csrftoken}
+        }).then(response => {
+            let { status } = response
+
+            if (status >= 200 && status < 300) {
+                dispatch(removeSave(uuid))
+            }
+            else {
+                throw new Error('Bad status deleting save: ' + response.status)
+            }
+        }).catch(err => console.log(err))
     }
 }

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import SavedRun from '../componenets/SavedRun'
-import { loadConfiguration } from '../actions/saves'
+import { loadConfiguration, deleteSave } from '../actions/saves'
 
 const mapStateToProps = (state, props) => {
     let { active, save } = props
@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch, { onClick }) => {
         },
 
         onDelete: saveId => {
-
+            dispatch(deleteSave(saveId))
         }
     }
 }

@@ -18,14 +18,18 @@ const SavedRun = ({ active, save, onClick, onLoad, onDelete }) => {
             <div className="pull-right buttons">
                 <button
                     onClick={() => {
-                        onLoad(save)
+                        if (confirm('Load this saved configuration? This will replace your current settings.')) {
+                            onLoad(save)
+                        }
                     }}
                 >
                     <span className="glyphicon glyphicon-open" aria-hidden="true"></span> Load
                 </button>
                 <button
                     onClick={() => {
-                        onDelete(save.uuid)
+                        if (confirm('Delete this saved configuration?')) {
+                            onDelete(save.uuid)
+                        }
                     }}
                 >
                     <span className="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete

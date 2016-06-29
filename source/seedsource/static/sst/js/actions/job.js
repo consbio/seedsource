@@ -7,6 +7,12 @@ export const receiveJob = (configuration, json) => {
     }
 }
 
+export const failJob = () => {
+    return {
+        type: 'FAIL_JOB'
+    }
+}
+
 export const requestJob = configuration => {
     return {
         type: 'REQUEST_JOB',
@@ -47,7 +53,22 @@ export const createJob = configuration => {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
-        }).then(response => response.json()).then(json => dispatch(receiveJob(configuration, json)))
+        }).then(response => {
+            let { status } = response
+
+            if (status >= 200 && status < 300) {
+                return response.json()
+            }
+            else {
+                throw new Error('Bad status creating job: ' + response.status)
+            }
+
+            return response.json()
+        }).then(json => dispatch(receiveJob(configuration, json))).catch(err => {
+            console.log(err)
+            dispatch(failJob())
+            alert('Sorry, there was an error creating the job.')
+        })
     }
 }
 
@@ -71,7 +92,22 @@ export const fetchJobStatus = jobId => {
     
         dispatch(requestJobStatus())
 
-        return fetch(url).then(response => response.json()).then(json => dispatch(receiveJobStatus(json)))
+        return fetch(url).then(response => {
+            let { status } = response
+
+            if (status >= 200 && status < 300) {
+                return response.json()
+            }
+            else {
+                throw new Error('Bad status polling job: ' + response.status)
+            }
+
+            return response.json()
+        }).then(json => dispatch(receiveJobStatus(json))).catch(err => {
+            console.log(err)
+            dispatch(failJob())
+            alert('Sorry, there was an error getting the job status.')
+        })
     }
 }
 

@@ -80,7 +80,7 @@ class RunConfiguration extends React.Component {
                     <h4><span className="badge">4</span> Choose species</h4>
                     <select
                         className="form-control"
-                        value={species.name}
+                        value={species}
                         onChange={e => {
                             e.preventDefault()
                             onSpeciesChange(e.target.value)

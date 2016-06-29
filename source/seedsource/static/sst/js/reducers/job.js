@@ -25,8 +25,14 @@ export default (state = defaultState, action) => {
             if (action.status === 'success') {
                 return Object.assign({}, state, {isRunning: false, isFetching: false, serviceId: action.serviceId})
             }
+            else if (action.status === 'failure') {
+                return defaultState
+            }
 
             return Object.assign({}, state, {isFetching: false})
+
+        case 'FAIL_JOB':
+            return defaultState
 
         case 'LOAD_CONFIGURATION':
             return defaultState
