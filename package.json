@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "webpack": "webpack --config webpack.config.js --watch",
-    "webpack_production": "webpack --config webpack.config.production.js"
+    "webpack_production": "webpack --config webpack_production.config.js"
   },
   "author": "",
   "license": "BSD-2-Clause",

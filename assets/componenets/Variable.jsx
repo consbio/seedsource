@@ -9,10 +9,9 @@ class Variable extends React.Component {
     }
 
     componentDidMount() {
-        let { onRequestValue, onClick } = this.props
-
-        onClick()
-        onRequestValue()
+        if (this.props.active) {
+            ReactDOM.findDOMNode(this.refs.transferInput).select()
+        }
     }
 
     componentDidUpdate({active, value}) {
@@ -24,13 +23,18 @@ class Variable extends React.Component {
     }
 
     render() {
-        let { active, index, name, label, value, transfer, onTransferBlur, onClick, onRemove } = this.props
+        let {
+            active, index, name, label, value, transfer, unit, isTemperature, onTransferBlur, onClick, onRemove
+        } = this.props
         let { transferValue } = this.state
         let className = 'variableConfig'
         let transferNode
 
         if (value === null) {
             value = 'N/A'
+        }
+        else if (isTemperature) {
+            value = <span>{value} &deg;{unit.toUpperCase()}</span>
         }
 
         if (!active) {
@@ -49,7 +53,13 @@ class Variable extends React.Component {
                     }}
                     onBlur={e => {
                         this.setState({transferValue: null})
-                        onTransferBlur(e.target.value)
+                        onTransferBlur(e.target.value, unit, isTemperature)
+                    }}
+                    onKeyPress={e => {
+                        if (e.key === 'Enter') {
+                            e.target.blur()
+                            onClick()
+                        }
                     }}
                     onClick={e => {e.stopPropagation()}}
                 />
@@ -62,11 +72,6 @@ class Variable extends React.Component {
                 onClick={e => {
                     e.preventDefault()
                     onClick()
-                }}
-                onKeyPress={e => {
-                    if (e.key === 'Enter') {
-                        onClick()
-                    }
                 }}
             >
                 <button
@@ -104,6 +109,7 @@ Variable.propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     transfer: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+    unit: PropTypes.string.isRequired,
     onTransferBlur: PropTypes.func.isRequired,
     onClick: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,

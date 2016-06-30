@@ -30163,6 +30163,7 @@
 	    region: 'west1',
 	    time: '1961_1990',
 	    model: 'rcp45',
+	    unit: 'c',
 	    variables: []
 	};
 
@@ -30199,6 +30200,9 @@
 
 	        case 'SELECT_SPECIES':
 	            return Object.assign({}, state, { species: action.species });
+
+	        case 'SELECT_UNIT':
+	            return Object.assign({}, state, { unit: action.unit });
 
 	        case 'ADD_VARIABLE':
 	        case 'REMOVE_VARIABLE':
@@ -31075,6 +31079,10 @@
 
 	var _SaveModal2 = _interopRequireDefault(_SaveModal);
 
+	var _UnitButton = __webpack_require__(803);
+
+	var _UnitButton2 = _interopRequireDefault(_UnitButton);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -31286,6 +31294,20 @@
 	                            '5'
 	                        ),
 	                        ' Choose variables & transfer limits'
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'unitChooser btn-group' },
+	                        _react2.default.createElement(
+	                            _UnitButton2.default,
+	                            { name: 'c' },
+	                            '°C'
+	                        ),
+	                        _react2.default.createElement(
+	                            _UnitButton2.default,
+	                            { name: 'f' },
+	                            '°F'
+	                        )
 	                    ),
 	                    _react2.default.createElement(_Variables2.default, null)
 	                ),
@@ -31860,6 +31882,8 @@
 	    return {
 	        onChange: function onChange(variable) {
 	            dispatch((0, _variables.addVariable)(variable));
+	            dispatch((0, _variables.toggleVariable)(variable));
+	            dispatch((0, _variables.fetchValue)(variable));
 	        }
 	    };
 	};
@@ -31960,11 +31984,18 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var toF = function toF(value) {
+	    return value * 1.8 + 32;
+	}; // Convert to fahrenheit
+
 	var mapStateToProps = function mapStateToProps(state, _ref) {
 	    var variable = _ref.variable;
 	    var index = _ref.index;
+	    var activeVariable = state.activeVariable;
+	    var runConfiguration = state.runConfiguration;
 
-	    var active = state.activeVariable === variable.name;
+	    var active = activeVariable === variable.name;
+	    var unit = runConfiguration.unit;
 	    var name = variable.name;
 	    var label = variable.label;
 	    var value = variable.value;
@@ -31987,11 +32018,23 @@
 
 	    transfer /= multiplier;
 
-	    if (value !== null) {
-	        value /= multiplier;
+	    if (isTemperature && unit === 'f') {
+	        transfer *= 1.8;
 	    }
 
-	    return { active: active, index: index, name: name, label: label, value: value, transfer: transfer };
+	    transfer = parseFloat(transfer.toFixed(2));
+
+	    if (value !== null) {
+	        value /= multiplier;
+
+	        if (isTemperature && unit === 'f') {
+	            value = toF(value);
+	        }
+
+	        value = parseFloat(value.toFixed(2));
+	    }
+
+	    return { active: active, index: index, name: name, label: label, value: value, transfer: transfer, unit: unit, isTemperature: isTemperature };
 	};
 
 	var mapDispatchToProps = function mapDispatchToProps(dispatch, _ref2) {
@@ -31999,10 +32042,14 @@
 	    var index = _ref2.index;
 
 	    return {
-	        onTransferBlur: function onTransferBlur(transfer) {
+	        onTransferBlur: function onTransferBlur(transfer, unit, isTemperature) {
 	            var value = parseFloat(transfer);
 
 	            if (!isNaN(value)) {
+	                if (isTemperature && unit === 'f') {
+	                    value /= 1.8;
+	                }
+
 	                dispatch((0, _variables.modifyVariable)(index, value * variable.multiplier));
 	            }
 	        },
@@ -32032,7 +32079,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.fetchValue = exports.requestValue = exports.receiveValue = exports.toggleVariable = exports.modifyVariable = exports.removeVariable = exports.addVariable = undefined;
+	exports.fetchValue = exports.requestValue = exports.receiveValue = exports.toggleVariable = exports.modifyVariable = exports.removeVariable = exports.addVariable = exports.selectUnit = undefined;
 
 	var _isomorphicFetch = __webpack_require__(523);
 
@@ -32041,6 +32088,13 @@
 	var _utils = __webpack_require__(525);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var selectUnit = exports.selectUnit = function selectUnit(unit) {
+	    return {
+	        type: 'SELECT_UNIT',
+	        unit: unit
+	    };
+	};
 
 	var addVariable = exports.addVariable = function addVariable(variable) {
 	    return {
@@ -32656,13 +32710,9 @@
 	    _createClass(Variable, [{
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-	            var _props = this.props;
-	            var onRequestValue = _props.onRequestValue;
-	            var onClick = _props.onClick;
-
-
-	            onClick();
-	            onRequestValue();
+	            if (this.props.active) {
+	                _reactDom2.default.findDOMNode(this.refs.transferInput).select();
+	            }
 	        }
 	    }, {
 	        key: 'componentDidUpdate',
@@ -32681,16 +32731,18 @@
 	        value: function render() {
 	            var _this2 = this;
 
-	            var _props2 = this.props;
-	            var active = _props2.active;
-	            var index = _props2.index;
-	            var name = _props2.name;
-	            var label = _props2.label;
-	            var value = _props2.value;
-	            var transfer = _props2.transfer;
-	            var onTransferBlur = _props2.onTransferBlur;
-	            var _onClick = _props2.onClick;
-	            var onRemove = _props2.onRemove;
+	            var _props = this.props;
+	            var active = _props.active;
+	            var index = _props.index;
+	            var name = _props.name;
+	            var label = _props.label;
+	            var value = _props.value;
+	            var transfer = _props.transfer;
+	            var unit = _props.unit;
+	            var isTemperature = _props.isTemperature;
+	            var onTransferBlur = _props.onTransferBlur;
+	            var _onClick = _props.onClick;
+	            var onRemove = _props.onRemove;
 	            var transferValue = this.state.transferValue;
 
 	            var className = 'variableConfig';
@@ -32698,6 +32750,14 @@
 
 	            if (value === null) {
 	                value = 'N/A';
+	            } else if (isTemperature) {
+	                value = _react2.default.createElement(
+	                    'span',
+	                    null,
+	                    value,
+	                    ' °',
+	                    unit.toUpperCase()
+	                );
 	            }
 
 	            if (!active) {
@@ -32718,7 +32778,13 @@
 	                    },
 	                    onBlur: function onBlur(e) {
 	                        _this2.setState({ transferValue: null });
-	                        onTransferBlur(e.target.value);
+	                        onTransferBlur(e.target.value, unit, isTemperature);
+	                    },
+	                    onKeyPress: function onKeyPress(e) {
+	                        if (e.key === 'Enter') {
+	                            e.target.blur();
+	                            _onClick();
+	                        }
 	                    },
 	                    onClick: function onClick(e) {
 	                        e.stopPropagation();
@@ -32733,11 +32799,6 @@
 	                    onClick: function onClick(e) {
 	                        e.preventDefault();
 	                        _onClick();
-	                    },
-	                    onKeyPress: function onKeyPress(e) {
-	                        if (e.key === 'Enter') {
-	                            _onClick();
-	                        }
 	                    }
 	                },
 	                _react2.default.createElement(
@@ -32809,6 +32870,7 @@
 	    label: _react.PropTypes.string.isRequired,
 	    value: _react.PropTypes.oneOfType([_react.PropTypes.number, _react.PropTypes.string]),
 	    transfer: _react.PropTypes.oneOfType([_react.PropTypes.number, _react.PropTypes.string]).isRequired,
+	    unit: _react.PropTypes.string.isRequired,
 	    onTransferBlur: _react.PropTypes.func.isRequired,
 	    onClick: _react.PropTypes.func.isRequired,
 	    onRemove: _react.PropTypes.func.isRequired,
@@ -53287,6 +53349,46 @@
 	};
 
 	exports.default = SavedRun;
+
+/***/ },
+/* 803 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _reactRedux = __webpack_require__(465);
+
+	var _GroupedButton = __webpack_require__(511);
+
+	var _GroupedButton2 = _interopRequireDefault(_GroupedButton);
+
+	var _variables = __webpack_require__(522);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var mapStateToProps = function mapStateToProps(state, _ref) {
+	    var name = _ref.name;
+
+	    return {
+	        active: name === state.runConfiguration.unit
+	    };
+	};
+
+	var mapDispatchToProps = function mapDispatchToProps(dispatch, _ref2) {
+	    var name = _ref2.name;
+
+	    return {
+	        onClick: function onClick() {
+	            dispatch((0, _variables.selectUnit)(name));
+	        }
+	    };
+	};
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_GroupedButton2.default);
 
 /***/ }
 /******/ ]);

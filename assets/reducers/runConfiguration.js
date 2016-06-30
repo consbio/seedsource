@@ -8,6 +8,7 @@ const defaultConfiguration = {
     region: 'west1',
     time: '1961_1990',
     model: 'rcp45',
+    unit: 'c',
     variables: []
 }
 
@@ -41,6 +42,9 @@ export default (state = defaultConfiguration, action) => {
 
         case 'SELECT_SPECIES':
             return Object.assign({}, state, {species: action.species})
+
+        case 'SELECT_UNIT':
+            return Object.assign({}, state, {unit: action.unit})
 
         case 'ADD_VARIABLE':
         case 'REMOVE_VARIABLE':

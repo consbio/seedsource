@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import Variables from '../componenets/Variables'
 import { variables as allVariables } from '../config'
-import { addVariable } from '../actions/variables'
+import { addVariable, toggleVariable, fetchValue } from '../actions/variables'
 
 const mapStateToProps = state => {
     let variables = state.runConfiguration.variables
@@ -15,6 +15,8 @@ const mapDispatchToProps = dispatch => {
     return {
         onChange: variable => {
             dispatch(addVariable(variable))
+            dispatch(toggleVariable(variable))
+            dispatch(fetchValue(variable))
         }
     }
 }

@@ -1,6 +1,13 @@
 import fetch from 'isomorphic-fetch'
 import { getServiceName } from '../utils'
 
+export const selectUnit = unit => {
+    return {
+        type: 'SELECT_UNIT',
+        unit
+    }
+}
+
 export const addVariable = variable => {
     return {
         type: 'ADD_VARIABLE',

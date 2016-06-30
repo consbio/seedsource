@@ -5,6 +5,7 @@ import PointChooser from '../containers/PointChooser'
 import ClimateChooser from '../containers/ClimateChooser'
 import Variables from '../containers/Variables'
 import SaveModal from '../containers/SaveModal'
+import UnitButton from '../containers/UnitButton'
 
 let getObjectiveLabel = objective => (
     objective == 'seedlots' ? 'Select a planting site' : 'Select a seedlot location'
@@ -94,6 +95,12 @@ class RunConfiguration extends React.Component {
 
                 <div className="step">
                     <h4><span className="badge">5</span> Choose variables & transfer limits</h4>
+
+                    <div className="unitChooser btn-group">
+                        <UnitButton name="c">&deg;C</UnitButton>
+                        <UnitButton name="f">&deg;F</UnitButton>
+                    </div>
+
                     <Variables />
                 </div>
 

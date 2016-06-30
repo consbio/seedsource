@@ -3,8 +3,12 @@ import { modifyVariable, toggleVariable, removeVariable, fetchValue } from '../a
 import Variable from '../componenets/Variable'
 import { species } from '../config'
 
+const toF = value => value * 1.8 + 32  // Convert to fahrenheit
+
 const mapStateToProps = (state, { variable, index }) => {
-    let active = state.activeVariable === variable.name
+    let { activeVariable, runConfiguration } = state
+    let active = activeVariable === variable.name
+    let { unit } = runConfiguration
     let { name, label, value, transfer, multiplier, isTemperature } = variable
 
     if (transfer === null) {
@@ -20,19 +24,35 @@ const mapStateToProps = (state, { variable, index }) => {
 
     transfer /= multiplier
 
-    if (value !== null) {
-        value /= multiplier
+    if (isTemperature && unit === 'f') {
+        transfer *= 1.8
     }
 
-    return {active, index, name, label, value, transfer}
+    transfer = parseFloat(transfer.toFixed(2))
+
+    if (value !== null) {
+        value /= multiplier
+
+        if (isTemperature && unit === 'f') {
+            value = toF(value)
+        }
+
+        value = parseFloat(value.toFixed(2))
+    }
+
+    return {active, index, name, label, value, transfer, unit, isTemperature}
 }
 
 const mapDispatchToProps = (dispatch, { variable, index }) => {
     return {
-        onTransferBlur: transfer => {
+        onTransferBlur: (transfer, unit, isTemperature) => {
             let value = parseFloat(transfer)
 
             if (!isNaN(value)) {
+                if (isTemperature && unit === 'f') {
+                    value /= 1.8
+                }
+
                 dispatch(modifyVariable(index, value * variable.multiplier))
             }
         },
