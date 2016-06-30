@@ -46,6 +46,11 @@ class MapConnector extends React.Component {
                     maxZoom: 16,
                     subdomains: ['server', 'services']
                 }),
+                L.tileLayer('//{s}.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+                    maxZoom: 16,
+                    subdomains: ['server', 'services']
+                }),
                 L.tileLayer(
                     '//{s}.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
                     attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
