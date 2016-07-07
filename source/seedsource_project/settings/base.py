@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
 
     'ncdjango',
     'rest_framework',
@@ -84,7 +85,7 @@ WSGI_APPLICATION = 'seedsource_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': CONFIG.get('db_name', 'seedsource'),
         'USER': CONFIG.get('db_user', 'seedsource'),
         'PASSWORD': CONFIG.get('db_password'),
