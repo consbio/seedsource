@@ -26,6 +26,7 @@ class MapConnector extends React.Component {
         this.map = null
         this.pointMarker = null
         this.variableLayer = null
+        this.variableLegend = null
         this.resultsLayer = null
         this.visibilityButton = null
     }
@@ -105,16 +106,42 @@ class MapConnector extends React.Component {
         if (variable !== null) {
             let layerUrl = '/tiles/' + getServiceName(variable, objective, time, model) + '/{z}/{x}/{y}.png'
 
+            // Layer
             if (this.variableLayer === null) {
                 this.variableLayer = L.tileLayer(layerUrl, {zIndex: 1, opacity: 1}).addTo(this.map)
             }
             else if(layerUrl !== this.variableLayer._url) {
                 this.variableLayer.setUrl(layerUrl)
             }
+
+            // Legend
+            let variableState = this.props.runConfiguration.variables.find(item => item.name === variable)
+            let { legend } = variableState
+
+            if (legend !== null) {
+                if (this.variableLegend === null) {
+                    this.variableLegend = L.control.legend({elements: legend, label: variable})
+                    this.map.addControl(this.variableLegend)
+                }
+                else if (this.variableLegend.elements !== legend) {
+                    this.variableLegend.setLegend(legend, variable)
+                }
+            }
+            else if (this.variableLegend) {
+                this.map.removeControl(this.variableLegend)
+                this.variableLegend = null
+            }
         }
-        else if (this.variableLayer !== null) {
-            this.map.removeLayer(this.variableLayer)
-            this.variableLayer = null
+        else {
+            if (this.variableLayer !== null) {
+                this.map.removeLayer(this.variableLayer)
+                this.variableLayer = null
+            }
+
+            if (this.variableLegend) {
+                this.map.removeControl(this.variableLegend)
+                this.variableLegend = null
+            }
         }
     }
 
@@ -224,7 +251,7 @@ const mapStatetoProps = state => {
     let { opacity, showResults } = map
     let { objective, point, region, time, model } = runConfiguration
 
-    return {activeVariable, objective, point, region, time, model, opacity, job, showResults}
+    return {activeVariable, objective, point, region, time, model, opacity, job, showResults, runConfiguration}
 }
 
 const mapDispatchToProps = dispatch => {

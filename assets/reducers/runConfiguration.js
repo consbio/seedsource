@@ -51,6 +51,8 @@ export default (state = defaultConfiguration, action) => {
         case 'MODIFY_VARIABLE':
         case 'REQUEST_VALUE':
         case 'RECEIVE_VALUE':
+        case 'REQUEST_LEGEND':
+        case 'RECEIVE_LEGEND':
             return Object.assign({}, state, {variables: variables(state.variables, action)})
 
         case 'LOAD_CONFIGURATION':

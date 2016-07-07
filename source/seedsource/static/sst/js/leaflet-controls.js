@@ -65,3 +65,53 @@ L.Control.Button = L.Control.extend({
 L.control.button = function(options) {
     return new L.Control.Button(options);
 }
+
+L.Control.Legend = L.Control.extend({
+    options: {
+        position: 'bottomright',
+        elements: [],
+        label: null
+    },
+
+    onAdd: function(map) {
+        this._container = L.DomUtil.create('div', 'leaflet-bar leaflet-legend');
+
+        this.setLegend(this.options.elements, this.options.label);
+
+        L.DomEvent.on(this._container, 'click', function(e) {
+            e.stopPropagation();
+        });
+
+        return this._container;
+    },
+
+    setLegend(elements, label) {
+        this.options.elements = elements;
+        this.options.label = label;
+
+        L.DomUtil.empty(this._container);
+
+        if (label !== null) {
+            var labelNode = L.DomUtil.create('h4', null, this._container);
+            labelNode.innerHTML = label;
+        }
+
+        var table = L.DomUtil.create('table', null, this._container);
+        var tbody  = L.DomUtil.create('tbody', null, table);
+
+        elements.forEach(function(item) {
+            var tr = L.DomUtil.create('tr', null, tbody);
+            var imageCell = L.DomUtil.create('td', null, tr);
+
+            var image = L.DomUtil.create('img', null, imageCell);
+            image.src = 'data:image/png;base64,' + item.imageData;
+
+            var labelCell = L.DomUtil.create('td', null, tr);
+            labelCell.innerHTML = item.label;
+        });
+    }
+});
+
+L.control.legend = function(options) {
+    return new L.Control.Legend(options);
+}

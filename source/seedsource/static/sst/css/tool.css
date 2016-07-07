@@ -255,3 +255,20 @@ body {
     background-color: #eee;
     cursor: pointer;
 }
+
+.leaflet-legend {
+    background-color: #fff;
+    padding: 5px;
+}
+
+.leaflet-legend td:last-child {
+    padding-left: 5px;
+}
+
+.leaflet-legend tbody tr:first-child td {
+    vertical-align: top;
+}
+
+.leaflet-legend tbody tr:last-child td {
+    vertical-align: bottom;
+}
