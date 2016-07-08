@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { modifyVariable, toggleVariable, removeVariable, fetchValue, fetchLegend } from '../actions/variables'
+import { modifyVariable, toggleVariable, removeVariable, fetchValue } from '../actions/variables'
 import Variable from '../componenets/Variable'
 import { species } from '../config'
 
@@ -67,10 +67,6 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
 
         onRequestValue: () => {
             dispatch(fetchValue(variable.name))
-        },
-        
-        onRequestLegend: () => {
-            dispatch(fetchLegend(variable.name))
         }
     }
 }

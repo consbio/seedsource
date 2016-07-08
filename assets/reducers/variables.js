@@ -16,9 +16,7 @@ export default (state = [], action) => {
                 isTemperature,
                 value: null,
                 transfer: null,
-                isFetching: false,
-                legend: null,
-                isFetchingLegend: false
+                isFetching: false
             }]
 
         case 'REMOVE_VARIABLE':
@@ -41,22 +39,6 @@ export default (state = [], action) => {
             }
             else {
                 variable = Object.assign({}, state[index], {isFetching: false, value: action.value})
-                return state.slice(0, index).concat([variable, ...state.slice(index+1)])
-            }
-
-        case 'REQUEST_LEGEND':
-            index = state.findIndex(item => item.name === action.variable)
-            variable = Object.assign({}, state[index], {isFetchingLegend: true})
-            return state.slice(0, index).concat([variable, ...state.slice(index+1)])
-
-        case 'RECEIVE_LEGEND':
-            index = state.findIndex(item => item.name === action.variable)
-
-            if (index === -1) {
-                return state
-            }
-            else {
-                variable = Object.assign({}, state[index], {isFetchingLegend: false, legend: action.legend})
                 return state.slice(0, index).concat([variable, ...state.slice(index+1)])
             }
 

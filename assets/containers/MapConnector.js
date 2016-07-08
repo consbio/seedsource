@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { setMapOpacity, toggleVisibility } from '../actions/map'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
+import { fetchVariableLegend, fetchResultsLegend } from '../actions/legends'
 
 const timeLabels = {
     '1961_1990': '1961 - 1990',
@@ -26,7 +27,7 @@ class MapConnector extends React.Component {
         this.map = null
         this.pointMarker = null
         this.variableLayer = null
-        this.variableLegend = null
+        this.legend = null
         this.resultsLayer = null
         this.visibilityButton = null
     }
@@ -85,6 +86,16 @@ class MapConnector extends React.Component {
         })
     }
 
+    componentWillUpdate({ activeVariable, job, legends }) {
+        if (activeVariable !== this.props.activeVariable) {
+            this.props.onFetchVariableLegend()
+        }
+
+        if (job.serviceId && legends.results.legend === null) {
+            this.props.onFetchResultsLegend()
+        }
+    }
+
     updatePointMarker(point) {
         let pointIsValid = point !== null && point.x !== null && point.y !== null
 
@@ -106,42 +117,16 @@ class MapConnector extends React.Component {
         if (variable !== null) {
             let layerUrl = '/tiles/' + getServiceName(variable, objective, time, model) + '/{z}/{x}/{y}.png'
 
-            // Layer
             if (this.variableLayer === null) {
                 this.variableLayer = L.tileLayer(layerUrl, {zIndex: 1, opacity: 1}).addTo(this.map)
             }
             else if(layerUrl !== this.variableLayer._url) {
                 this.variableLayer.setUrl(layerUrl)
             }
-
-            // Legend
-            let variableState = this.props.runConfiguration.variables.find(item => item.name === variable)
-            let { legend } = variableState
-
-            if (legend !== null) {
-                if (this.variableLegend === null) {
-                    this.variableLegend = L.control.legend({elements: legend, label: variable})
-                    this.map.addControl(this.variableLegend)
-                }
-                else if (this.variableLegend.elements !== legend) {
-                    this.variableLegend.setLegend(legend, variable)
-                }
-            }
-            else if (this.variableLegend) {
-                this.map.removeControl(this.variableLegend)
-                this.variableLegend = null
-            }
         }
-        else {
-            if (this.variableLayer !== null) {
-                this.map.removeLayer(this.variableLayer)
-                this.variableLayer = null
-            }
-
-            if (this.variableLegend) {
-                this.map.removeControl(this.variableLegend)
-                this.variableLegend = null
-            }
+        else if (this.variableLayer !== null) {
+            this.map.removeLayer(this.variableLayer)
+            this.variableLayer = null
         }
     }
 
@@ -226,9 +211,41 @@ class MapConnector extends React.Component {
             }
         }
     }
+    
+    updateLegends(legends, activeVariable, serviceId) {
+        let mapLegends = []
+
+        if (serviceId !== null && legends.results.legend !== null) {
+            mapLegends.push({
+                label: 'Results',
+                elements: legends.results.legend
+            })
+        }
+
+        if (activeVariable !== null && legends.variable.legend !== null) {
+            mapLegends.push({
+                label: activeVariable,
+                elements: legends.variable.legend
+            })
+        }
+
+        if (mapLegends.length) {
+            if (this.legend === null) {
+                this.legend = L.control.legend({legends: mapLegends})
+                this.map.addControl(this.legend)
+            }
+            else if (JSON.stringify(mapLegends) !== JSON.stringify(this.legend.options.legends)) {
+                this.legend.setLegends(mapLegends)
+            }
+        }
+        else if (this.legend !== null) {
+            this.map.removeControl(this.legend)
+            this.legend = null
+        }
+    }
 
     render() {
-        let { activeVariable, objective, point, time, model, opacity, job, showResults } = this.props
+        let { activeVariable, objective, point, time, model, opacity, job, showResults, legends } = this.props
 
         this.updatePointMarker(point)
         this.updateVariableLayer(activeVariable, objective, time, model)
@@ -236,6 +253,7 @@ class MapConnector extends React.Component {
         this.updateOpacity(opacity)
         this.updateVisibilityButton(job.serviceId, showResults)
         this.updateTimeOverlay(activeVariable, objective, time, model)
+        this.updateLegends(legends, activeVariable, job.serviceId)
 
         return null
     }
@@ -243,15 +261,18 @@ class MapConnector extends React.Component {
 
 MapConnector.propTypes = {
     onOpacityChange: PropTypes.func.isRequired,
-    onMapClick: PropTypes.func.isRequired
+    onMapClick: PropTypes.func.isRequired,
+    onToggleVisibility: PropTypes.func.isRequired,
+    onFetchVariableLegend: PropTypes.func.isRequired,
+    onFetchResultsLegend: PropTypes.func.isRequired
 }
 
 const mapStatetoProps = state => {
-    let { runConfiguration, activeVariable, map, job } = state
+    let { runConfiguration, activeVariable, map, job, legends } = state
     let { opacity, showResults } = map
     let { objective, point, region, time, model } = runConfiguration
 
-    return {activeVariable, objective, point, region, time, model, opacity, job, showResults, runConfiguration}
+    return {activeVariable, objective, point, region, time, model, opacity, job, showResults, legends}
 }
 
 const mapDispatchToProps = dispatch => {
@@ -266,6 +287,14 @@ const mapDispatchToProps = dispatch => {
 
         onToggleVisibility: () => {
             dispatch(toggleVisibility())
+        },
+
+        onFetchVariableLegend: () => {
+            dispatch(fetchVariableLegend())
+        },
+
+        onFetchResultsLegend: () => {
+            dispatch(fetchResultsLegend())
         }
     }
 }

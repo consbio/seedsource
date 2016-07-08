@@ -6,6 +6,7 @@ import { activeVariable } from './variables'
 import map from './map'
 import job from './job'
 import saves from './saves'
+import legends from './legends'
 
 export default combineReducers({
     isLoggedIn: auth,
@@ -15,5 +16,6 @@ export default combineReducers({
     lastRun,
     map,
     job,
-    saves
+    saves,
+    legends
 })

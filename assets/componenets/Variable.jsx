@@ -11,7 +11,6 @@ class Variable extends React.Component {
     componentDidMount() {
         if (this.props.active) {
             ReactDOM.findDOMNode(this.refs.transferInput).select()
-            this.props.onRequestLegend()
         }
     }
 
@@ -20,7 +19,6 @@ class Variable extends React.Component {
         
         if (!active && this.props.active) {
             ReactDOM.findDOMNode(this.refs.transferInput).select()
-            this.props.onRequestLegend()
         }
     }
 
@@ -115,8 +113,7 @@ Variable.propTypes = {
     onTransferBlur: PropTypes.func.isRequired,
     onClick: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
-    onRequestValue: PropTypes.func.isRequired,
-    onRequestLegend: PropTypes.func.isRequired
+    onRequestValue: PropTypes.func.isRequired
 }
 
 export default Variable

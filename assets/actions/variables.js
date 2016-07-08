@@ -75,36 +75,3 @@ export const fetchValue = name => {
         return Promise.resolve()
     }
 }
-
-export const receiveLegend = (variable, json) => {
-    return {
-        type: 'RECEIVE_LEGEND',
-        legend: json.layers[0].legend,
-        variable
-    }
-}
-
-export const requestLegend = variable => {
-    return {
-        type: 'REQUEST_LEGEND',
-        variable
-    }
-}
-
-export const fetchLegend = name => {
-    return (dispatch, getState) => {
-        let { runConfiguration } = getState()
-        let { objective, point, time, model, variables } = runConfiguration
-        let variable = variables.find(item => item.name === name)
-
-        if (variable !== undefined && variable.legend === null && !variable.isFetchingLegend) {
-            dispatch(requestLegend(name))
-
-            let url = '/arcgis/rest/services/' + getServiceName(name, objective, time, model) + '/MapServer/legend'
-
-            return fetch(url).then(response => response.json()).then(json => dispatch(receiveLegend(name, json)))
-        }
-
-        return Promise.resolve()
-    }
-}
