@@ -12,14 +12,15 @@ const configurationCanRun = ({point, variables}) =>  {
     return variables.length > 0 && variables.every(item => item.value !== null && item.isFetching === false)
 }
 
-const mapStateToProps = ({ runConfiguration, lastRun, job }) => {
+const mapStateToProps = ({ runConfiguration, lastRun, job, isLoggedIn }) => {
     return {
         objective: runConfiguration.objective,
         species: runConfiguration.species,
         canRun: configurationCanRun(runConfiguration) && !job.isRunning,
         canSave: lastRun !== null,
         configuration: runConfiguration,
-        job
+        job,
+        isLoggedIn
     }
 }
 

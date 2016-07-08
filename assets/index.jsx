@@ -9,6 +9,8 @@ import App from './componenets/App'
 
 let store = createStore(reducers, applyMiddleware(thunkMiddleware));
 
+SST.reduxStore = store
+
 render(
     <Provider store={store}>
         <App />

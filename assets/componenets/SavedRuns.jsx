@@ -11,9 +11,19 @@ class SavedRuns extends React.Component {
         this.props.onLoad()
     }
 
+    componentWillUpdate({ isLoggedIn }) {
+        if (this.props.isLoggedIn !== isLoggedIn) {
+            this.props.onLoad()
+        }
+    }
+
     render() {
-        let { saves } = this.props
+        let { saves, isLoggedIn } = this.props
         let { activeSave } = this.state
+
+        if (!isLoggedIn) {
+            return <div>Please login to save and load runs.</div>
+        }
 
         return (
             <div className="configurationList">
@@ -36,6 +46,7 @@ class SavedRuns extends React.Component {
 
 SavedRuns.propTypes = {
     saves: PropTypes.array.isRequired,
+    isLoggedIn: PropTypes.bool.isRequired,
     onLoad: PropTypes.func.isRequired
 }
 

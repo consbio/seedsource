@@ -134,24 +134,28 @@ export const requestSaves = () => {
 }
 
 export const fetchSaves = () => {
-    return dispatch => {
-        dispatch(requestSaves())
+    return (dispatch, getState) => {
+        let { isLoggedIn } = getState()
 
-        return fetch('/sst/run-configurations/', {
-            credentials: 'same-origin'
-        }).then(response => {
-            let { status } = response
+        if (isLoggedIn) {
+            dispatch(requestSaves())
 
-            if (status >= 200 && status < 300) {
-                return response.json()
-            }
-            else {
-                throw new Error('Bad status loading saves: ' + response.status)
-            }
-        }).then(json => dispatch(receiveSaves(json))).catch(err => {
-            console.log(err)
-            dispatch(receiveSaves([]))
-        })
+            return fetch('/sst/run-configurations/', {
+                credentials: 'same-origin'
+            }).then(response => {
+                let {status} = response
+
+                if (status >= 200 && status < 300) {
+                    return response.json()
+                }
+                else {
+                    throw new Error('Bad status loading saves: ' + response.status)
+                }
+            }).then(json => dispatch(receiveSaves(json))).catch(err => {
+                console.log(err)
+                dispatch(receiveSaves([]))
+            })
+        }
     }
 }
 

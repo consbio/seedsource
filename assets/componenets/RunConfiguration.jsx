@@ -26,7 +26,9 @@ class RunConfiguration extends React.Component {
     }
 
     render() {
-        let { objective, species, canRun, canSave, configuration, job, onSpeciesChange, onRun, onSave } = this.props
+        let {
+            objective, species, canRun, canSave, configuration, job, isLoggedIn, onSpeciesChange, onRun, onSave
+        } = this.props
         let overlay = null
 
         if (job.isRunning) {
@@ -124,6 +126,11 @@ class RunConfiguration extends React.Component {
                             className="btn btn-default pull-left"
                             disabled={!canSave}
                             onClick={() => {
+                                if (!isLoggedIn) {
+                                    alert('Please login to save your run')
+                                    return
+                                }
+
                                 onSave()
                             }}
                         >
@@ -149,6 +156,7 @@ RunConfiguration.propTypes = {
     canSave: PropTypes.bool.isRequired,
     configuration: PropTypes.object.isRequired,
     job: PropTypes.object.isRequired,
+    isLoggedIn: PropTypes.bool.isRequired,
     onSpeciesChange: PropTypes.func.isRequired,
     onRun: PropTypes.func.isRequired,
     onPoll: PropTypes.func.isRequired,

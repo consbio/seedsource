@@ -1,6 +1,7 @@
 var SST = {
     isLoggedIn: false,
-    email: null
+    email: null,
+    reduxStore: null
 }
 
 function checkLogin() {
@@ -12,6 +13,7 @@ function checkLogin() {
 function loggedIn(userEmail) {
     SST.isLoggedIn = true;
     SST.email = userEmail;
+    SST.reduxStore.dispatch({'type': 'LOGIN'});
 
     $('#EmailDisplay').html(userEmail);
     $('#SignedInNav').removeClass('hidden');
@@ -21,6 +23,10 @@ function loggedIn(userEmail) {
 function loggedOut() {
     SST.isLoggedIn = false;
     SST.email = null;
+
+    if (SST.reduxStore !== null) {
+        SST.reduxStore.dispatch({'type': 'LOGOUT'});
+    }
 
     $('#SignedInNav').addClass('hidden');
     $('#SignedOutNav').removeClass('hidden');
