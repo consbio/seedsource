@@ -7,13 +7,13 @@ export default (state = [], action) => {
         case 'ADD_VARIABLE':
             variable = variables.find((item) => item.name === action.variable)
 
-            let {name, label, multiplier, isTemperature} = variable
+            let {name, label, multiplier, units} = variable
 
             return [...state, {
                 name,
                 label,
                 multiplier,
-                isTemperature,
+                units,
                 value: null,
                 transfer: null,
                 isFetching: false

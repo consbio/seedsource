@@ -96,9 +96,10 @@ class RunConfiguration extends React.Component {
                 <div className="step">
                     <h4><span className="badge">5</span> Choose variables & transfer limits</h4>
 
-                    <div className="unitChooser btn-group">
-                        <UnitButton name="c">&deg;C</UnitButton>
-                        <UnitButton name="f">&deg;F</UnitButton>
+                    <strong>Units: </strong>
+                    <div className="unitChooser btn-group" style={{display: 'inline-block'}}>
+                        <UnitButton name="metric">Metric</UnitButton>
+                        <UnitButton name="imperial">Imperial</UnitButton>
                     </div>
 
                     <Variables />

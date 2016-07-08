@@ -9,6 +9,7 @@ import { setMapOpacity, toggleVisibility } from '../actions/map'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
 import { fetchVariableLegend, fetchResultsLegend } from '../actions/legends'
+import { variables } from '../config'
 
 const timeLabels = {
     '1961_1990': '1961 - 1990',
@@ -212,7 +213,7 @@ class MapConnector extends React.Component {
         }
     }
     
-    updateLegends(legends, activeVariable, serviceId) {
+    updateLegends(legends, activeVariable, serviceId, unit) {
         let mapLegends = []
 
         if (serviceId !== null && legends.results.legend !== null) {
@@ -223,9 +224,29 @@ class MapConnector extends React.Component {
         }
 
         if (activeVariable !== null && legends.variable.legend !== null) {
+            let variable = variables.find(item => item.name === activeVariable)
+            let { units, multiplier } = variable
+            let legend = legends.variable.legend.map(item => {
+                let value = parseFloat(item.label)
+
+                if (!isNaN(value)) {
+                    value /= multiplier
+
+                    if (units !== null && unit == 'imperial') {
+                        value = units.imperial.convert(value)
+                    }
+
+                    value = parseFloat(value.toFixed(2)) + ' ' + units[unit].label
+
+                    return Object.assign({}, item, {label: value})
+                }
+
+                return item
+            })
+
             mapLegends.push({
                 label: activeVariable,
-                elements: legends.variable.legend
+                elements: legend
             })
         }
 
@@ -245,7 +266,7 @@ class MapConnector extends React.Component {
     }
 
     render() {
-        let { activeVariable, objective, point, time, model, opacity, job, showResults, legends } = this.props
+        let { activeVariable, objective, point, time, model, opacity, job, showResults, legends, unit } = this.props
 
         this.updatePointMarker(point)
         this.updateVariableLayer(activeVariable, objective, time, model)
@@ -253,7 +274,7 @@ class MapConnector extends React.Component {
         this.updateOpacity(opacity)
         this.updateVisibilityButton(job.serviceId, showResults)
         this.updateTimeOverlay(activeVariable, objective, time, model)
-        this.updateLegends(legends, activeVariable, job.serviceId)
+        this.updateLegends(legends, activeVariable, job.serviceId, unit)
 
         return null
     }
@@ -270,9 +291,9 @@ MapConnector.propTypes = {
 const mapStatetoProps = state => {
     let { runConfiguration, activeVariable, map, job, legends } = state
     let { opacity, showResults } = map
-    let { objective, point, region, time, model } = runConfiguration
+    let { objective, point, region, time, model, unit } = runConfiguration
 
-    return {activeVariable, objective, point, region, time, model, opacity, job, showResults, legends}
+    return {activeVariable, objective, point, region, time, model, opacity, job, showResults, legends, unit}
 }
 
 const mapDispatchToProps = dispatch => {

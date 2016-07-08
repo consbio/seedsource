@@ -24,7 +24,7 @@ class Variable extends React.Component {
 
     render() {
         let {
-            active, index, name, label, value, transfer, unit, isTemperature, onTransferBlur, onClick, onRemove
+            active, index, name, label, value, transfer, unit, units, onTransferBlur, onClick, onRemove
         } = this.props
         let { transferValue } = this.state
         let className = 'variableConfig'
@@ -33,8 +33,8 @@ class Variable extends React.Component {
         if (value === null) {
             value = 'N/A'
         }
-        else if (isTemperature) {
-            value = <span>{value} &deg;{unit.toUpperCase()}</span>
+        else if (units !== null) {
+            value = <span>{value} {units[unit].label}</span>
         }
 
         if (!active) {
@@ -53,7 +53,7 @@ class Variable extends React.Component {
                     }}
                     onBlur={e => {
                         this.setState({transferValue: null})
-                        onTransferBlur(e.target.value, unit, isTemperature)
+                        onTransferBlur(e.target.value, unit, units)
                     }}
                     onKeyPress={e => {
                         if (e.key === 'Enter') {
@@ -110,6 +110,7 @@ Variable.propTypes = {
     value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     transfer: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     unit: PropTypes.string.isRequired,
+    units: PropTypes.object,
     onTransferBlur: PropTypes.func.isRequired,
     onClick: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,

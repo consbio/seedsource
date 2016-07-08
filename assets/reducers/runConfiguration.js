@@ -8,7 +8,7 @@ const defaultConfiguration = {
     region: 'west1',
     time: '1961_1990',
     model: 'rcp45',
-    unit: 'c',
+    unit: 'metric',
     variables: []
 }
 

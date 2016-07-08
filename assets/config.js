@@ -1,93 +1,126 @@
+const celsiusUnits = {
+    metric: {
+        label: '°C',
+        convert: value => (value - 32) / 1.8,  // Convert to celsius
+        convertTransfer: value => value / 1.8  // Convert difference to celsuis
+    },
+    imperial: {
+        label: '°F',
+        convert: value => value * 1.8 + 32,  // Convert to fahrenheit
+        convertTransfer: value => value * 1.8 // Convert difference to fahrenheit
+    }
+}
+
+const mmUnits = {
+    metric: {
+        label: 'mm',
+        convert: value => value * 25.4 // Convert to millimeters
+    },
+    imperial: {
+        label: 'in',
+        convert: value => value / 25.4 // Convert to inches
+    }
+}
+
 export const variables = [
     {
         name: 'MAT',
         label: 'Mean annual temperature',
         multiplier: 10,
-        isTemperature: true
+        units: celsiusUnits
     },
     {
         name: 'MWMT',
         label: 'Mean warmest month temperature',
         multiplier: 10,
-        isTemperature: true
+        units: celsiusUnits
     },
     {
         name: 'MCMT',
         label: 'Mean coldest month temperature',
         multiplier: 10,
-        isTemperature: true
+        units: celsiusUnits
     },
     {
         name: 'TD',
         label: 'Temperature difference between MWMT and MCMT, or continentality',
         multiplier: 10,
-        isTemperature: true
+        units: {
+            metric: {
+                label: '°C',
+                convert: value => value / 1.8  // Convert temp difference to C
+            },
+            imperial: {
+                label: '°F',
+                convert: value => value * 1.8 // Convert temp difference to F
+            }
+        }
     },
     {
         name: 'MAP',
         label: 'Mean annual precipitation (mm)',
         multiplier: 1,
-        isTemperature: false
+        units: mmUnits
     },
     {
         name: 'MSP',
         label: 'May to September precipitation (mm)',
         multiplier: 1,
-        isTemperature: false
+        units: mmUnits
     },
     {
         name: 'AHM',
         label: 'Annual heat­moisture index',
         multiplier: 10,
-        isTemperature: false
+        units: null
     },
     {
         name: 'SHM',
         label: 'Summer heat­moisture index',
         multiplier: 10,
-        isTemperature: false
+        units: null
     },
     {
         name: 'DD_0',
         label: 'Degree­days below 0°C, chilling degree­days',
         multiplier: 1,
-        isTemperature: false
+        units: null
     },
     {
         name: 'FFP',
         label: 'Frost­free period',
         multiplier: 1,
-        isTemperature: false
+        units: null
     },
     {
         name: 'PAS',
         label: 'Precipitation as snow (mm) between August in previous year and July in current year',
         multiplier: 1,
-        isTemperature: false
+        units: mmUnits
     },
     {
         name: 'EMT',
         label: 'Extreme minimum temperature over 30 years',
         multiplier: 10,
-        isTemperature: true
+        units: celsiusUnits
     },
     {
         name: 'EXT',
         label: 'Extreme maximum temperature over 30 years',
         multiplier: 10,
-        isTemperature: true
+        units: celsiusUnits
     },
     {
         name: 'Eref',
         label: 'Hargreaves reference evaporation (mm)',
         multiplier: 1,
-        isTemperature: false
+        units: mmUnits
     },
     {
         name: 'CMD',
         label: 'Hargreaves climatic moisture deficit (mm)',
         multiplier: 1,
-        isTemperature: false
+        units: mmUnits
     }
 ];
 

@@ -21,7 +21,7 @@ export const fetchVariableLegend = () => {
 
         dispatch(requestVariableLegend())
 
-        if (legends.variable.legend === null && !legends.variable.isFetching) {
+        if (activeVariable !== null && legends.variable.legend === null && !legends.variable.isFetching) {
             let url = '/arcgis/rest/services/' + getServiceName(activeVariable, objective, time, model) +
                 '/MapServer/legend'
 

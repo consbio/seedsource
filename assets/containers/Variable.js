@@ -9,7 +9,7 @@ const mapStateToProps = (state, { variable, index }) => {
     let { activeVariable, runConfiguration } = state
     let active = activeVariable === variable.name
     let { unit } = runConfiguration
-    let { name, label, value, transfer, multiplier, isTemperature } = variable
+    let { name, label, value, transfer, multiplier, units } = variable
 
     if (transfer === null) {
         let activeSpecies = species.find(item => item.name === state.runConfiguration.species)
@@ -24,8 +24,13 @@ const mapStateToProps = (state, { variable, index }) => {
 
     transfer /= multiplier
 
-    if (isTemperature && unit === 'f') {
-        transfer *= 1.8
+    if (unit === 'imperial' && units !== null) {
+        if (units.imperial.convertTransfer) {
+            transfer = units.imperial.convertTransfer(transfer)
+        }
+        else {
+            transfer = units.imperial.convert(transfer)
+        }
     }
 
     transfer = parseFloat(transfer.toFixed(2))
@@ -33,24 +38,29 @@ const mapStateToProps = (state, { variable, index }) => {
     if (value !== null) {
         value /= multiplier
 
-        if (isTemperature && unit === 'f') {
-            value = toF(value)
+        if (unit === 'imperial' && units !== null) {
+            value = units.imperial.convert(value)
         }
 
         value = parseFloat(value.toFixed(2))
     }
 
-    return {active, index, name, label, value, transfer, unit, isTemperature}
+    return { active, index, name, label, value, transfer, unit, units }
 }
 
 const mapDispatchToProps = (dispatch, { variable, index }) => {
     return {
-        onTransferBlur: (transfer, unit, isTemperature) => {
+        onTransferBlur: (transfer, unit, units) => {
             let value = parseFloat(transfer)
 
             if (!isNaN(value)) {
-                if (isTemperature && unit === 'f') {
-                    value /= 1.8
+                if (unit === 'imperial' && units !== null) {
+                    if (units.metric.convertTransfer) {
+                        value = units.metric.convertTransfer(value)
+                    }
+                    else {
+                        value = units.metric.convert(value)
+                    }
                 }
 
                 dispatch(modifyVariable(index, value * variable.multiplier))
