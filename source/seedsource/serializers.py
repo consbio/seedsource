@@ -15,11 +15,9 @@ class RunConfigurationSerializer(serializers.ModelSerializer):
 
 
 class SeedZoneSerializer(serializers.ModelSerializer):
-    polygon = GeometryField()
-
     class Meta:
         model = SeedZone
-        fields = ('species', 'zone_id', 'polygon')
+        fields = ('id', 'species', 'zone_id')
 
 
 class TransferLimitSerializer(serializers.ModelSerializer):

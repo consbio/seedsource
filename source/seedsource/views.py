@@ -1,19 +1,20 @@
+import json
 import os
 
-from clover.netcdf.variable import SpatialCoordinateVariables
 from django.conf import settings
 from django.contrib.gis.geos import Point
 from ncdjango.models import Service
 from netCDF4 import Dataset
-from pyproj import Proj
 from rest_framework import viewsets
+from rest_framework.decorators import detail_route
 from rest_framework.exceptions import ParseError
+from rest_framework.filters import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from seedsource.models import TransferLimit
+from seedsource.models import TransferLimit, SeedZone, RunConfiguration
+from seedsource.serializers import RunConfigurationSerializer, SeedZoneSerializer
 from seedsource.serializers import TransferLimitSerializer
-from .models import RunConfiguration
-from .serializers import RunConfigurationSerializer
 
 
 class RunConfigurationViewset(viewsets.ModelViewSet):
@@ -29,9 +30,32 @@ class RunConfigurationViewset(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
 
+class SeedZoneViewset(viewsets.ReadOnlyModelViewSet):
+    queryset = SeedZone.objects.all()
+    serializer_class = SeedZoneSerializer
+
+    def get_queryset(self):
+        if not self.request.query_params.get('point'):
+            return self.queryset
+        else:
+            try:
+                x, y = [float(x) for x in self.request.query_params['point'].split(',')]
+            except ValueError:
+                raise ParseError()
+            point = Point(x, y)
+
+            return self.queryset(polygon__intersects=point)
+
+    @detail_route(methods=['get'])
+    def geometry(self, *args, **kwargs):
+        return Response(json.loads(self.get_object().polygon.geojson))
+
+
 class TransferLimitViewset(viewsets.ReadOnlyModelViewSet):
-    queryset = TransferLimit.objects.all()
+    queryset = TransferLimit.objects.all().select_related('zone').defer('zone__polygon')
     serializer_class = TransferLimitSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('variable', 'zone_id')
 
     def _get_elevation_at_point(self, point):
         service = Service.objects.get(name='west1_dem')
@@ -58,20 +82,13 @@ class TransferLimitViewset(viewsets.ReadOnlyModelViewSet):
             return data[cell_index[1]][cell_index[0]]
 
     def get_queryset(self):
-        try:
-            x, y = [float(x) for x in self.request.query_params['point'].split(',')]
-            variable = self.request.query_params['variable']
-            species = self.request.query_params.get('species')
-        except (ValueError, KeyError):
-            raise ParseError()
+        if not self.request.query_params.get('point'):
+            return self.queryset
+        else:
+            try:
+                x, y = [float(x) for x in self.request.query_params['point'].split(',')]
+            except ValueError:
+                raise ParseError()
 
-        point = Point(x, y)
-        elevation = self._get_elevation_at_point(point)
-
-        qs = self.queryset.filter(zone__polygon__intersects=point, variable=variable, zone__species=species)
-
-        if species:
-            qs = qs.filter(low__lte=elevation, high__gt=elevation)
-
-        return qs[:1]
-
+            elevation = self._get_elevation_at_point(Point(x, y))
+            return self.queryset.filter(low__lte=elevation, high__gt=elevation)

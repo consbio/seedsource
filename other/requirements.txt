@@ -30,3 +30,4 @@ python-mimeparse==1.5.1
 pytz==2016.3
 rasterio==0.32.0
 Shapely==1.5.13
+django-filter==0.13.0
