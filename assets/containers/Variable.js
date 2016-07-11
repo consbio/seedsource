@@ -3,8 +3,6 @@ import { modifyVariable, toggleVariable, removeVariable, fetchValue } from '../a
 import Variable from '../componenets/Variable'
 import { species } from '../config'
 
-const toF = value => value * 1.8 + 32  // Convert to fahrenheit
-
 const mapStateToProps = (state, { variable, index }) => {
     let { activeVariable, runConfiguration } = state
     let active = activeVariable === variable.name

@@ -8,6 +8,20 @@ export const selectUnit = unit => {
     }
 }
 
+export const selectMethod = method => {
+    return {
+        type: 'SELECT_METHOD',
+        method
+    }
+}
+
+export const selectSeedzone = seedzone => {
+    return {
+        type: 'SELECT_SEEDZONE',
+        seedzone
+    }
+}
+
 export const addVariable = variable => {
     return {
         type: 'ADD_VARIABLE',

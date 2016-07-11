@@ -8,6 +8,8 @@ const defaultConfiguration = {
     region: 'west1',
     time: '1961_1990',
     model: 'rcp45',
+    method: 'seedzone',
+    seedzone: 'new',
     unit: 'metric',
     variables: []
 }
@@ -45,6 +47,12 @@ export default (state = defaultConfiguration, action) => {
 
         case 'SELECT_UNIT':
             return Object.assign({}, state, {unit: action.unit})
+
+        case 'SELECT_METHOD':
+            return Object.assign({}, state, {method: action.method})
+
+        case 'SELECT_SEEDZONE':
+            return Object.assign({}, state, {seedzone: action.seedzone})
 
         case 'ADD_VARIABLE':
         case 'REMOVE_VARIABLE':

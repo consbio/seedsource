@@ -123,4 +123,4 @@ $.ajaxSetup({
     }
 });
 
-checkLogin();
+$(document).ready(checkLogin);

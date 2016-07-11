@@ -88,7 +88,7 @@ body {
     margin: 0px -15px;
 }
 
-.sidebar .unitChooser.btn-group .btn {
+.sidebar .btn-group-sm.btn-group .btn {
     font-size: .8em;
     font-weight: bold;
     margin-bottom: 8px;

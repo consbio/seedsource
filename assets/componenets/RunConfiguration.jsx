@@ -6,6 +6,8 @@ import ClimateChooser from '../containers/ClimateChooser'
 import Variables from '../containers/Variables'
 import SaveModal from '../containers/SaveModal'
 import UnitButton from '../containers/UnitButton'
+import MethodButton from '../containers/MethodButton'
+import SeedzoneButton from '../containers/SeedzoneButton'
 
 let getObjectiveLabel = objective => (
     objective == 'seedlots' ? 'Select a planting site' : 'Select a seedlot location'
@@ -27,7 +29,7 @@ class RunConfiguration extends React.Component {
 
     render() {
         let {
-            objective, species, canRun, canSave, configuration, job, isLoggedIn, onSpeciesChange, onRun, onSave
+            objective, species, method, canRun, canSave, configuration, job, isLoggedIn, onSpeciesChange, onRun, onSave
         } = this.props
         let overlay = null
 
@@ -42,6 +44,19 @@ class RunConfiguration extends React.Component {
                                 style={{width: '100%'}}
                             ></div>
                         </div>
+                    </div>
+                </div>
+            )
+        }
+
+        let seedzoneButtonGroup = null
+        if (method === 'seedzone') {
+            seedzoneButtonGroup = (
+                <div>
+                    <strong>Seed zones: </strong>
+                    <div className="btn-group btn-group-sm" style={{display: 'inline-block'}}>
+                        <SeedzoneButton name="historic">Historic</SeedzoneButton>
+                        <SeedzoneButton name="new">New</SeedzoneButton>
                     </div>
                 </div>
             )
@@ -98,10 +113,22 @@ class RunConfiguration extends React.Component {
                 <div className="step">
                     <h4><span className="badge">5</span> Choose variables & transfer limits</h4>
 
-                    <strong>Units: </strong>
-                    <div className="unitChooser btn-group" style={{display: 'inline-block'}}>
-                        <UnitButton name="metric">Metric</UnitButton>
-                        <UnitButton name="imperial">Imperial</UnitButton>
+                    <div>
+                        <strong>Method: </strong>
+                        <div className="btn-group-sm btn-group" style={{display: 'inline-block'}}>
+                            <MethodButton name="seedzone">Seed Zone</MethodButton>
+                            <MethodButton name="custom">Custom</MethodButton>
+                        </div>
+                    </div>
+
+                    {seedzoneButtonGroup}
+
+                    <div>
+                        <strong>Units: </strong>
+                        <div className="btn-group-sm btn-group" style={{display: 'inline-block'}}>
+                            <UnitButton name="metric">Metric</UnitButton>
+                            <UnitButton name="imperial">Imperial</UnitButton>
+                        </div>
                     </div>
 
                     <Variables />
@@ -152,6 +179,7 @@ class RunConfiguration extends React.Component {
 RunConfiguration.propTypes = {
     objective: PropTypes.string.isRequired,
     species: PropTypes.string.isRequired,
+    method: PropTypes.string.isRequired,
     canRun: PropTypes.bool.isRequired,
     canSave: PropTypes.bool.isRequired,
     configuration: PropTypes.object.isRequired,
