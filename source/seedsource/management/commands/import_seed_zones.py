@@ -33,6 +33,14 @@ OREGON_ZONES = {
     'pimo': 'Western_White_Pine.shp'
 }
 
+SPECIES_NAMES = {
+    'psme': 'Douglas-fir',
+    'pico': 'Lodgepole pine',
+    'pipo': 'Ponderosa pine',
+    'thpl': 'Western redcedar',
+    'pimo': 'Wester white pine'
+}
+
 HISTORIC_ZONES = 'historic_seed_zones.shp'
 
 
@@ -42,7 +50,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('zones_file', nargs=1, type=str)
 
-    def _add_zones(self, source, species, path, zone_field):
+    def _add_zones(self, source, name, species, path, zone_field):
         with fiona.open(path, 'r') as shp:
             for feature in shp:
                 try:
@@ -55,7 +63,10 @@ class Command(BaseCommand):
 
                 geometry = transform_geom(shp.crs, {'init': 'EPSG:4326'}, feature['geometry'])
                 polygon = Polygon(*[LinearRing(x) for x in geometry['coordinates']])
-                SeedZone.objects.create(source=source, species=species, zone_id=zone_id, polygon=polygon)
+                SeedZone.objects.create(
+                    source=source, name=name.format(zone_id=zone_id, species=SPECIES_NAMES.get(species)), species=species,
+                    zone_id=zone_id, polygon=polygon
+                )
 
     def handle(self, zones_file, *args, **options):
         temp_dir = mkdtemp()
@@ -82,23 +93,23 @@ class Command(BaseCommand):
 
                 for species, zone_file in WASHINGTON_ZONES.items():
                     self._add_zones(
-                        os.path.join(WASHINGTON_ZONES_DIR, zone_file), species, os.path.join(wa_zones, zone_file),
-                        'ZONE_NO'
+                        os.path.join(WASHINGTON_ZONES_DIR, zone_file), 'Washington {species} Zone {zone_id}', species,
+                        os.path.join(wa_zones, zone_file), 'ZONE_NO'
                     )
 
                 print('Loading Oregon seed zones...')
 
                 for species, zone_file in OREGON_ZONES.items():
                     self._add_zones(
-                        os.path.join(OREGON_ZONES_DIR, zone_file), species, os.path.join(or_zones, zone_file),
-                        'SZ{}'.format(species).upper()
+                        os.path.join(OREGON_ZONES_DIR, zone_file), 'Oregon {species} Zone {zone_id}', species,
+                        os.path.join(or_zones, zone_file), 'SZ{}'.format(species).upper()
                     )
 
                 print ('Loading historic seed zones...')
 
                 self._add_zones(
-                    os.path.join(HISTORIC_ZONES_DIR, HISTORIC_ZONES), None,
-                    os.path.join(historic_zones, HISTORIC_ZONES), 'OBJECTID'
+                    os.path.join(HISTORIC_ZONES_DIR, HISTORIC_ZONES), 'Washington / Oregon Historic Zone {zone_id}',
+                    None, os.path.join(historic_zones, HISTORIC_ZONES), 'OBJECTID'
                 )
 
 

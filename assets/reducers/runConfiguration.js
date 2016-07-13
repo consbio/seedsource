@@ -3,7 +3,7 @@ import variables from './variables'
 
 const defaultConfiguration = {
     objective: 'seedlots',
-    species: 'df',
+    species: 'generic',
     point: null,
     region: 'west1',
     time: '1961_1990',

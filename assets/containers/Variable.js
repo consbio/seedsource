@@ -12,7 +12,7 @@ const mapStateToProps = (state, { variable, index }) => {
     if (transfer === null) {
         let activeSpecies = species.find(item => item.name === state.runConfiguration.species)
 
-        if (activeSpecies.transfers.hasOwnProperty(name)) {
+        if (activeSpecies !== undefined && activeSpecies.transfers.hasOwnProperty(name)) {
             transfer = activeSpecies.transfers[name]
         }
         else {

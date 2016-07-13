@@ -23,10 +23,7 @@ function loggedIn(userEmail) {
 function loggedOut() {
     SST.isLoggedIn = false;
     SST.email = null;
-
-    if (SST.reduxStore !== null) {
-        SST.reduxStore.dispatch({'type': 'LOGOUT'});
-    }
+    SST.reduxStore.dispatch({'type': 'LOGOUT'});
 
     $('#SignedInNav').addClass('hidden');
     $('#SignedOutNav').removeClass('hidden');

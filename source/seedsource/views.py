@@ -33,6 +33,8 @@ class RunConfigurationViewset(viewsets.ModelViewSet):
 class SeedZoneViewset(viewsets.ReadOnlyModelViewSet):
     queryset = SeedZone.objects.all()
     serializer_class = SeedZoneSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('species',)
 
     def get_queryset(self):
         if not self.request.query_params.get('point'):
@@ -44,7 +46,7 @@ class SeedZoneViewset(viewsets.ReadOnlyModelViewSet):
                 raise ParseError()
             point = Point(x, y)
 
-            return self.queryset(polygon__intersects=point)
+            return self.queryset.filter(polygon__intersects=point)
 
     @detail_route(methods=['get'])
     def geometry(self, *args, **kwargs):

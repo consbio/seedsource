@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import ClimateChooser from '../componenets/ClimateChooser'
+import ClimateStep from '../componenets/ClimateStep'
 import { selectClimateYear, selectClimateModel } from '../actions/climate'
 
 const mapStateToProps = ({ runConfiguration }) => {
@@ -24,4 +24,8 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ClimateChooser)
+let container = connect(mapStateToProps, mapDispatchToProps)(ClimateStep)
+
+container.shouldRender = () => true
+
+export default container

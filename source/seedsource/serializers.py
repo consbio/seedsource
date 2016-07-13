@@ -17,7 +17,7 @@ class RunConfigurationSerializer(serializers.ModelSerializer):
 class SeedZoneSerializer(serializers.ModelSerializer):
     class Meta:
         model = SeedZone
-        fields = ('id', 'species', 'zone_id')
+        fields = ('id', 'name', 'species', 'zone_id')
 
 
 class TransferLimitSerializer(serializers.ModelSerializer):

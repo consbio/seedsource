@@ -15,8 +15,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SeedZone',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
                 ('source', models.CharField(max_length=100)),
+                ('name', models.CharField(max_length=256)),
                 ('species', models.CharField(null=True, max_length=4)),
                 ('zone_id', models.IntegerField(null=True)),
                 ('polygon', django.contrib.gis.db.models.fields.PolygonField(geography=True, srid=4326)),
@@ -25,7 +26,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TransferLimit',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
                 ('variable', models.CharField(max_length=10)),
                 ('low', models.IntegerField(null=True)),
                 ('high', models.IntegerField(null=True)),

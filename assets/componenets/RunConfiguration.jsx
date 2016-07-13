@@ -1,13 +1,16 @@
 import React, { PropTypes } from 'react'
-import { species as speciesList } from '../config'
-import ObjectiveButton from '../containers/ObjectiveButton'
-import PointChooser from '../containers/PointChooser'
-import ClimateChooser from '../containers/ClimateChooser'
 import Variables from '../containers/Variables'
 import SaveModal from '../containers/SaveModal'
 import UnitButton from '../containers/UnitButton'
 import MethodButton from '../containers/MethodButton'
 import SeedzoneButton from '../containers/SeedzoneButton'
+import ObjectiveStep from './ObjectiveStep'
+import LocationStep from './LocationStep'
+import ClimateStep from '../containers/ClimateStep'
+import TransferStep from './TransferStep'
+import SpeciesStep from '../containers/SpeciesStep'
+import SeedZoneStep from '../containers/SeedZoneStep'
+import VariableStep from '../componenets/VariableStep'
 
 let getObjectiveLabel = objective => (
     objective == 'seedlots' ? 'Select a planting site' : 'Select a seedlot location'
@@ -29,7 +32,8 @@ class RunConfiguration extends React.Component {
 
     render() {
         let {
-            objective, species, method, canRun, canSave, configuration, job, isLoggedIn, onSpeciesChange, onRun, onSave
+            state, objective, species, method, canRun, canSave, configuration, job, isLoggedIn, onSpeciesChange, onRun,
+            onSave
         } = this.props
         let overlay = null
 
@@ -62,77 +66,25 @@ class RunConfiguration extends React.Component {
             )
         }
 
+        let steps = [
+            {type: ObjectiveStep, title: 'Choose an objective'},
+            {type: LocationStep, title: getObjectiveLabel(objective)},
+            {type: ClimateStep, title: 'Select a target climate'},
+            {type: TransferStep, title: 'Select transfer limit method'},
+            {type: SpeciesStep, title: 'Select a species'},
+            {type: SeedZoneStep, title: 'Select a seed zone'},
+            {type: VariableStep, title: 'Configure variables'}
+        ]
+
         return (
             <div>
                 {overlay}
 
-                <div className="step">
-                    <h4><span className="badge">1</span> Choose an objective</h4>
-                    <div className="btn-group">
-                        <ObjectiveButton name="seedlots">Find seedlots</ObjectiveButton>
-                        <ObjectiveButton name="sites">Find planting sites</ObjectiveButton>
-                    </div>
-                </div>
+                {steps.filter(item => item.type.shouldRender(state)).map((item, i) => {
+                    let content = <item.type number={i + 1} title={item.title} key={item.title} />
 
-                <div className="step">
-                    <h4><span className="badge">2</span> {getObjectiveLabel(objective)}</h4>
-                    <PointChooser />
-
-                    { /* Todo */ }
-
-                    <div>&nbsp;</div>
-                    <div>
-                        <label className="control-label">Region</label>
-                        <select className="form-control">
-                            <option value="west1">West</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div className="step">
-                    <h4><span className="badge">3</span> Target climate</h4>
-                    <ClimateChooser />
-                </div>
-
-                <div className="step">
-                    <h4><span className="badge">4</span> Choose species</h4>
-                    <select
-                        className="form-control"
-                        value={species}
-                        onChange={e => {
-                            e.preventDefault()
-                            onSpeciesChange(e.target.value)
-                        }}
-                    >
-                        {speciesList.map(item => (
-                            <option value={item.name} key={item.name}>{item.label}</option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className="step">
-                    <h4><span className="badge">5</span> Choose variables & transfer limits</h4>
-
-                    <div>
-                        <strong>Method: </strong>
-                        <div className="btn-group-sm btn-group" style={{display: 'inline-block'}}>
-                            <MethodButton name="seedzone">Seed Zone</MethodButton>
-                            <MethodButton name="custom">Custom</MethodButton>
-                        </div>
-                    </div>
-
-                    {seedzoneButtonGroup}
-
-                    <div>
-                        <strong>Units: </strong>
-                        <div className="btn-group-sm btn-group" style={{display: 'inline-block'}}>
-                            <UnitButton name="metric">Metric</UnitButton>
-                            <UnitButton name="imperial">Imperial</UnitButton>
-                        </div>
-                    </div>
-
-                    <Variables />
-                </div>
+                    return content
+                })}
 
                 <div>
                     <h4></h4>
@@ -177,6 +129,7 @@ class RunConfiguration extends React.Component {
 }
 
 RunConfiguration.propTypes = {
+    state: PropTypes.object.isRequired,
     objective: PropTypes.string.isRequired,
     species: PropTypes.string.isRequired,
     method: PropTypes.string.isRequired,

@@ -18,6 +18,7 @@ class RunConfiguration(models.Model):
 
 class SeedZone(gis_models.Model):
     source = models.CharField(max_length=100)
+    name = models.CharField(max_length=256)
     species = models.CharField(max_length=4, null=True)
     zone_id = models.IntegerField(null=True)
     polygon = gis_models.PolygonField(geography=True)

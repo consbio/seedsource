@@ -151,7 +151,7 @@ export const fetchSaves = () => {
                 else {
                     throw new Error('Bad status loading saves: ' + response.status)
                 }
-            }).then(json => dispatch(receiveSaves(json))).catch(err => {
+            }).then(json => dispatch(receiveSaves(json.results))).catch(err => {
                 console.log(err)
                 dispatch(receiveSaves([]))
             })

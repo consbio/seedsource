@@ -126,7 +126,7 @@ export const variables = [
 
 export const species = [
     {
-        name: 'df',
+        name: 'psme',
         label: 'Douglas-fir',
         transfers: {
             MAT: 20,
@@ -143,7 +143,7 @@ export const species = [
         }
     },
     {
-        name: 'lp',
+        name: 'pico',
         label: 'Lodgepole pine',
         transfers: {
             MAT: 20,
@@ -160,7 +160,7 @@ export const species = [
         }
     },
     {
-        name: 'pp',
+        name: 'pipo',
         label: 'Ponderosa pine',
         transfers: {
             MAT: 25,
@@ -177,7 +177,7 @@ export const species = [
         }
     },
     {
-        name: 'wrc',
+        name: 'thpl',
         label: 'Western red cedar',
         transfers: {
             MAT: 30,
@@ -194,7 +194,7 @@ export const species = [
         }
     },
     {
-        name: 'wwp',
+        name: 'pimo',
         label: 'Western white pine',
         transfers: {
             MAT: 30,

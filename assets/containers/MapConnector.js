@@ -9,6 +9,7 @@ import { setMapOpacity, toggleVisibility } from '../actions/map'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
 import { fetchVariableLegend, fetchResultsLegend } from '../actions/legends'
+import { fetchGeometry } from '../actions/zones'
 import { variables } from '../config'
 
 const timeLabels = {
@@ -30,6 +31,8 @@ class MapConnector extends React.Component {
         this.variableLayer = null
         this.legend = null
         this.resultsLayer = null
+        this.zoneLayer = null
+        this.currentZone = null
         this.visibilityButton = null
     }
 
@@ -87,13 +90,17 @@ class MapConnector extends React.Component {
         })
     }
 
-    componentWillUpdate({ activeVariable, job, legends }) {
+    componentWillUpdate({ activeVariable, job, legends, zone, geometry }) {
         if (activeVariable !== this.props.activeVariable) {
             this.props.onFetchVariableLegend()
         }
 
         if (job.serviceId && legends.results.legend === null) {
             this.props.onFetchResultsLegend()
+        }
+        
+        if (zone !== this.props.zone && zone !== null && geometry === null) {
+            this.props.onFetchZoneGeometry()
         }
     }
 
@@ -265,8 +272,33 @@ class MapConnector extends React.Component {
         }
     }
 
+    updateZoneLayer(method, zone, geometry) {
+        if (method === 'seedzone' && geometry !== null) {
+            if (zone !== this.currentZone && this.zoneLayer !== null) {
+                this.map.removeLayer(this.zoneLayer)
+                this.zoneLayer = null
+            }
+
+            if (this.zoneLayer === null) {
+                this.zoneLayer = L.geoJson(geometry, {style: () => {
+                    return {color: '#0F0'}
+                }}).addTo(this.map)
+            }
+
+            this.currentZone = zone
+        }
+        else if (this.zoneLayer !== null) {
+            this.map.removeLayer(this.zoneLayer)
+            this.zoneLayer = null
+            this.currentZone = null
+        }
+    }
+
     render() {
-        let { activeVariable, objective, point, time, model, opacity, job, showResults, legends, unit } = this.props
+        let {
+            activeVariable, objective, point, time, model, opacity, job, showResults, legends, unit, method, zone,
+            geometry
+        } = this.props
 
         this.updatePointMarker(point)
         this.updateVariableLayer(activeVariable, objective, time, model)
@@ -275,6 +307,7 @@ class MapConnector extends React.Component {
         this.updateVisibilityButton(job.serviceId, showResults)
         this.updateTimeOverlay(activeVariable, objective, time, model)
         this.updateLegends(legends, activeVariable, job.serviceId, unit)
+        this.updateZoneLayer(method, zone, geometry)
 
         return null
     }
@@ -289,11 +322,16 @@ MapConnector.propTypes = {
 }
 
 const mapStatetoProps = state => {
-    let { runConfiguration, activeVariable, map, job, legends } = state
+    let { runConfiguration, activeVariable, map, job, legends, zones } = state
     let { opacity, showResults } = map
-    let { objective, point, region, time, model, unit } = runConfiguration
+    let { objective, point, region, time, model, unit, method } = runConfiguration
+    let { geometry } = zones
+    let zone = zones.selected
 
-    return {activeVariable, objective, point, region, time, model, opacity, job, showResults, legends, unit}
+    return {
+        activeVariable, objective, point, region, time, model, opacity, job, showResults, legends, unit, method,
+        geometry, zone
+    }
 }
 
 const mapDispatchToProps = dispatch => {
@@ -316,6 +354,10 @@ const mapDispatchToProps = dispatch => {
 
         onFetchResultsLegend: () => {
             dispatch(fetchResultsLegend())
+        },
+
+        onFetchZoneGeometry: () => {
+            dispatch(fetchGeometry())
         }
     }
 }
