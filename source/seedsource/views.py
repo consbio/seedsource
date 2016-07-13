@@ -3,6 +3,7 @@ import os
 
 from django.conf import settings
 from django.contrib.gis.geos import Point
+from django.db.models import Q
 from ncdjango.models import Service
 from netCDF4 import Dataset
 from rest_framework import viewsets
@@ -93,4 +94,6 @@ class TransferLimitViewset(viewsets.ReadOnlyModelViewSet):
                 raise ParseError()
 
             elevation = self._get_elevation_at_point(Point(x, y))
-            return self.queryset.filter(low__lte=elevation, high__gt=elevation)
+            return self.queryset.filter(
+                Q(low__lte=elevation, high__gt=elevation) | Q(low__isnull=True, high__isnull=True)
+            )

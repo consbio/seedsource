@@ -1,23 +1,16 @@
 import { connect } from 'react-redux'
-import { modifyVariable, toggleVariable, removeVariable, fetchValue } from '../actions/variables'
+import { modifyVariable, toggleVariable, removeVariable, fetchValue, fetchTransfer } from '../actions/variables'
 import Variable from '../componenets/Variable'
 import { species } from '../config'
 
 const mapStateToProps = (state, { variable, index }) => {
     let { activeVariable, runConfiguration } = state
     let active = activeVariable === variable.name
-    let { unit } = runConfiguration
+    let { unit, method } = runConfiguration
     let { name, label, value, transfer, multiplier, units } = variable
 
     if (transfer === null) {
-        let activeSpecies = species.find(item => item.name === state.runConfiguration.species)
-
-        if (activeSpecies !== undefined && activeSpecies.transfers.hasOwnProperty(name)) {
-            transfer = activeSpecies.transfers[name]
-        }
-        else {
-            transfer = 0
-        }
+        transfer = 0
     }
 
     transfer /= multiplier
@@ -43,7 +36,7 @@ const mapStateToProps = (state, { variable, index }) => {
         value = parseFloat(value.toFixed(2))
     }
 
-    return { active, index, name, label, value, transfer, unit, units }
+    return { active, index, name, label, value, transfer, unit, units, method }
 }
 
 const mapDispatchToProps = (dispatch, { variable, index }) => {
@@ -75,6 +68,10 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
 
         onRequestValue: () => {
             dispatch(fetchValue(variable.name))
+        },
+
+        onRequestTransfer: () => {
+            dispatch(fetchTransfer(variable.name))
         }
     }
 }

@@ -9,26 +9,36 @@ class Variable extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.active) {
+        let { active, method, onRequestTransfer } = this.props
+
+        if (method === 'seedzone') {
+            onRequestTransfer()
+        }
+
+        if (active && method === 'custom') {
             ReactDOM.findDOMNode(this.refs.transferInput).select()
         }
     }
 
-    componentDidUpdate({active, value}) {
+    componentDidUpdate({ active, method, value }) {
         this.props.onRequestValue()
+
+        if (method === 'seedzone') {
+            this.props.onRequestTransfer()
+        }
         
-        if (!active && this.props.active) {
+        if (!active && this.props.active && method === 'custom') {
             ReactDOM.findDOMNode(this.refs.transferInput).select()
         }
     }
 
     render() {
         let {
-            active, index, name, label, value, transfer, unit, units, onTransferBlur, onClick, onRemove
+            active, index, name, label, value, transfer, unit, units, method, onTransferBlur, onClick, onRemove
         } = this.props
         let { transferValue } = this.state
         let className = 'variableConfig'
-        let transferNode
+        let transferNode = <span>{transfer}</span>
 
         if (value === null) {
             value = 'N/A'
@@ -37,33 +47,33 @@ class Variable extends React.Component {
             value = <span>{value} {units[unit].label}</span>
         }
 
-        if (!active) {
-            transferNode = <span>{transfer}</span>
-        }
-        else {
+        if (active) {
             className += ' focused'
-            transferNode = (
-                <input
-                    ref="transferInput"
-                    type="text"
-                    value={transferValue === null ? transfer : transferValue}
-                    className="form-control form"
-                    onChange={e => {
-                        this.setState({transferValue: e.target.value})
-                    }}
-                    onBlur={e => {
-                        this.setState({transferValue: null})
-                        onTransferBlur(e.target.value, unit, units)
-                    }}
-                    onKeyPress={e => {
-                        if (e.key === 'Enter') {
-                            e.target.blur()
-                            onClick()
-                        }
-                    }}
-                    onClick={e => {e.stopPropagation()}}
-                />
-            )
+
+            if (method === 'custom') {
+                transferNode = (
+                    <input
+                        ref="transferInput"
+                        type="text"
+                        value={transferValue === null ? transfer : transferValue}
+                        className="form-control form"
+                        onChange={e => {
+                            this.setState({transferValue: e.target.value})
+                        }}
+                        onBlur={e => {
+                            this.setState({transferValue: null})
+                            onTransferBlur(e.target.value, unit, units)
+                        }}
+                        onKeyPress={e => {
+                            if (e.key === 'Enter') {
+                                e.target.blur()
+                                onClick()
+                            }
+                        }}
+                        onClick={e => {e.stopPropagation()}}
+                    />
+                )
+            }
         }
 
         return (
@@ -114,7 +124,8 @@ Variable.propTypes = {
     onTransferBlur: PropTypes.func.isRequired,
     onClick: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
-    onRequestValue: PropTypes.func.isRequired
+    onRequestValue: PropTypes.func.isRequired,
+    onRequestTransfer: PropTypes.func.isRequired
 }
 
 export default Variable

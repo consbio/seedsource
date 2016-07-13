@@ -89,3 +89,43 @@ export const fetchValue = name => {
         return Promise.resolve()
     }
 }
+
+export const receiveTransfer = (variable, json) => {
+    return {
+        type: 'RECEIVE_TRANSFER',
+        transfer: json.results[0].transfer,
+        variable
+    }
+}
+
+export const requestTransfer = variable => {
+    return {
+        type: 'REQUEST_TRANSFER',
+        variable
+    }
+}
+
+export const fetchTransfer = name => {
+    return (dispatch, getState) => {
+        let { runConfiguration, zones } = getState()
+        let { point, variables, method } = runConfiguration
+        let variable = variables.find(item=> item.name === name)
+        let pointIsValid = point !== null && point.x !== null && point.y !== null
+        let shouldFetchTransfer = (
+            method === 'seedzone' && variable.transfer === null && zones.selected !== null &&
+            !variable.isFetchingTransfer && pointIsValid
+        )
+
+        if (shouldFetchTransfer) {
+            dispatch(requestTransfer(name))
+
+            let url = '/sst/transfer-limits/?point=' + point.x + ',' + point.y + '&variable=' + name + '&zone_id=' +
+                zones.selected
+
+            return fetch(url).then(response => response.json()).then(json => dispatch(receiveTransfer(name, json)))
+        }
+
+        return Promise.resolve()
+
+    }
+}
