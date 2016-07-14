@@ -58,13 +58,13 @@ export const variables = [
     },
     {
         name: 'MAP',
-        label: 'Mean annual precipitation (mm)',
+        label: 'Mean annual precipitation',
         multiplier: 1,
         units: mmUnits
     },
     {
         name: 'MSP',
-        label: 'May to September precipitation (mm)',
+        label: 'May to September precipitation',
         multiplier: 1,
         units: mmUnits
     },
@@ -112,13 +112,13 @@ export const variables = [
     },
     {
         name: 'Eref',
-        label: 'Hargreaves reference evaporation (mm)',
+        label: 'Hargreaves reference evaporation',
         multiplier: 1,
         units: mmUnits
     },
     {
         name: 'CMD',
-        label: 'Hargreaves climatic moisture deficit (mm)',
+        label: 'Hargreaves climatic moisture deficit',
         multiplier: 1,
         units: mmUnits
     }
