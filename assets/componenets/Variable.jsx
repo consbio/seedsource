@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { PropTypes } from 'react'
+import Synchro from '../containers/Synchro'
 
 class Variable extends React.Component {
     constructor(props) {
@@ -11,10 +12,6 @@ class Variable extends React.Component {
     componentDidMount() {
         let { active, method, onRequestTransfer } = this.props
 
-        if (method === 'seedzone') {
-            onRequestTransfer()
-        }
-
         if (active && method === 'custom') {
             ReactDOM.findDOMNode(this.refs.transferInput).select()
         }
@@ -22,10 +19,6 @@ class Variable extends React.Component {
 
     componentDidUpdate({ active, method, value }) {
         this.props.onRequestValue()
-
-        if (method === 'seedzone') {
-            this.props.onRequestTransfer()
-        }
         
         if (!active && this.props.active && method === 'custom') {
             ReactDOM.findDOMNode(this.refs.transferInput).select()
@@ -34,7 +27,8 @@ class Variable extends React.Component {
 
     render() {
         let {
-            active, index, name, label, value, transfer, unit, units, method, onTransferBlur, onClick, onRemove
+            active, name, label, value, transfer, unit, units, method, point, zone, onTransferBlur, onClick, onRemove,
+            fetchTransfer, receiveTransfer
         } = this.props
         let { transferValue } = this.state
         let className = 'variableConfig'
@@ -84,6 +78,12 @@ class Variable extends React.Component {
                     onClick()
                 }}
             >
+                <Synchro
+                    hash={JSON.stringify([method, point, zone])}
+                    createRequest={() => fetchTransfer(method, point, zone)}
+                    onSuccess={transfer => receiveTransfer(transfer)}
+                />
+
                 <button
                     type="button"
                     className="close"
@@ -114,18 +114,20 @@ class Variable extends React.Component {
 
 Variable.propTypes = {
     active: PropTypes.bool.isRequired,
-    index: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     transfer: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     unit: PropTypes.string.isRequired,
     units: PropTypes.object,
+    method: PropTypes.string.isRequired,
+    point: PropTypes.object,
+    zone: PropTypes.number,
     onTransferBlur: PropTypes.func.isRequired,
     onClick: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,
-    onRequestValue: PropTypes.func.isRequired,
-    onRequestTransfer: PropTypes.func.isRequired
+    fetchTransfer: PropTypes.func.isRequired,
+    receiveTransfer: PropTypes.func.isRequired
 }
 
 export default Variable

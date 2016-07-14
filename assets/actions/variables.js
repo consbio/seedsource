@@ -90,10 +90,10 @@ export const fetchValue = name => {
     }
 }
 
-export const receiveTransfer = (variable, json) => {
+export const receiveTransfer = (variable, transfer) => {
     return {
         type: 'RECEIVE_TRANSFER',
-        transfer: json.results[0].transfer,
+        transfer,
         variable
     }
 }

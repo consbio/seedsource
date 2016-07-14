@@ -42,13 +42,13 @@ export default (state = defaultConfiguration, action) => {
             })
 
         case 'SELECT_SPECIES':
-            return Object.assign({}, state, {species: action.species, variable: variables(state.variables, action)})
+            return Object.assign({}, state, {species: action.species, variables: variables(state.variables, action)})
 
         case 'SELECT_UNIT':
             return Object.assign({}, state, {unit: action.unit})
 
         case 'SELECT_METHOD':
-            return Object.assign({}, state, {method: action.method})
+            return Object.assign({}, state, {method: action.method, variables: variables(state.variables, action)})
 
         case 'ADD_VARIABLE':
         case 'REMOVE_VARIABLE':
@@ -58,7 +58,6 @@ export default (state = defaultConfiguration, action) => {
         case 'REQUEST_LEGEND':
         case 'RECEIVE_LEGEND':
         case 'SELECT_ZONE':
-        case 'SELECT_METHOD':
         case 'REQUEST_TRANSFER':
         case 'RECEIVE_TRANSFER':
             return Object.assign({}, state, {variables: variables(state.variables, action)})

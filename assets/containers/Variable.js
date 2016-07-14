@@ -1,12 +1,14 @@
 import { connect } from 'react-redux'
-import { modifyVariable, toggleVariable, removeVariable, fetchValue, fetchTransfer } from '../actions/variables'
+import {
+    modifyVariable, toggleVariable, removeVariable, fetchValue, requestTransfer, receiveTransfer
+} from '../actions/variables'
 import Variable from '../componenets/Variable'
-import { species } from '../config'
+import { get, urlEncode } from '../io'
 
 const mapStateToProps = (state, { variable, index }) => {
-    let { activeVariable, runConfiguration } = state
+    let { activeVariable, runConfiguration, zones } = state
     let active = activeVariable === variable.name
-    let { unit, method } = runConfiguration
+    let { unit, method, point } = runConfiguration
     let { name, label, value, transfer, multiplier, units } = variable
 
     if (transfer === null) {
@@ -36,7 +38,19 @@ const mapStateToProps = (state, { variable, index }) => {
         value = parseFloat(value.toFixed(2))
     }
 
-    return { active, index, name, label, value, transfer, unit, units, method }
+    return {
+        zone: zones.selected,
+        active,
+        index,
+        name,
+        label,
+        value,
+        transfer,
+        unit,
+        units,
+        method,
+        point
+    }
 }
 
 const mapDispatchToProps = (dispatch, { variable, index }) => {
@@ -70,8 +84,33 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
             dispatch(fetchValue(variable.name))
         },
 
-        onRequestTransfer: () => {
-            dispatch(fetchTransfer(variable.name))
+        fetchTransfer: (method, point, zone) => {
+            dispatch(requestTransfer(variable.name))
+
+            let pointIsValid = point !== null && point.x !== null && point.y !== null
+
+            if (method === 'seedzone' && pointIsValid) {
+                let url = '/sst/transfer-limits/?' + urlEncode({
+                    point: point.x + ',' + point.y,
+                    variable: variable.name,
+                    zone_id: zone
+                })
+
+                return get(url).then(response => response.json()).then(json => {
+                    if (json.results.length) {
+                        return json.results[0].transfer
+                    }
+                    else {
+                        return null
+                    }
+                })
+            }
+
+            return null
+        },
+        
+        receiveTransfer: transfer => {
+            dispatch(receiveTransfer(variable.name, transfer))
         }
     }
 }
