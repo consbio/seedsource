@@ -995,6 +995,7 @@ class Command(BaseCommand):
                                 clipped_data
                             )
                             transfer = (numpy.nanmax(masked_data) - numpy.nanmin(masked_data)) / 2.0
+                            center = numpy.nanmax(masked_data) - transfer
 
                             if numpy.isnan(transfer) or hasattr(transfer, 'mask'):
                                 print('WARNING: Transfer limit is NaN for {}, zone {}, band {}-{}'.format(
@@ -1003,14 +1004,15 @@ class Command(BaseCommand):
                                 continue
 
                             TransferLimit.objects.create(
-                                variable=variable, zone=zone, low=low, high=high, transfer=transfer
+                                variable=variable, zone=zone, low=low, high=high, transfer=transfer, center=center
                             )
                     else:
                         masked_data = numpy.ma.masked_where(zone_mask == 0, clipped_data)
                         transfer = (numpy.nanmax(masked_data) - numpy.nanmin(masked_data)) / 2.0
+                        center = numpy.nanmax(masked_data) - transfer
 
                         assert not (numpy.isnan(transfer) or hasattr(transfer, 'mask'))
 
-                        TransferLimit.objects.create(variable=variable, zone=zone, transfer=transfer)
+                        TransferLimit.objects.create(variable=variable, zone=zone, transfer=transfer, center=center)
 
 
