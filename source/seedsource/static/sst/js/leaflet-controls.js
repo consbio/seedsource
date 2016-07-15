@@ -108,7 +108,7 @@ L.Control.Legend = L.Control.extend({
         }.bind(this));
     },
 
-    setLegends(legends) {
+    setLegends: function(legends) {
         this.options.legends = legends;
 
         this._rebuildLegends();
