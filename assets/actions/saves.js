@@ -1,6 +1,12 @@
 import fetch from 'isomorphic-fetch'
 import { getCookies } from '../utils'
 
+const dumpConfiguration = configuration => {
+    let { zones } = configuration
+
+    return Object.assign({}, configuration, {zones: Object.assign({}, zones, {geometry: null})})
+}
+
 export const showSaveModal = () => {
     return {
         type: 'SHOW_SAVE_MODAL'
@@ -39,7 +45,7 @@ export const createSave = (configuration, title) => {
     return dispatch => {
         let data = {
             title,
-            configuration: JSON.stringify(configuration)
+            configuration: JSON.stringify(dumpConfiguration(configuration))
         }
 
         dispatch(requestSave())
@@ -77,7 +83,7 @@ export const updateSave = (configuration, lastSave) => {
     return dispatch => {
         let data = {
             title: lastSave.title,
-            configuration: JSON.stringify(configuration)
+            configuration: JSON.stringify(dumpConfiguration(configuration))
         }
 
         dispatch(requestSave())

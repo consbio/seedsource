@@ -7,7 +7,6 @@ import map from './map'
 import job from './job'
 import saves from './saves'
 import legends from './legends'
-import zones from './zones'
 
 export default combineReducers({
     isLoggedIn: auth,
@@ -19,5 +18,4 @@ export default combineReducers({
     job,
     saves,
     legends,
-    zones
 })

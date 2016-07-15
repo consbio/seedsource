@@ -2,8 +2,8 @@ import { connect } from 'react-redux'
 import { fetchZones, selectZone } from '../actions/zones'
 import SeedZoneStep from '../componenets/SeedZoneStep'
 
-const mapStateToProps = ({ zones, runConfiguration }) => {
-    let { method, species, point } = runConfiguration
+const mapStateToProps = ({ runConfiguration }) => {
+    let { method, species, point, zones } = runConfiguration
     let { selected, matched, isFetchingZones } = zones
 
     return {

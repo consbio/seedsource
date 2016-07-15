@@ -99,7 +99,7 @@ class MapConnector extends React.Component {
             this.props.onFetchResultsLegend()
         }
         
-        if (zone !== this.props.zone && zone !== null && geometry === null) {
+        if (zone !== null && geometry === null) {
             this.props.onFetchZoneGeometry()
         }
     }
@@ -322,9 +322,9 @@ MapConnector.propTypes = {
 }
 
 const mapStatetoProps = state => {
-    let { runConfiguration, activeVariable, map, job, legends, zones } = state
+    let { runConfiguration, activeVariable, map, job, legends } = state
     let { opacity, showResults } = map
-    let { objective, point, region, time, model, unit, method } = runConfiguration
+    let { objective, point, region, time, model, unit, method, zones } = runConfiguration
     let { geometry } = zones
     let zone = zones.selected
 

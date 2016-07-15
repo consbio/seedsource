@@ -109,8 +109,8 @@ export const requestTransfer = variable => {
 
 export const fetchTransfer = name => {
     return (dispatch, getState) => {
-        let { runConfiguration, zones } = getState()
-        let { point, variables, method } = runConfiguration
+        let { runConfiguration } = getState()
+        let { point, variables, method, zones } = runConfiguration
         let variable = variables.find(item=> item.name === name)
         let pointIsValid = point !== null && point.x !== null && point.y !== null
         let shouldFetchTransfer = (

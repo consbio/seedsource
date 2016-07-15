@@ -59,7 +59,6 @@ export default (state = [], action) => {
         
         case 'SELECT_ZONE':
         case 'SELECT_METHOD':
-        case 'SELECT_SPECIES':
             return state.map(item => Object.assign({}, item, {isFetchingTransfer: false, transfer: null}))
 
         case 'REQUEST_TRANSFER':

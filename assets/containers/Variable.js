@@ -7,9 +7,9 @@ import { get, urlEncode } from '../io'
 import { variables } from '../config'
 
 const mapStateToProps = (state, { variable, index }) => {
-    let { activeVariable, runConfiguration, zones } = state
+    let { activeVariable, runConfiguration } = state
     let active = activeVariable === variable.name
-    let { unit, method, point } = runConfiguration
+    let { unit, method, point, zones } = runConfiguration
     let variableConfig = variables.find(item => item.name === variable.name)
     let { name, value, transfer } = variable
     let { label, multiplier, units } = variableConfig

@@ -1,5 +1,6 @@
 import point from './point'
 import variables from './variables'
+import zones from './zones'
 
 const defaultConfiguration = {
     objective: 'seedlots',
@@ -15,60 +16,45 @@ const defaultConfiguration = {
 }
 
 export default (state = defaultConfiguration, action) => {
-    switch(action.type) {
-        case 'SELECT_OBJECTIVE':
-            return Object.assign({}, state, {
-                objective: action.objective,
-                variables: variables(state.variables, action)
-            })
+    let runConfiguration = () => {
+        switch(action.type) {
+            case 'SELECT_OBJECTIVE':
+                return Object.assign({}, state, {objective: action.objective})
 
-        case 'SET_LATITUDE':
-        case 'SET_LONGITUDE':
-        case 'SET_POINT':
-            return Object.assign({}, state, {
-                point: point(state.point, action),
-                variables: variables(state.variables, action)
-            })
+            case 'SET_LATITUDE':
+            case 'SET_LONGITUDE':
+            case 'SET_POINT':
+                return Object.assign({}, state, {point: point(state.point, action)})
 
-        case 'SELECT_CLIMATE_YEAR':
-            return Object.assign({}, state, {
-                time: action.year,
-                variables: variables(state.variables, action)
-            })
+            case 'SELECT_CLIMATE_YEAR':
+                return Object.assign({}, state, {time: action.year})
 
-        case 'SELECT_CLIMATE_MODEL':
-            return Object.assign({}, state, {
-                model: action.model,
-                variables: variables(state.variables, action)
-            })
+            case 'SELECT_CLIMATE_MODEL':
+                return Object.assign({}, state, {model: action.model})
 
-        case 'SELECT_SPECIES':
-            return Object.assign({}, state, {species: action.species, variables: variables(state.variables, action)})
+            case 'SELECT_SPECIES':
+                return Object.assign({}, state, {species: action.species})
 
-        case 'SELECT_UNIT':
-            return Object.assign({}, state, {unit: action.unit})
+            case 'SELECT_UNIT':
+                return Object.assign({}, state, {unit: action.unit})
 
-        case 'SELECT_METHOD':
-            return Object.assign({}, state, {method: action.method, variables: variables(state.variables, action)})
+            case 'SELECT_METHOD':
+                return Object.assign({}, state, {method: action.method})
 
-        case 'ADD_VARIABLE':
-        case 'REMOVE_VARIABLE':
-        case 'MODIFY_VARIABLE':
-        case 'REQUEST_VALUE':
-        case 'RECEIVE_VALUE':
-        case 'REQUEST_LEGEND':
-        case 'RECEIVE_LEGEND':
-        case 'SELECT_ZONE':
-        case 'REQUEST_TRANSFER':
-        case 'RECEIVE_TRANSFER':
-            return Object.assign({}, state, {variables: variables(state.variables, action)})
+            case 'LOAD_CONFIGURATION':
+                return Object.assign({}, defaultConfiguration, action.configuration)
 
-        case 'LOAD_CONFIGURATION':
-            return Object.assign({}, defaultConfiguration, action.configuration)
-        
-        default:
-            return state
+            default:
+                return state
+        }
     }
+
+    state = runConfiguration()
+
+    return Object.assign({}, state, {
+        variables: variables(state.variables, action),
+        zones: zones(state.zones || undefined, action)
+    })
 }
 
 export const lastRun = (state = null, action) => {

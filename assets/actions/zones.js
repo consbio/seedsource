@@ -22,9 +22,9 @@ export const receiveZones = zones => {
 
 export const fetchZones = () => {
     return (dispatch, getState) => {
-        let { runConfiguration, zones } = getState()
+        let { runConfiguration } = getState()
+        let { species, point, zones } = runConfiguration
         let { isFetchingZones } = zones
-        let { species, point } = runConfiguration
         let pointIsValid = point !== null && point.x !== null && point.y !== null
 
         if (pointIsValid && !isFetchingZones) {
@@ -60,7 +60,8 @@ export const receiveGeometry = geometry => {
 
 export const fetchGeometry = () => {
     return (dispatch, getState) => {
-        let { zones } = getState()
+        let { runConfiguration } = getState()
+        let { zones } = runConfiguration
         let { selected, isFetchingGeometry } = zones
 
         if (selected !== null && !isFetchingGeometry) {
