@@ -83,7 +83,9 @@ export const fetchValue = name => {
                 'mapExtent=-12301562.058352625%2C6293904.1727356175%2C-12056963.567839967%2C6451517.325059711' +
                 '&geometry=' + JSON.stringify(point)
 
-            return fetch(url).then(response => response.json()).then(json => dispatch(receiveValue(name, json)))
+            return fetch(url, {credentials: 'same-origin'})
+                .then(response => response.json())
+                .then(json => dispatch(receiveValue(name, json)))
         }
 
         return Promise.resolve()
@@ -122,7 +124,9 @@ export const fetchTransfer = name => {
             let url = '/sst/transfer-limits/?point=' + point.x + ',' + point.y + '&variable=' + name + '&zone_id=' +
                 zones.selected
 
-            return fetch(url).then(response => response.json()).then(json => dispatch(receiveTransfer(name, json)))
+            return fetch(url, {credentials: 'same-origin'})
+                .then(response => response.json())
+                .then(json => dispatch(receiveTransfer(name, json)))
         }
 
         return Promise.resolve()

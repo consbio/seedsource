@@ -4,12 +4,15 @@ import {
 } from '../actions/variables'
 import Variable from '../componenets/Variable'
 import { get, urlEncode } from '../io'
+import { variables } from '../config'
 
 const mapStateToProps = (state, { variable, index }) => {
     let { activeVariable, runConfiguration, zones } = state
     let active = activeVariable === variable.name
     let { unit, method, point } = runConfiguration
-    let { name, label, value, transfer, multiplier, units } = variable
+    let variableConfig = variables.find(item => item.name === variable.name)
+    let { name, value, transfer } = variable
+    let { label, multiplier, units } = variableConfig
 
     if (transfer === null) {
         transfer = 0
@@ -68,7 +71,9 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
                     }
                 }
 
-                dispatch(modifyVariable(index, value * variable.multiplier))
+                let variableConfig = variables.find(item => item.name === variable.name)
+
+                dispatch(modifyVariable(index, value * variableConfig.multiplier))
             }
         },
 

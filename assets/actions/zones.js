@@ -36,7 +36,9 @@ export const fetchZones = () => {
                 url += '&species=' + species
             }
 
-            return fetch(url).then(response => response.json()).then(json => dispatch(receiveZones(json.results)))
+            return fetch(url, {credentials: 'same-origin'})
+                .then(response => response.json())
+                .then(json => dispatch(receiveZones(json.results)))
         }
 
         return Promise.resolve()
@@ -66,7 +68,9 @@ export const fetchGeometry = () => {
 
             let url = '/sst/seedzones/' + selected + '/geometry/'
 
-            return fetch(url).then(response => response.json()).then(json => dispatch(receiveGeometry(json)))
+            return fetch(url, {credentials: 'same-origin'})
+                .then(response => response.json())
+                .then(json => dispatch(receiveGeometry(json)))
         }
 
         return Promise.resolve()

@@ -25,7 +25,7 @@ export const fetchVariableLegend = () => {
             let url = '/arcgis/rest/services/' + getServiceName(activeVariable, objective, time, model) +
                 '/MapServer/legend'
 
-            return fetch(url)
+            return fetch(url, {credentials: 'same-origin'})
                 .then(response => response.json())
                 .then(json => dispatch(receiveVariableLegend(json)))
         }
@@ -68,7 +68,7 @@ export const fetchResultsLegend = () => {
 
             let url = '/arcgis/rest/services/' + job.serviceId + '/MapServer/legend'
 
-            return fetch(url)
+            return fetch(url, {credentials: 'same-origin'})
                 .then(response => response.json())
                 .then(json => dispatch(receiveResultsLegend(json)))
         }

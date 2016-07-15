@@ -10,6 +10,7 @@ const defaultConfiguration = {
     model: 'rcp45',
     method: 'seedzone',
     unit: 'metric',
+    zones: null,
     variables: []
 }
 

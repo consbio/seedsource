@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch'
+import { getCookies } from '../utils'
 
 export const receiveJob = (configuration, json) => {
     return {
@@ -51,7 +52,11 @@ export const createJob = configuration => {
 
         return fetch(url, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookies().csrftoken
+            },
             body: JSON.stringify(data)
         }).then(response => {
             let { status } = response
@@ -92,7 +97,7 @@ export const fetchJobStatus = jobId => {
     
         dispatch(requestJobStatus())
 
-        return fetch(url).then(response => {
+        return fetch(url, {credentials: 'same-origin'}).then(response => {
             let { status } = response
 
             if (status >= 200 && status < 300) {
