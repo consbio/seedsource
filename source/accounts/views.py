@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import login, authenticate, update_session_auth_hash, logout
 from rest_framework.generics import CreateAPIView, UpdateAPIView, GenericAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -5,6 +6,8 @@ from rest_framework.response import Response
 
 from accounts.serializers import CreateAccountSerializer, ChangePasswordSerializer, ChangeEmailSerializer
 from accounts.serializers import LoginSerializer, UserSerializer
+
+PREVIEW_MODE = getattr(settings, "PREVIEW_MODE", False)
 
 
 class CreateAccountView(CreateAPIView):
@@ -60,6 +63,9 @@ class LoginView(GenericAPIView):
 class LogoutView(GenericAPIView):
     def get(self, request, *args, **kwargs):
         logout(request)
+
+        if PREVIEW_MODE:
+            request.session['authorized_for_preview'] = True  # Prevent exiting preview mode
 
         return Response()
 

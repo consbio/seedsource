@@ -73,3 +73,11 @@ STATIC_ROOT = '/var/www/static/'
 
 NC_SERVICE_DATA_ROOT = '/ncdjango/services/'
 NC_TEMPORARY_FILE_LOCATION = '/ncdjango/tmp/'
+
+# Preview mode
+INSTALLED_APPS += ('preview',)
+
+MIDDLEWARE_CLASSES += ('preview.middleware.PreviewAccessMiddleware',)
+
+PREVIEW_MODE = True
+PREVIEW_PASSWORD = 'sstearlyaccess'
