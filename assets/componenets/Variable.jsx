@@ -32,7 +32,7 @@ class Variable extends React.Component {
         } = this.props
         let { transferValue } = this.state
         let className = 'variableConfig'
-        let transferNode = <span>{transfer}</span>
+        let transferNode = <span>{transfer} {units[unit].label}</span>
 
         if (value === null) {
             value = 'N/A'

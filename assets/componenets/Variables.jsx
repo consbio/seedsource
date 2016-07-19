@@ -19,7 +19,7 @@ const Variables = ({ variables, unusedVariables, onChange }) => (
             >
                 <option value="none">Add a variable...</option>
                 {unusedVariables.map(item => (
-                    <option value={item.name} key={item.name}>{item.label}</option>
+                    <option value={item.name} key={item.name}>{item.name}: {item.label}</option>
                 ))}
             </select>
         </div>

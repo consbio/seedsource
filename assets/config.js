@@ -22,6 +22,16 @@ const mmUnits = {
     }
 }
 
+const daysUnits = {
+    metric: {label: 'days', convert: null},
+    imperial: {label: 'days', convert: null}
+}
+
+const nullUnits = {
+    metric: {label: '', convert: null},
+    imperial: {label: '', convert: null}
+}
+
 export const variables = [
     {
         name: 'MAT',
@@ -70,31 +80,31 @@ export const variables = [
     },
     {
         name: 'AHM',
-        label: 'Annual heat­moisture index',
+        label: 'Annual heat-moisture index',
         multiplier: 10,
-        units: null
+        units: nullUnits
     },
     {
         name: 'SHM',
-        label: 'Summer heat­moisture index',
+        label: 'Summer heat-moisture index',
         multiplier: 10,
-        units: null
+        units: nullUnits
     },
     {
         name: 'DD_0',
-        label: 'Degree­days below 0°C, chilling degree­days',
+        label: 'Degree-days below 0°C, chilling degree-days',
         multiplier: 1,
-        units: null
+        units: daysUnits
     },
     {
         name: 'FFP',
-        label: 'Frost­free period',
+        label: 'Frost-free period',
         multiplier: 1,
-        units: null
+        units: daysUnits
     },
     {
         name: 'PAS',
-        label: 'Precipitation as snow (mm) between August in previous year and July in current year',
+        label: 'Precipitation as snow between August in previous year and July in current year',
         multiplier: 1,
         units: mmUnits
     },

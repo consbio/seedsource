@@ -24,7 +24,7 @@ const mapStateToProps = (state, { variable, index }) => {
         if (units.imperial.convertTransfer) {
             transfer = units.imperial.convertTransfer(transfer)
         }
-        else {
+        else if (units.imperial.convert !== null) {
             transfer = units.imperial.convert(transfer)
         }
     }
@@ -66,7 +66,7 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
                     if (units.metric.convertTransfer) {
                         value = units.metric.convertTransfer(value)
                     }
-                    else {
+                    else if (units.metric.convert !== null) {
                         value = units.metric.convert(value)
                     }
                 }
