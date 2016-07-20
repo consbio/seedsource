@@ -234,8 +234,6 @@ body {
 .leaflet-opacity-control input[type=range] {
     height: 150px;
 
-    writing-mode: bt-lr; /* For IE */
-
     /*
      * -webkit-appearance is non-standard and may break in the future:
      * https://developer.mozilla.org/en-US/docs/Web/CSS/-moz-appearance
@@ -243,6 +241,20 @@ body {
      */
     -webkit-appearance: slider-vertical;
 }
+
+/* Hack to target IE 10 & 11 */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    .leaflet-opacity-control {
+        padding-bottom: 15px;
+    }
+
+    .leaflet-opacity-control input[type=range] {
+        writing-mode: bt-lr;
+        width: 45px;
+        margin-left: -11px;
+    }
+}
+
 
 .leaflet-button {
     width: 26px;

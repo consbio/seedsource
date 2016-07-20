@@ -16,7 +16,20 @@ L.Control.Opacity = L.Control.extend({
         slider.value = 100;
 
         L.DomEvent.on(slider, 'mousedown mouseup click', L.DomEvent.stopPropagation);
-        L.DomEvent.on(slider, 'input', function(e) {
+
+        /* IE11 seems to process events in the wrong order, so the only way to prevent map movement while dragging the
+         * slider is to disable map dragging when the cursor enters the slider (by the time the mousedown event fires
+         * it's too late becuase the event seems to go to the map first, which results in any subsequent motion
+         * resulting in map movement even after map.dragging.disable() is called.
+         */
+        L.DomEvent.on(slider, 'mouseenter', function(e) {
+            map.dragging.disable()
+        });
+        L.DomEvent.on(slider, 'mouseleave', function(e) {
+            map.dragging.enable();
+        });
+
+        L.DomEvent.on(slider, 'input change', function(e) {
             this.fire('change', {value: e.target.value});
         }.bind(this));
 
