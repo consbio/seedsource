@@ -27,6 +27,11 @@ const daysUnits = {
     imperial: {label: 'days', convert: null}
 }
 
+const degreeDaysUnits = {
+    metric: {label: 'dd', convert: null},
+    imperial: {label: 'dd', convert: null}
+}
+
 const nullUnits = {
     metric: {label: '', convert: null},
     imperial: {label: '', convert: null}
@@ -74,7 +79,7 @@ export const variables = [
     },
     {
         name: 'MSP',
-        label: 'May to September precipitation',
+        label: 'Mean summer precipitation, May to September',
         multiplier: 1,
         units: mmUnits
     },
@@ -92,9 +97,15 @@ export const variables = [
     },
     {
         name: 'DD_0',
-        label: 'Degree-days below 0°C, chilling degree-days',
+        label: 'Degree-days below 0°C',
         multiplier: 1,
-        units: daysUnits
+        units: degreeDaysUnits
+    },
+    {
+        name: 'DD5',
+        label: 'Degree-days above 5°C',
+        multiplier: 1,
+        units: degreeDaysUnits
     },
     {
         name: 'FFP',
@@ -104,7 +115,7 @@ export const variables = [
     },
     {
         name: 'PAS',
-        label: 'Precipitation as snow between August in previous year and July in current year',
+        label: 'Precipitation as snow, August to July',
         multiplier: 1,
         units: mmUnits
     },
