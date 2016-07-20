@@ -58,7 +58,7 @@ class TransferLimitViewset(viewsets.ReadOnlyModelViewSet):
     queryset = TransferLimit.objects.all().select_related('zone').defer('zone__polygon')
     serializer_class = TransferLimitSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('variable', 'zone_id')
+    filter_fields = ('variable', 'time_period', 'zone_id')
 
     def _get_elevation_at_point(self, point):
         service = Service.objects.get(name='west1_dem')

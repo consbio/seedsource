@@ -928,7 +928,7 @@ ELEVATION_BANDS = {
 }
 
 VARIABLES = (
-    'AHM', 'bFFP', 'CMD', 'DD_0', 'DD_18', 'DD5', 'DD18', 'eFFP', 'EMT', 'Eref', 'EXT', 'FFP', 'MAP', 'MAR', 'MAT',
+    'AHM', 'bFFP', 'CMD', 'DD_0', 'DD_18', 'DD5', 'DD18', 'eFFP', 'EMT', 'Eref', 'EXT', 'FFP', 'MAP', 'MAT',
     'MCMT', 'MSP', 'MWMT', 'NFFD', 'PAS', 'RH', 'SHM', 'TD'
 )
 
@@ -959,60 +959,61 @@ class Command(BaseCommand):
         with transaction.atomic():
             TransferLimit.objects.all().delete()
 
-            for variable in VARIABLES:
-                print('Processing {}...'.format(variable))
+            for time_period in ('1961_1990', '1981_2010'):
+                for variable in VARIABLES:
+                    print('Processing {} for {}...'.format(variable, time_period))
 
-                variable_service = Service.objects.get(name='west1_1961_1990Y_{}'.format(variable))
-                with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, variable_service.data_path)) as ds:
-                    data = ds.variables[variable][:]
+                    variable_service = Service.objects.get(name='west1_{}Y_{}'.format(time_period, variable))
+                    with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, variable_service.data_path)) as ds:
+                        data = ds.variables[variable][:]
 
-                for zone in SeedZone.objects.all():
-                    clipped_elevation, clipped_data, clipped_coords = self._get_subsets(
-                        elevation, data, coords, BBox(zone.polygon.extent)
-                    )
+                    for zone in SeedZone.objects.all():
+                        clipped_elevation, clipped_data, clipped_coords = self._get_subsets(
+                            elevation, data, coords, BBox(zone.polygon.extent)
+                        )
 
-                    zone_mask = rasterize(
-                        ((json.loads(zone.polygon.geojson), 1),), out_shape=clipped_elevation.shape,
-                        transform=clipped_coords.affine, fill=0, dtype=numpy.dtype('uint8')
-                    )
+                        zone_mask = rasterize(
+                            ((json.loads(zone.polygon.geojson), 1),), out_shape=clipped_elevation.shape,
+                            transform=clipped_coords.affine, fill=0, dtype=numpy.dtype('uint8')
+                        )
 
-                    if zone.species:
-                        bands = ELEVATION_BANDS[zone.source].get(zone.zone_id)
+                        if zone.species != 'generic':
+                            bands = ELEVATION_BANDS[zone.source].get(zone.zone_id)
 
-                        if bands is None:
-                            print('WARNING: No elevation bands found for {}, zone {}'.format(
-                                zone.source, zone.zone_id
-                            ))
-                            continue
-
-                        bands = bands['bands']
-
-                        for band in bands:
-                            low, high = band
-
-                            masked_data = numpy.ma.masked_where(
-                                (zone_mask == 0) | (clipped_elevation < low) | (clipped_elevation >= high),
-                                clipped_data
-                            )
-                            transfer = (numpy.nanmax(masked_data) - numpy.nanmin(masked_data)) / 2.0
-                            center = numpy.nanmax(masked_data) - transfer
-
-                            if numpy.isnan(transfer) or hasattr(transfer, 'mask'):
-                                print('WARNING: Transfer limit is NaN for {}, zone {}, band {}-{}'.format(
-                                    zone.source, zone.zone_id, low, high
+                            if bands is None:
+                                print('WARNING: No elevation bands found for {}, zone {}'.format(
+                                    zone.source, zone.zone_id
                                 ))
                                 continue
 
+                            bands = bands['bands']
+
+                            for band in bands:
+                                low, high = band
+
+                                masked_data = numpy.ma.masked_where(
+                                    (zone_mask == 0) | (clipped_elevation < low) | (clipped_elevation >= high),
+                                    clipped_data
+                                )
+                                transfer = (numpy.nanmax(masked_data) - numpy.nanmin(masked_data)) / 2.0
+                                center = numpy.nanmax(masked_data) - transfer
+
+                                if numpy.isnan(transfer) or hasattr(transfer, 'mask'):
+                                    print('WARNING: Transfer limit is NaN for {}, zone {}, band {}-{}'.format(
+                                        zone.source, zone.zone_id, low, high
+                                    ))
+                                    continue
+
+                                TransferLimit.objects.create(
+                                    variable=variable, zone=zone, low=low, high=high, transfer=transfer, center=center
+                                )
+                        else:
+                            masked_data = numpy.ma.masked_where(zone_mask == 0, clipped_data)
+                            transfer = (numpy.nanmax(masked_data) - numpy.nanmin(masked_data)) / 2.0
+                            center = numpy.nanmax(masked_data) - transfer
+
+                            assert not (numpy.isnan(transfer) or hasattr(transfer, 'mask'))
+
                             TransferLimit.objects.create(
-                                variable=variable, zone=zone, low=low, high=high, transfer=transfer, center=center
+                                variable=variable, time_period=time_period, zone=zone, transfer=transfer, center=center
                             )
-                    else:
-                        masked_data = numpy.ma.masked_where(zone_mask == 0, clipped_data)
-                        transfer = (numpy.nanmax(masked_data) - numpy.nanmin(masked_data)) / 2.0
-                        center = numpy.nanmax(masked_data) - transfer
-
-                        assert not (numpy.isnan(transfer) or hasattr(transfer, 'mask'))
-
-                        TransferLimit.objects.create(variable=variable, zone=zone, transfer=transfer, center=center)
-
-

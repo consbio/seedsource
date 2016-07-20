@@ -64,8 +64,8 @@ class Command(BaseCommand):
                 geometry = transform_geom(shp.crs, {'init': 'EPSG:4326'}, feature['geometry'])
                 polygon = Polygon(*[LinearRing(x) for x in geometry['coordinates']])
                 SeedZone.objects.create(
-                    source=source, name=name.format(zone_id=zone_id, species=SPECIES_NAMES.get(species)), species=species,
-                    zone_id=zone_id, polygon=polygon
+                    source=source, name=name.format(zone_id=zone_id, species=SPECIES_NAMES.get(species)),
+                    species=species, zone_id=zone_id, polygon=polygon
                 )
 
     def handle(self, zones_file, *args, **options):
@@ -109,7 +109,7 @@ class Command(BaseCommand):
 
                 self._add_zones(
                     os.path.join(HISTORIC_ZONES_DIR, HISTORIC_ZONES), 'Washington / Oregon Historic Zone {zone_id}',
-                    None, os.path.join(historic_zones, HISTORIC_ZONES), 'OBJECTID'
+                    'generic', os.path.join(historic_zones, HISTORIC_ZONES), 'OBJECTID'
                 )
 
 

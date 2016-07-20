@@ -30,11 +30,7 @@ export const fetchZones = () => {
         if (pointIsValid && !isFetchingZones) {
             dispatch(requestZones())
 
-            let url = '/sst/seedzones/?point=' + point.x + ',' + point.y
-
-            if (species !== 'generic') {
-                url += '&species=' + species
-            }
+            let url = '/sst/seedzones/?point=' + point.x + ',' + point.y + '&species=' + species
 
             return fetch(url, {credentials: 'same-origin'})
                 .then(response => response.json())
