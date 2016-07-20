@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from seedsource.fields import GeometryField
 from seedsource.models import SeedZone, TransferLimit
 from .models import RunConfiguration
 
@@ -25,4 +24,4 @@ class TransferLimitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TransferLimit
-        fields = ('variable', 'zone', 'transfer', 'low', 'high')
+        fields = ('variable', 'zone', 'transfer', 'low', 'high', 'time_period')

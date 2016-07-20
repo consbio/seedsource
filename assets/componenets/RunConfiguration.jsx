@@ -69,7 +69,7 @@ class RunConfiguration extends React.Component {
         let steps = [
             {type: ObjectiveStep, title: 'Choose an objective'},
             {type: LocationStep, title: getObjectiveLabel(objective)},
-            {type: ClimateStep, title: 'Select a target climate'},
+            {type: ClimateStep, title: 'Select climate scenarios'},
             {type: TransferStep, title: 'Select transfer limit method'},
             {type: SpeciesStep, title: 'Select a species'},
             {type: SeedZoneStep, title: 'Select a seed zone'},

@@ -126,9 +126,9 @@ class MapConnector extends React.Component {
         }
     }
 
-    updateVariableLayer(variable, objective, time, model) {
+    updateVariableLayer(variable, objective, climate) {
         if (variable !== null) {
-            let layerUrl = '/tiles/' + getServiceName(variable, objective, time, model) + '/{z}/{x}/{y}.png'
+            let layerUrl = '/tiles/' + getServiceName(variable, objective, climate) + '/{z}/{x}/{y}.png'
 
             if (this.variableLayer === null) {
                 this.variableLayer = L.tileLayer(layerUrl, {zIndex: 1, opacity: 1}).addTo(this.map)
@@ -191,7 +191,7 @@ class MapConnector extends React.Component {
         }
     }
 
-    updateTimeOverlay(variable, objective, time, model) {
+    updateTimeOverlay(variable, objective, climate) {
         let overlayNode = document.getElementById('TimeOverlay')
 
         if (variable === null) {
@@ -204,16 +204,12 @@ class MapConnector extends React.Component {
                 overlayNode.classList.remove('hidden')
             }
 
-            let labelKey
+            let selectedClimate = objective === 'seedlots' ? climate.site : climate.seedlot
+            let { time, model } = selectedClimate
+            let labelKey = time
 
-            if (objective === 'sites') {
-                labelKey = '1961_1990'
-            }
-            else {
-                labelKey = time
-                if (time !== '1961_1990' && time !== '1981_2010') {
-                    labelKey += model
-                }
+            if (time !== '1961_1990' && time !== '1981_2010') {
+                labelKey += model
             }
 
             let label = timeLabels[labelKey]
@@ -301,16 +297,16 @@ class MapConnector extends React.Component {
 
     render() {
         let {
-            activeVariable, objective, point, time, model, opacity, job, showResults, legends, unit, method, zone,
+            activeVariable, objective, point, climate, opacity, job, showResults, legends, unit, method, zone,
             geometry
         } = this.props
 
         this.updatePointMarker(point)
-        this.updateVariableLayer(activeVariable, objective, time, model)
+        this.updateVariableLayer(activeVariable, objective, climate)
         this.updateResultsLayer(job.serviceId, showResults)
         this.updateOpacity(opacity)
         this.updateVisibilityButton(job.serviceId, showResults)
-        this.updateTimeOverlay(activeVariable, objective, time, model)
+        this.updateTimeOverlay(activeVariable, objective, climate)
         this.updateLegends(legends, activeVariable, job.serviceId, unit)
         this.updateZoneLayer(method, zone, geometry)
 
@@ -329,13 +325,13 @@ MapConnector.propTypes = {
 const mapStatetoProps = state => {
     let { runConfiguration, activeVariable, map, job, legends } = state
     let { opacity, showResults } = map
-    let { objective, point, region, time, model, unit, method, zones } = runConfiguration
+    let { objective, point, region, climate, unit, method, zones } = runConfiguration
     let { geometry } = zones
     let zone = zones.selected
 
     return {
-        activeVariable, objective, point, region, time, model, opacity, job, showResults, legends, unit, method,
-        geometry, zone
+        activeVariable, objective, point, region, climate, opacity, job, showResults, legends, unit, method, geometry,
+        zone
     }
 }
 

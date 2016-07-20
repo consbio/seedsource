@@ -17,12 +17,12 @@ export const requestVariableLegend = () => {
 export const fetchVariableLegend = () => {
     return (dispatch, getState) => {
         let { runConfiguration, activeVariable, legends } = getState()
-        let { objective, time, model } = runConfiguration
+        let { objective, climate } = runConfiguration
 
         dispatch(requestVariableLegend())
 
         if (activeVariable !== null && legends.variable.legend === null && !legends.variable.isFetching) {
-            let url = '/arcgis/rest/services/' + getServiceName(activeVariable, objective, time, model) +
+            let url = '/arcgis/rest/services/' + getServiceName(activeVariable, objective, climate) +
                 '/MapServer/legend'
 
             return fetch(url, {credentials: 'same-origin'})

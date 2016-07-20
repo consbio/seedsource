@@ -3,21 +3,20 @@ import ClimateStep from '../componenets/ClimateStep'
 import { selectClimateYear, selectClimateModel } from '../actions/climate'
 
 const mapStateToProps = ({ runConfiguration }) => {
-    return {
-        year: runConfiguration.time,
-        model: runConfiguration.model
-    }
+    let { climate } = runConfiguration
+
+    return {climate}
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onChange: (type, value) => {
+        onChange: (type, value, climate) => {
             switch(type) {
                 case 'year':
-                    dispatch(selectClimateYear(value))
+                    dispatch(selectClimateYear(value, climate))
                     break
                 case 'model':
-                    dispatch(selectClimateModel(value))
+                    dispatch(selectClimateModel(value, climate))
                     break
             }
         }

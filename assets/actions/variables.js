@@ -70,14 +70,14 @@ export const requestValue = variable => {
 export const fetchValue = name => {
     return (dispatch, getState) => {
         let {runConfiguration} = getState()
-        let {objective, point, time, model, variables} = runConfiguration
+        let {objective, point, climate, variables} = runConfiguration
         let variable = variables.find(item => item.name === name)
         let pointIsValid = point !== null && point.x !== null && point.y !== null
 
         if (variable !== undefined && variable.value === null && !variable.isFetching && pointIsValid) {
             dispatch(requestValue(name))
 
-            let url = '/arcgis/rest/services/' + getServiceName(name, objective, time, model) +
+            let url = '/arcgis/rest/services/' + getServiceName(name, objective, climate) +
                 '/MapServer/identify/' + '?f=json&tolerance=2&imageDisplay=1600%2C1031%2C96&&' +
                 'geometryType=esriGeometryPoint&' +
                 'mapExtent=-12301562.058352625%2C6293904.1727356175%2C-12056963.567839967%2C6451517.325059711' +
@@ -104,32 +104,5 @@ export const requestTransfer = variable => {
     return {
         type: 'REQUEST_TRANSFER',
         variable
-    }
-}
-
-export const fetchTransfer = name => {
-    return (dispatch, getState) => {
-        let { runConfiguration } = getState()
-        let { point, variables, method, zones } = runConfiguration
-        let variable = variables.find(item=> item.name === name)
-        let pointIsValid = point !== null && point.x !== null && point.y !== null
-        let shouldFetchTransfer = (
-            method === 'seedzone' && variable.transfer === null && zones.selected !== null &&
-            !variable.isFetchingTransfer && pointIsValid
-        )
-
-        if (shouldFetchTransfer) {
-            dispatch(requestTransfer(name))
-
-            let url = '/sst/transfer-limits/?point=' + point.x + ',' + point.y + '&variable=' + name + '&zone_id=' +
-                zones.selected
-
-            return fetch(url, {credentials: 'same-origin'})
-                .then(response => response.json())
-                .then(json => dispatch(receiveTransfer(name, json)))
-        }
-
-        return Promise.resolve()
-
     }
 }

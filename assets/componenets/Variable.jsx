@@ -27,8 +27,8 @@ class Variable extends React.Component {
 
     render() {
         let {
-            active, name, label, value, transfer, unit, units, method, point, zone, onTransferBlur, onClick, onRemove,
-            fetchTransfer, receiveTransfer
+            active, name, label, value, transfer, unit, units, method, point, zone, climate, onTransferBlur, onClick,
+            onRemove, fetchTransfer, receiveTransfer
         } = this.props
         let { transferValue } = this.state
         let className = 'variableConfig'
@@ -79,8 +79,8 @@ class Variable extends React.Component {
                 }}
             >
                 <Synchro
-                    hash={JSON.stringify([method, point, zone])}
-                    createRequest={() => fetchTransfer(method, point, zone)}
+                    hash={JSON.stringify([method, point, zone, climate.seedlot.time])}
+                    createRequest={() => fetchTransfer(method, point, zone, climate.seedlot.time)}
                     onSuccess={transfer => receiveTransfer(transfer)}
                 />
 
@@ -123,6 +123,7 @@ Variable.propTypes = {
     method: PropTypes.string.isRequired,
     point: PropTypes.object,
     zone: PropTypes.number,
+    climate: PropTypes.object.isRequired,
     onTransferBlur: PropTypes.func.isRequired,
     onClick: PropTypes.func.isRequired,
     onRemove: PropTypes.func.isRequired,

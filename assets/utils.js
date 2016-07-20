@@ -1,16 +1,18 @@
-export const getServiceName = (variable, objective, time, model) => {
-    var serviceName = 'west1_';
+export const getServiceName = (variable, objective, climate) => {
+    let serviceName = 'west1_'
 
-    if (objective === 'sites') {
-        return serviceName + '1961_1990Y_' + variable;
+    // Show site climate when looking for seedlots, and seedlot climate when looking for sites
+    let selectedClimate = objective === 'seedlots' ? climate.site : climate.seedlot
+    let { time, model } = selectedClimate
+
+    if (time === '1961_1990' || time === '1981_2010') {
+        serviceName += time
     }
     else {
-        if (time !== '1961_1990' && time !== '1981_2010') {
-            serviceName += model + '_';
-        }
-
-        return serviceName + time + 'Y_' + variable;
+        serviceName += model + '_' + time
     }
+
+    return serviceName + 'Y_' + variable
 }
 
 export const getCookies = () => {

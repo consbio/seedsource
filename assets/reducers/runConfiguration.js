@@ -1,14 +1,14 @@
 import point from './point'
 import variables from './variables'
 import zones from './zones'
+import climate from './climate'
 
 const defaultConfiguration = {
     objective: 'seedlots',
     species: 'generic',
     point: null,
     region: 'west1',
-    time: '1961_1990',
-    model: 'rcp45',
+    climate: null,
     method: 'seedzone',
     unit: 'metric',
     zones: null,
@@ -25,12 +25,6 @@ export default (state = defaultConfiguration, action) => {
             case 'SET_LONGITUDE':
             case 'SET_POINT':
                 return Object.assign({}, state, {point: point(state.point, action)})
-
-            case 'SELECT_CLIMATE_YEAR':
-                return Object.assign({}, state, {time: action.year})
-
-            case 'SELECT_CLIMATE_MODEL':
-                return Object.assign({}, state, {model: action.model})
 
             case 'SELECT_SPECIES':
                 return Object.assign({}, state, {species: action.species})
@@ -53,7 +47,8 @@ export default (state = defaultConfiguration, action) => {
 
     return Object.assign({}, state, {
         variables: variables(state.variables, action),
-        zones: zones(state.zones || undefined, action)
+        zones: zones(state.zones || undefined, action),
+        climate: climate(state.climate || undefined, action)
     })
 }
 

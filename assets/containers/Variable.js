@@ -9,7 +9,7 @@ import { variables } from '../config'
 const mapStateToProps = (state, { variable, index }) => {
     let { activeVariable, runConfiguration } = state
     let active = activeVariable === variable.name
-    let { unit, method, point, zones } = runConfiguration
+    let { unit, method, point, zones, climate } = runConfiguration
     let variableConfig = variables.find(item => item.name === variable.name)
     let { name, value, transfer } = variable
     let { label, multiplier, units } = variableConfig
@@ -52,7 +52,8 @@ const mapStateToProps = (state, { variable, index }) => {
         unit,
         units,
         method,
-        point
+        point,
+        climate
     }
 }
 
@@ -89,7 +90,7 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
             dispatch(fetchValue(variable.name))
         },
 
-        fetchTransfer: (method, point, zone) => {
+        fetchTransfer: (method, point, zone, year) => {
             dispatch(requestTransfer(variable.name))
 
             let pointIsValid = point !== null && point.x !== null && point.y !== null
@@ -98,7 +99,8 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
                 let url = '/sst/transfer-limits/?' + urlEncode({
                     point: point.x + ',' + point.y,
                     variable: variable.name,
-                    zone_id: zone
+                    zone_id: zone,
+                    time_period: year
                 })
 
                 return get(url).then(response => response.json()).then(json => {

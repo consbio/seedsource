@@ -23,16 +23,18 @@ export const requestJob = configuration => {
 
 export const createJob = configuration => {
     return dispatch => {
-        let { variables, objective, time, model } = configuration
+        let { variables, objective, climate } = configuration
 
         let inputs = {
             variables: variables.map(item => {
-                /* Run the tool against the current time period when looking for seedlots, against the target time
-                 *  period when looking for planting sites. */
-                let year = '1961_1990'
+                /* Run the tool against the seedlot climate when looking for seedlots, otherwise run against the
+                 * planting site climate.
+                 */
+                let selectedClimate = objective === 'seedlots' ? climate.seedlot : climate.site
+                let year = selectedClimate.time
 
-                if (objective === 'site' && time !== '1961_1990') {
-                    year = model + '_' + time
+                if (year !== '1961_1990' && year !== '1981_2010') {
+                    year = selectedClimate.model + '_' +selectedClimate.time
                 }
 
                 return 'service://west1_' + year + 'Y_' + item.name + ':' + item.name
