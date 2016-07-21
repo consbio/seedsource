@@ -94,6 +94,12 @@ body {
     margin-bottom: 8px;
 }
 
+.aboutImage {
+    float: right;
+    margin-left: 15px;
+    margin-right: -15px;
+}
+
 .main {
     position: fixed;
     top: 50px;
