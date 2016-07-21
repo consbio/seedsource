@@ -23,18 +23,18 @@ const mmUnits = {
 }
 
 const daysUnits = {
-    metric: {label: 'days', convert: null},
-    imperial: {label: 'days', convert: null}
+    metric: {label: 'days', convert: value => value},
+    imperial: {label: 'days', convert: value => value}
 }
 
 const degreeDaysUnits = {
-    metric: {label: 'dd', convert: null},
-    imperial: {label: 'dd', convert: null}
+    metric: {label: 'dd', convert: value => value},
+    imperial: {label: 'dd', convert: value => value}
 }
 
 const nullUnits = {
-    metric: {label: '', convert: null},
-    imperial: {label: '', convert: null}
+    metric: {label: '', convert: value => value},
+    imperial: {label: '', convert: value => value}
 }
 
 export const variables = [
