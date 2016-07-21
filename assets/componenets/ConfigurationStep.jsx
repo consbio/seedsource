@@ -1,29 +1,17 @@
 import React, { PropTypes } from 'react'
 
 class ConfigurationStep extends React.Component {
-    renderStep() {
-        return null
-    }
-
     render() {
-        let { number, title } = this.props
-        let stepContent = this.renderStep()
+        let { number, title, children } = this.props
 
-        if (stepContent === null) {
-            return null
-        }
-        else {
-            return (
-                <div className="step">
-                    <h4><span className="badge">{ number }</span> { title }</h4>
-                    { stepContent }
-                </div>
-            )
-        }
+        return (
+            <div className="step">
+                <h4><span className="badge">{ number }</span> { title }</h4>
+                {children}
+            </div>
+        )
     }
 }
-
-ConfigurationStep.shouldRender = () => true
 
 ConfigurationStep.propTypes = {
     number: PropTypes.number.isRequired,

@@ -3,10 +3,12 @@ import ConfigurationStep from './ConfigurationStep'
 import UnitButton from '../containers/UnitButton'
 import Variables from '../containers/Variables'
 
-class VariableStep extends ConfigurationStep {
-    renderStep() {
+class VariableStep extends React.Component {
+    render() {
+        let { number } = this.props
+
         return (
-            <div>
+            <ConfigurationStep title="Select climate variables" number={number}>
                 <div>
                     <strong>Units: </strong>
                     <div className="btn-group-sm btn-group" style={{display: 'inline-block'}}>
@@ -16,9 +18,11 @@ class VariableStep extends ConfigurationStep {
                 </div>
 
                 <Variables />
-            </div>
+            </ConfigurationStep>
         )
     }
 }
+
+VariableStep.shouldRender = () => true
 
 export default VariableStep

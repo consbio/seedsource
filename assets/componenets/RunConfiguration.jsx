@@ -1,11 +1,8 @@
 import React, { PropTypes } from 'react'
-import Variables from '../containers/Variables'
 import SaveModal from '../containers/SaveModal'
-import UnitButton from '../containers/UnitButton'
-import MethodButton from '../containers/MethodButton'
 import SeedzoneButton from '../containers/SeedzoneButton'
 import ObjectiveStep from './ObjectiveStep'
-import LocationStep from './LocationStep'
+import LocationStep from '../containers/LocationStep'
 import ClimateStep from '../containers/ClimateStep'
 import TransferStep from './TransferStep'
 import SpeciesStep from '../containers/SpeciesStep'
@@ -32,7 +29,7 @@ class RunConfiguration extends React.Component {
 
     render() {
         let {
-            state, objective, species, method, canRun, canSave, configuration, job, isLoggedIn, onSpeciesChange, onRun,
+            state, objective, species, method, canRun, canSave, configuration, job, isLoggedIn, onRun,
             onSave
         } = this.props
         let overlay = null
@@ -67,13 +64,13 @@ class RunConfiguration extends React.Component {
         }
 
         let steps = [
-            {type: ObjectiveStep, title: 'Choose an objective'},
-            {type: LocationStep, title: getObjectiveLabel(objective)},
-            {type: ClimateStep, title: 'Select climate scenarios'},
-            {type: TransferStep, title: 'Select transfer limit method'},
-            {type: SpeciesStep, title: 'Select a species'},
-            {type: SeedZoneStep, title: 'Select a seed zone'},
-            {type: VariableStep, title: 'Configure variables'}
+            {type: ObjectiveStep, key: 'objective'},
+            {type: LocationStep, key: 'location'},
+            {type: ClimateStep, key: 'climate'},
+            {type: TransferStep, key: 'transfer'},
+            {type: SpeciesStep, key: 'species'},
+            {type: SeedZoneStep, key: 'seedzone'},
+            {type: VariableStep, key: 'variables'}
         ]
 
         return (
@@ -81,7 +78,7 @@ class RunConfiguration extends React.Component {
                 {overlay}
 
                 {steps.filter(item => item.type.shouldRender(state)).map((item, i) => {
-                    let content = <item.type number={i + 1} title={item.title} key={item.title} />
+                    let content = <item.type number={i + 1} title={item.title} key={item.key} />
 
                     return content
                 })}
@@ -138,7 +135,6 @@ RunConfiguration.propTypes = {
     configuration: PropTypes.object.isRequired,
     job: PropTypes.object.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
-    onSpeciesChange: PropTypes.func.isRequired,
     onRun: PropTypes.func.isRequired,
     onPoll: PropTypes.func.isRequired,
     onDone: PropTypes.func.isRequired,

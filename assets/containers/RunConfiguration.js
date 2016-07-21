@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import RunConfiguration from '../componenets/RunConfiguration'
-import { selectSpecies } from '../actions/species'
 import { createJob, fetchJobStatus, finishJob } from '../actions/job'
 import { showSaveModal } from '../actions/saves'
 
@@ -31,10 +30,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onSpeciesChange: species => {
-            dispatch(selectSpecies(species))
-        },
-
         onRun: configuration => {
             dispatch(createJob(configuration))
         },

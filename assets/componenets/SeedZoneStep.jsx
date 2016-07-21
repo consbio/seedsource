@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import ConfigurationStep from './ConfigurationStep'
 
-class SeedZoneStep extends ConfigurationStep {
+class SeedZoneStep extends React.Component {
     componentWillUpdate(newProps) {
         let { method, zones, onFetchZones, point, species } = newProps
         let pointChanged = JSON.stringify(point) != JSON.stringify(this.props.point)
@@ -13,40 +13,46 @@ class SeedZoneStep extends ConfigurationStep {
         }
     }
 
-    renderStep() {
-        let { method, selected, zones, isFetchingZones, onZoneChange } = this.props
+    render() {
+        let { method, selected, zones, number, isFetchingZones, onZoneChange } = this.props
 
         if (method !== 'seedzone') {
             return null
         }
 
-        if (!zones.length) {
-            return (
-                <select className="form-control" disabled>
-                    <option>Select a location...</option>
+        let content = (
+            <select className="form-control" disabled>
+                <option>Select a location...</option>
+            </select>
+        )
+
+        if (zones.length) {
+            content = (
+                <select
+                    className="form-control"
+                    value={selected}
+                    disabled={isFetchingZones}
+                    onChange={e => {
+                        e.preventDefault()
+                        onZoneChange(e.target.value)
+                    }}
+                >
+                    {zones.map(item => (
+                        <option value={item.id} key={item.id}>{item.name}</option>
+                    ))}
                 </select>
             )
         }
 
         return (
-            <select
-                className="form-control"
-                value={selected}
-                disabled={isFetchingZones}
-                onChange={e => {
-                    e.preventDefault()
-                    onZoneChange(e.target.value)
-                }}
-            >
-                {zones.map(item => (
-                    <option value={item.id} key={item.id}>{item.name}</option>
-                ))}
-            </select>
+            <ConfigurationStep title="Select a seed zone" number={number}>
+                {content}
+            </ConfigurationStep>
         )
     }
 }
 
-SeedZoneStep.propTypes = Object.assign({}, ConfigurationStep.propTypes, {
+SeedZoneStep.propTypes = {
     selected: PropTypes.number,
     method: PropTypes.string.isRequired,
     zones: PropTypes.array.isRequired,
@@ -55,6 +61,6 @@ SeedZoneStep.propTypes = Object.assign({}, ConfigurationStep.propTypes, {
     isFetchingZones: PropTypes.bool.isRequired,
     onFetchZones: PropTypes.func.isRequired,
     onZoneChange: PropTypes.func.isRequired
-})
+}
 
 export default SeedZoneStep
