@@ -40,7 +40,9 @@ class MapConnector extends React.Component {
     componentWillMount() {
         this.map = L.map('Map', {
             zoom: 5,
-            center: [44.68, -109.36]
+            center: [44.68, -109.36],
+            minZoom: 5,
+            maxZoom: 13
         })
 
         this.map.zoomControl.setPosition('topright')
