@@ -10,7 +10,10 @@ const Variables = ({ variables, unusedVariables, onChange }) => {
                 <thead>
                 <tr>
                     <th></th>
-                    <th>Name</th>
+                    <th>
+                        <div className="modifyStatus">&nbsp;</div>
+                        Name
+                    </th>
                     <th>Value</th>
                     <th>Transfer limit (+/-)</th>
                     <th></th>

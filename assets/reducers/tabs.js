@@ -1,4 +1,4 @@
-export default (state = 'configuration', action) => {
+export default (state = 'about', action) => {
     switch (action.type) {
         case 'SELECT_TAB':
             return action.tab

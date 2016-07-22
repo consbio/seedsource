@@ -136,6 +136,21 @@ body {
     font-size: 1.3em;
 }
 
+.aboutStep {
+    min-height: 80px;
+    border-bottom: 1px solid #CCC;
+    padding-bottom: 10px;
+}
+
+.aboutStep:last-child {
+    border-bottom: 0px;
+}
+
+.aboutStep img {
+    float: left;
+    margin-right: 20px;
+}
+
 .variableConfig {
     padding: 5px;
     border: 1px solid #999;
@@ -183,7 +198,7 @@ body {
     color: #999;
 }
 
-.variablesList table tr.visible td .visibilityToggle {
+.variablesList table tr.visible td .visibilityToggle, .variablesList table td:hover .visibilityToggle {
     color: #000;
 }
 
@@ -193,23 +208,37 @@ body {
     color: blue;
 }
 
-.variablesList div.modified {
+.variablesList div.modifyStatus {
     display: inline-block;
     width: 3px;
-    background-color: #f0ad4e;
-    margin-right: 3px;
+    background-color: #FFF;
+    margin-right: 5px;
+    transition: background-color .5s;
 }
 
-.variablesList span.transferReset {
-    color: blue;
+.variablesList div.modified {
+    background-color: #f0ad4e;
+    transition: background-color .5s;
+
+}
+
+.variablesList .nodata {
+    color: #999;
+}
+
+.variablesList div.transferReset {
+    display: inline-block;
+    color: #66F;
     cursor: pointer;
-    font-size: .8em;
-    margin-left: 10px;
+    font-size: .9em;
+    float: right;
+    margin-right: 5px;
 }
 
 .variablesList input[type=text] {
     width: 75px;
-    text-align: right;
+    margin-left: -12px;
+    margin-top: -6px;
 }
 
 .configurationList {

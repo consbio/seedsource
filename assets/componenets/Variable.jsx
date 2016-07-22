@@ -38,44 +38,46 @@ class Variable extends React.Component {
 
         if (editTransfer) {
             transferNode = (
-                <input
-                    ref="transferInput"
-                    type="text"
-                    className="form form-control"
-                    value={transferValue === null ? transfer : transferValue}
-                    onChange={e => {
-                        this.setState({transferValue: e.target.value})
-                    }}
-                    onBlur={e => {
-                        if (parseFloat(e.target.value) !== transfer) {
-                            onTransferChange(e.target.value, unit, units)
-                        }
+                <span>
+                    <input
+                        ref="transferInput"
+                        type="text"
+                        className="form form-control form-inline"
+                        value={transferValue === null ? transfer : transferValue}
+                        onChange={e => {
+                            this.setState({transferValue: e.target.value})
+                        }}
+                        onBlur={e => {
+                            if (parseFloat(e.target.value) !== transfer) {
+                                onTransferChange(e.target.value, unit, units)
+                            }
 
-                        this.setState({transferValue: null, editTransfer: false})
-                    }}
-                    onKeyUp={e => {
-                        if (e.key === 'Enter') {
-                            e.target.blur()
-                        }
-                        if (e.key === 'Escape') {
                             this.setState({transferValue: null, editTransfer: false})
-                        }
-                    }}
-                />
+                        }}
+                        onKeyUp={e => {
+                            if (e.key === 'Enter') {
+                                e.target.blur()
+                            }
+                            if (e.key === 'Escape') {
+                                this.setState({transferValue: null, editTransfer: false})
+                            }
+                        }}
+                    />
+                    {units[unit].label}
+                </span>
             )
         }
         else if (transferIsModified) {
             transferNode = (
-                <span>
-                    <div className="modified">&nbsp;</div>
+                <div>
+                    <div className="transferReset" onClick={() => onResetTransfer()}>reset</div>
                     {transferNode}
-                    <span className="transferReset" onClick={() => onResetTransfer()}>reset</span>
-                </span>
+                </div>
             )
         }
 
         if (value === null) {
-            value = 'N/A'
+            value = <span className="nodata">--</span>
         }
         else {
             value = <span>{value} {units[unit].label}</span>
@@ -101,7 +103,9 @@ class Variable extends React.Component {
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </td>
-                    <td><strong>{name}</strong></td>
+                    <td>
+                        <div className={"modifyStatus " + (transferIsModified ? "modified" : "")}>&nbsp;</div>
+                        <strong>{name}</strong></td>
                     <td>{value}</td>
                     <td>{transferNode}</td>
                     <td>
