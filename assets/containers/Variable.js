@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import {
-    modifyVariable, toggleVariable, removeVariable, fetchValue, requestTransfer, receiveTransfer
+    modifyVariable, resetTransfer, toggleVariable, removeVariable, fetchValue, requestTransfer, receiveTransfer
 } from '../actions/variables'
 import Variable from '../componenets/Variable'
 import { get, urlEncode } from '../io'
@@ -11,7 +11,7 @@ const mapStateToProps = (state, { variable, index }) => {
     let active = activeVariable === variable.name
     let { unit, method, point, zones, climate } = runConfiguration
     let variableConfig = variables.find(item => item.name === variable.name)
-    let { name, value, transfer } = variable
+    let { name, value, transfer, transferIsModified } = variable
     let { label, multiplier, units } = variableConfig
 
     if (transfer === null) {
@@ -49,6 +49,7 @@ const mapStateToProps = (state, { variable, index }) => {
         label,
         value,
         transfer,
+        transferIsModified,
         unit,
         units,
         method,
@@ -59,7 +60,7 @@ const mapStateToProps = (state, { variable, index }) => {
 
 const mapDispatchToProps = (dispatch, { variable, index }) => {
     return {
-        onTransferBlur: (transfer, unit, units) => {
+        onTransferChange: (transfer, unit, units) => {
             let value = parseFloat(transfer)
 
             if (!isNaN(value)) {
@@ -74,11 +75,15 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
 
                 let variableConfig = variables.find(item => item.name === variable.name)
 
-                dispatch(modifyVariable(index, value * variableConfig.multiplier))
+                dispatch(modifyVariable(variable.name, value * variableConfig.multiplier))
             }
         },
 
-        onClick: () => {
+        onResetTransfer: () => {
+            dispatch(resetTransfer(variable.name))
+        },
+
+        onToggle: () => {
             dispatch(toggleVariable(variable.name))
         },
 

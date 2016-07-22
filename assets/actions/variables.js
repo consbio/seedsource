@@ -37,11 +37,18 @@ export const removeVariable = (variable, index) => {
     }
 }
 
-export const modifyVariable = (index, transfer) => {
+export const modifyVariable = (variable, transfer) => {
     return {
         type: 'MODIFY_VARIABLE',
-        index,
+        variable,
         transfer
+    }
+}
+
+export const resetTransfer = variable => {
+    return {
+        type: 'RESET_TRANSFER',
+        variable
     }
 }
 

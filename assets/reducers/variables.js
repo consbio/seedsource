@@ -3,6 +3,8 @@ import { variables } from '../config'
 export default (state = [], action) => {
     let variable, index
 
+    let getVariable = name => state.find(item => item.name === name)
+
     let updateVariable = (name, values) => {
         index = state.findIndex(item => item.name === name)
 
@@ -25,6 +27,8 @@ export default (state = [], action) => {
                 name,
                 value: null,
                 transfer: null,
+                defaultTransfer: null,
+                transferIsModified: false,
                 isFetching: false,
                 isFetchingTransfer: false
             }]
@@ -33,8 +37,12 @@ export default (state = [], action) => {
             return state.slice(0, action.index).concat(state.slice(action.index+1))
 
         case 'MODIFY_VARIABLE':
-            variable = Object.assign({}, state[action.index], {transfer: action.transfer})
-            return state.slice(0, action.index).concat([variable, ...state.slice(action.index+1)])
+            return updateVariable(action.variable, {transfer: action.transfer, transferIsModified: true})
+
+        case 'RESET_TRANSFER':
+            variable = getVariable(action.variable)
+
+            return updateVariable(action.variable, {transfer: variable.defaultTransfer, transferIsModified: false})
 
         case 'REQUEST_VALUE':
             return updateVariable(action.variable, {isFetching: true})
@@ -49,7 +57,8 @@ export default (state = [], action) => {
                 isFetching: false,
                 isFetchingTransfer: false,
                 value: null,
-                transfer: null
+                defaultTransfer: null,
+                transfer: item.transferIsModified ? item.transfer : null
             }))
 
         case 'SELECT_OBJECTIVE':
@@ -59,13 +68,26 @@ export default (state = [], action) => {
         
         case 'SELECT_ZONE':
         case 'SELECT_METHOD':
-            return state.map(item => Object.assign({}, item, {isFetchingTransfer: false, transfer: null}))
+            return state.map(item => Object.assign({}, item, {
+                isFetchingTransfer: false,
+                defaultTransfer: null,
+                transfer: item.transferIsModified ? item.transfer : null
+            }))
 
         case 'REQUEST_TRANSFER':
             return updateVariable(action.variable, {isFetchingTransfer: true})
 
         case 'RECEIVE_TRANSFER':
-            return updateVariable(action.variable, {isFetchingTransfer: false, transfer: action.transfer})
+            variable = getVariable(action.variable)
+            if (variable === undefined) {
+                return state
+            }
+
+            return updateVariable(action.variable, {
+                isFetchingTransfer: false,
+                defaultTransfer: action.transfer,
+                transfer: variable.transferIsModified ? variable.transfer : action.transfer
+            })
 
 
         default:

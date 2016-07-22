@@ -1,30 +1,49 @@
 import React, { PropTypes } from 'react'
 import Variable from '../containers/Variable'
 
-const Variables = ({ variables, unusedVariables, onChange }) => (
-    <div className="variablesList">
-        <div>
-            {variables.map((item, index) => (
-                <Variable variable={item} index={index} key={item.name} />
-            ))}
-        </div>
-        <div>
-            <select
-                className="form-control"
-                value=""
-                onChange={e => {
-                    e.preventDefault()
-                    onChange(e.target.value)
-                }}
-            >
-                <option value="none">Add a variable...</option>
-                {unusedVariables.map(item => (
-                    <option value={item.name} key={item.name}>{item.name}: {item.label}</option>
+const Variables = ({ variables, unusedVariables, onChange }) => {
+    let table = null
+
+    if (variables.length > 0) {
+        table = (
+            <table className="table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Value</th>
+                    <th>Transfer limit (+/-)</th>
+                    <th></th>
+                </tr>
+                </thead>
+                {variables.map((item, index) => (
+                    <Variable variable={item} index={index} key={item.name}/>
                 ))}
-            </select>
+            </table>
+        )
+    }
+    return (
+        <div className="variablesList">
+            {table}
+
+            <div>
+                <select
+                    className="form-control"
+                    value=""
+                    onChange={e => {
+                        e.preventDefault()
+                        onChange(e.target.value)
+                    }}
+                >
+                    <option value="none">Add a variable...</option>
+                    {unusedVariables.map(item => (
+                        <option value={item.name} key={item.name}>{item.name}: {item.label}</option>
+                    ))}
+                </select>
+            </div>
         </div>
-    </div>
-)
+    )
+}
 
 Variables.propTypes = {
     variables: PropTypes.array.isRequired,
