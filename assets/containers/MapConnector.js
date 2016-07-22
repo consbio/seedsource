@@ -284,7 +284,7 @@ class MapConnector extends React.Component {
 
             if (this.zoneLayer === null) {
                 this.zoneLayer = L.geoJson(geometry, {style: () => {
-                    return {color: '#0F0'}
+                    return {color: '#0F0', fill: false}
                 }}).addTo(this.map)
             }
 
