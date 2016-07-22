@@ -1005,7 +1005,8 @@ class Command(BaseCommand):
                                     continue
 
                                 TransferLimit.objects.create(
-                                    variable=variable, zone=zone, low=low, high=high, transfer=transfer, center=center
+                                    variable=variable, time_period=time_period, zone=zone, low=low, high=high,
+                                    transfer=transfer, center=center
                                 )
                         else:
                             masked_data = numpy.ma.masked_where(zone_mask == 0, clipped_data)
