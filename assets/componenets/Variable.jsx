@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { PropTypes } from 'react'
+import ReactTooltip from 'react-tooltip'
 import Synchro from '../containers/Synchro'
 
 class Variable extends React.Component {
@@ -84,42 +85,49 @@ class Variable extends React.Component {
         }
 
         return (
-            <tbody>
+            <tr className={active ? "visible" : ""} data-tip data-for={name + "_Tooltip"}>
                 <Synchro
                     hash={JSON.stringify([method, point, zone, climate.seedlot.time])}
                     createRequest={() => fetchTransfer(method, point, zone, climate.seedlot.time)}
                     onSuccess={transfer => receiveTransfer(transfer)}
                 />
-                <tr className={active ? "visible" : ""}>
-                    <td>
-                        <button
-                            type="button"
-                            className="close"
-                            onClick={e => {
-                                e.stopPropagation()
-                                onRemove()
-                            }}
-                        >
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </td>
-                    <td>
-                        <div className={"modifyStatus " + (transferIsModified ? "modified" : "")}>&nbsp;</div>
-                        <strong>{name}</strong></td>
-                    <td>{value}</td>
-                    <td>{transferNode}</td>
-                    <td>
-                        <span
-                            className="visibilityToggle glyphicon glyphicon-eye-open"
-                            onClick={e => {
-                                e.stopPropagation()
-                                onToggle()
-                            }}
-                        >
-                        </span>
-                    </td>
-                </tr>
-            </tbody>
+
+                <td>
+                    <button
+                        type="button"
+                        className="close"
+                        onClick={e => {
+                            e.stopPropagation()
+                            onRemove()
+                        }}
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </td>
+                <td>
+                    <div className={"modifyStatus " + (transferIsModified ? "modified" : "")}>&nbsp;</div>
+                    <strong>{name}</strong></td>
+                <td>{value}</td>
+                <td>{transferNode}</td>
+                <td>
+                    <span
+                        className="visibilityToggle glyphicon glyphicon-eye-open"
+                        onClick={e => {
+                            e.stopPropagation()
+                            onToggle()
+                        }}
+                    >
+                    </span>
+
+                    <ReactTooltip id={name + "_Tooltip"} type="info" place="right" effect="solid">
+                        <strong>{name}: {label}</strong>
+                        <div>Value at point: {value}</div>
+                        <div>
+                            Transfer limit (+/-): {transfer} {units[unit].label} {transferIsModified ? "(modified)" : ""}
+                        </div>
+                    </ReactTooltip>
+                </td>
+            </tr>
         )
     }
 }

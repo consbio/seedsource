@@ -19,9 +19,11 @@ const Variables = ({ variables, unusedVariables, onChange }) => {
                     <th></th>
                 </tr>
                 </thead>
-                {variables.map((item, index) => (
-                    <Variable variable={item} index={index} key={item.name}/>
-                ))}
+                <tbody>
+                    {variables.map((item, index) => (
+                        <Variable variable={item} index={index} key={item.name}/>
+                    ))}
+                </tbody>
             </table>
         )
     }

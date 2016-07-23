@@ -19,11 +19,12 @@ body {
     float: left;
     z-index: 2;
     background-color: #fff;
-    overflow: hidden;
     box-shadow: 2px 0px 10px;
 }
 
-.sidebar .nav-tabs {
+.sidebar .nav.nav-tabs {
+    margin: 0px -15px;
+    margin-right: 0px;
     padding-left: 15px;
 }
 
@@ -82,10 +83,6 @@ body {
     color: #333;
     background-color: #e6e6e6;
     border-color: #8c8c8c;
-}
-
-.sidebar .nav.nav-tabs {
-    margin: 0px -15px;
 }
 
 .sidebar .btn-group-sm.btn-group .btn {
@@ -198,7 +195,11 @@ body {
     color: #999;
 }
 
-.variablesList table tr.visible td .visibilityToggle, .variablesList table td:hover .visibilityToggle {
+.variablesList table tr:hover td {
+    background-color: #f4f4f4;
+}
+
+.variablesList table tr.visible td .visibilityToggle, .variablesList table td .visibilityToggle:hover {
     color: #000;
 }
 
@@ -211,7 +212,7 @@ body {
 .variablesList div.modifyStatus {
     display: inline-block;
     width: 3px;
-    background-color: #FFF;
+    background-color: rgba(0, 0, 0, 0);
     margin-right: 5px;
     transition: background-color .5s;
 }
