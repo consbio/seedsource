@@ -22,8 +22,8 @@ class Variable extends React.Component {
 
     render() {
         let {
-            active, name, label, value, transfer, transferIsModified, unit, units, method, point, zone, climate,
-            onTransferChange, onResetTransfer, onToggle, onRemove, fetchTransfer, receiveTransfer
+            active, name, label, value, zoneCenter, transfer, transferIsModified, unit, units, method, point, zone,
+            climate, onTransferChange, onResetTransfer, onToggle, onRemove, fetchTransfer, receiveTransfer
         } = this.props
         let { transferValue, editTransfer } = this.state
         let className = 'variableConfig'
@@ -36,6 +36,10 @@ class Variable extends React.Component {
                 {transfer} {units[unit].label}
             </span>
         )
+
+        if (zoneCenter === null) {
+            zoneCenter = '--'
+        }
 
         if (editTransfer) {
             transferNode = (
@@ -125,6 +129,9 @@ class Variable extends React.Component {
                         <div>
                             Transfer limit (+/-): {transfer} {units[unit].label} {transferIsModified ? "(modified)" : ""}
                         </div>
+                        <div>
+                            Zone climatic center: {zoneCenter} {units[unit].label}
+                        </div>
                     </ReactTooltip>
                 </td>
             </tr>
@@ -137,6 +144,7 @@ Variable.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    zoneCenter: PropTypes.number,
     transfer: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     transferIsModified: PropTypes.bool.isRequired,
     unit: PropTypes.string.isRequired,

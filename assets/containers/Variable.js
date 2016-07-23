@@ -11,8 +11,22 @@ const mapStateToProps = (state, { variable, index }) => {
     let active = activeVariable === variable.name
     let { unit, method, point, zones, climate } = runConfiguration
     let variableConfig = variables.find(item => item.name === variable.name)
-    let { name, value, transfer, transferIsModified } = variable
+    let { name, value, zoneCenter, transfer, transferIsModified } = variable
     let { label, multiplier, units } = variableConfig
+
+    let convert = number => {
+        if (number !== null) {
+            number /= multiplier
+
+            if (unit === 'imperial') {
+                number = units.imperial.convert(number)
+            }
+
+            return parseFloat(number.toFixed(2))
+        }
+
+        return number
+    }
 
     if (transfer === null) {
         transfer = 0
@@ -20,7 +34,7 @@ const mapStateToProps = (state, { variable, index }) => {
 
     transfer /= multiplier
 
-    if (unit === 'imperial' && units !== null) {
+    if (unit === 'imperial') {
         if (units.imperial.convertTransfer) {
             transfer = units.imperial.convertTransfer(transfer)
         }
@@ -30,16 +44,8 @@ const mapStateToProps = (state, { variable, index }) => {
     }
 
     transfer = parseFloat(transfer.toFixed(2))
-
-    if (value !== null) {
-        value /= multiplier
-
-        if (unit === 'imperial' && units !== null) {
-            value = units.imperial.convert(value)
-        }
-
-        value = parseFloat(value.toFixed(2))
-    }
+    value = convert(value)
+    zoneCenter = convert(zoneCenter)
 
     return {
         zone: zones.selected,
@@ -48,6 +54,7 @@ const mapStateToProps = (state, { variable, index }) => {
         name,
         label,
         value,
+        zoneCenter,
         transfer,
         transferIsModified,
         unit,
@@ -110,7 +117,8 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
 
                 return get(url).then(response => response.json()).then(json => {
                     if (json.results.length) {
-                        return json.results[0].transfer
+                        let { transfer, center } = json.results[0]
+                        return {transfer, center}
                     }
                     else {
                         return null
@@ -121,8 +129,9 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
             return null
         },
         
-        receiveTransfer: transfer => {
-            dispatch(receiveTransfer(variable.name, transfer))
+        receiveTransfer: result => {
+            let { transfer, center } = result
+            dispatch(receiveTransfer(variable.name, transfer, center))
         }
     }
 }

@@ -28,6 +28,7 @@ export default (state = [], action) => {
                 value: null,
                 transfer: null,
                 defaultTransfer: null,
+                zoneCenter: null,
                 transferIsModified: false,
                 isFetching: false,
                 isFetchingTransfer: false
@@ -58,6 +59,7 @@ export default (state = [], action) => {
                 isFetchingTransfer: false,
                 value: null,
                 defaultTransfer: null,
+                zoneCenter: null,
                 transfer: item.transferIsModified ? item.transfer : null
             }))
 
@@ -71,6 +73,7 @@ export default (state = [], action) => {
             return state.map(item => Object.assign({}, item, {
                 isFetchingTransfer: false,
                 defaultTransfer: null,
+                zoneCenter: null,
                 transfer: item.transferIsModified ? item.transfer : null
             }))
 
@@ -86,6 +89,7 @@ export default (state = [], action) => {
             return updateVariable(action.variable, {
                 isFetchingTransfer: false,
                 defaultTransfer: action.transfer,
+                zoneCenter: action.center,
                 transfer: variable.transferIsModified ? variable.transfer : action.transfer
             })
 

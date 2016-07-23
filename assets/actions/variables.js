@@ -99,10 +99,11 @@ export const fetchValue = name => {
     }
 }
 
-export const receiveTransfer = (variable, transfer) => {
+export const receiveTransfer = (variable, transfer, center) => {
     return {
         type: 'RECEIVE_TRANSFER',
         transfer,
+        center,
         variable
     }
 }
