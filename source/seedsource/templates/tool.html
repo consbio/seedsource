@@ -265,7 +265,210 @@
                     Todo... <em>Detailed information on the methods used and caveats.</em>
                 </div>
                 <div class="modal-body" id="ClimateNAContent">
-                    Todo... <em>Overview of ClimateNA data (present and future) and links to relevant papers.</em>
+                    <p>
+                        <a href="http://cfcg.forestry.ubc.ca/projects/climate-data/climatebcwna/" target="_blank">
+                            ClimateWNA:
+                        </a>
+                        generating high-resolution climate data for climate change studies and applications in Western
+                        North America
+                    </p>
+                    <p>
+                        ClimateWNA is an application written by
+                        <a href="http://cfcg.forestry.ubc.ca/people/tongli-wang/" target="_blank">Dr Tongli Wang</a>
+                        that extracts and downscales 1961-1990 monthly climate normal data from a moderate spatial
+                        resolution (4 x 4 km) to scale-free point locations, and calculates monthly, seasonal and
+                        annual climate variables for specific locations based on latitude, longitude and elevation.
+                        The downscaling is achieved through a combination of bilinear interpolation and dynamic local
+                        elevational adjustment. ClimateWNA uses the scale-free data as baseline to downscale historical
+                        and future climate variables for individual years and periods between 1901 and 2100.
+                    </p>
+
+                    <h4>Data sources</h4>
+                    <p>
+                        <em>Baseline data </em>
+                    </p>
+                    <p>
+                        The monthly baseline data for 1961-1990 normals were compiled from the following sources and
+                        unified at 4 x 4 km spatial resolution:
+                    </p>
+                    <ol>
+                        <li>British Columbia: PRISM at 800 x 800 m from Pacific Climate Impact Consortium;</li>
+                        <li>
+                            Prairie provinces: PRISM at 4 x 4 km from the
+                            <a href="http://www.prism.oregonstate.edu/" target="_blank">PRISM Climate Group</a>;
+                        </li>
+                        <li>United States: PRISM at 800 x 800 m from the PRISM Climate Group (Daly et al. 2008);</li>
+                        <li>The rest: ANUSPLIN at 4 x 4 km</li>
+                        <li>
+                            Monthly solar radiation data were provided by Dr. Robbie Hember at University of British
+                            Columbia.
+                        </li>
+                    </ol>
+                    <p><em>Historical data</em></p>
+                    <p>
+                        Historical monthly data were obtained from Climate Research Unit (CRU) (Harris et al 2014).
+                        The data version is CRU TS 3.23. The spatial resolution is 0.5 x 0.5° and covers the period of
+                        1901-2014. Anomalies were calculated for each year and period relative to the 1961-1990 normals.
+                    </p>
+                    <p><em>Future climate data</em></p>
+                    <p>
+                        The climate data for future periods, including 2020s (2010-2039), 2050s (2040-69) and 2080s
+                        (2070-2100), were from General Circulation Models (GCMs) of the Coupled Model Intercomparison
+                        Project (CMIP5) included in the IPCC Fifth Assessment Report (IPCC 2014). Fifteen GCMs were
+                        selected for two greenhouse gas emission scenarios (RCP 4.5 and RCP 8.5). When multiple
+                        ensembles are available for each GCM, an average was taken over the available (up to five)
+                        ensembles. Ensembles among the 15 GCMs are also available.
+                    </p>
+
+                    <h4>Climate variables predicted</h4>
+                    <p><em>1) Annual variables:</em></p>
+                    <p><em>Directly calculated annual variables:</em></p>
+                    <p>
+                        <div>MAT mean annual temperature (°C),</div>
+                        <div>MWMT mean warmest month temperature (°C),</div>
+                        <div>MCMT mean coldest month temperature (°C),</div>
+                        <div>TD temperature difference between MWMT and MCMT, or continentality (°C),</div>
+                        <div>MAP mean annual precipitation (mm),</div>
+                        <div>MSP mean annual summer (May to Sept.) precipitation (mm),</div>
+                        <div>AHM annual heat-moisture index (MAT+10)/(MAP/1000))</div>
+                        <div>SHM summer heat-moisture index ((MWMT)/(MSP/1000))</div>
+                    </p>
+                    <p><em>Derived annual variables:</em></p>
+                    <div>
+                        DD&lt;0 degree-days below 0°C, chilling degree-days DD&gt;5 degree-days above 5°C,
+                        growing degree-days DD&lt;18 degree-days below 18°C, heating degree-days DD&gt;18
+                        degree-days above 18°C, cooling degree-days NFFD the number of frost-free days
+                    </div>
+                    <div>FFP frost-free period</div>
+                    <div>bFFP the day of the year on which FFP begins</div>
+                    <div>eFFP the day of the year on which FFP ends</div>
+                    <div>PAS precipitation as snow (mm) between August in previous year and July in current year</div>
+                    <div>
+                        EMT extreme minimum temperature over 30 years EXT extreme maximum temperature over 30 years
+                        Eref Hargreaves reference evaporation (mm) CMD Hargreaves climatic moisture deficit (mm) MAR
+                        mean annual solar radiation (MJ m‐2 d‐1)
+                    </div>
+                    <div>RH mean annual relative humidity (%)</div>
+
+                    <p><em>2) Seasonal variables:</em></p>
+                    <p><em>Seasons:</em></p>
+                    <div>Winter (_wt): Dec. (prev. yr) - Feb for annual, Jan, Feb, Dec for normals Spring (_sp): March, April and May </div>
+                    <div>Summer (_sm): June, July and August</div>
+                     <div>Autumn (_at): September, October and November</div>
+                    <p><em>Directly calculated seasonal variables:</em></p>
+                    <div>Tave_wt winter mean temperature (°C)</div>
+                    <div>Tave_sp Tave_sm Tave_at</div>
+                    <div>Tmax_wt Tmax_sp Tmax_sm Tmax_at</div>
+                    <div>Tmin_wt Tmin_sp Tmin_sm Tmin_at</div>
+                    <div>PPT_wt PPT_sp PPT_sm PPT_at</div>
+                    <div>RAD_wt RAD_sp RAD_sm RAD_at</div>
+                    <div>spring mean temperature (°C) summer mean temperature (°C) autumn mean temperature (°C)</div>
+                    <div>
+                        winter mean maximum temperature (°C) spring mean maximum temperature (°C) summer mean maximum
+                        temperature (°C) autumn mean maximum temperature (°C)
+                    </div>
+                    <div>
+                        winter mean minimum temperature (°C) spring mean minimum temperature (°C) summer mean minimum
+                        temperature (°C) autumn mean minimum temperature (°C)
+                    </div>
+                    <div>
+                        winter precipitation (mm) spring precipitation (mm) summer precipitation (mm) autumn
+                        precipitation (mm)
+                    </div>
+                    <div>
+                        winter solar radiation (MJ m‐2 d‐1) spring solar radiation (MJ m‐2 d‐1) summer solar radiation
+                        (MJ m‐2 d‐1) autumn solar radiation (MJ m‐2 d‐1)
+                    </div>
+                    <p><em>Derived seasonal variables:</em></p>
+                    <div>DD_0_wt DD_0_sp DD_0_sm DD_0_at</div>
+                    <div>DD5_wt DD5_sp DD5_sm DD5_at</div>
+                    <div>DD_18_wt DD_18_sp DD_18_sm</div>
+                    <div>
+                        winter degree-days below 0°C spring degree-days below 0°C summer degree-days below 0°C autumn
+                        degree-days below 0°C
+                    </div>
+                    <div>
+                        winter degree-days below 5°C spring degree-days above 5°C summer degree-days above 5°C autumn
+                        degree-days above 5°C
+                    </div>
+                    <div>winter degree-days below 18°C spring degree-days below 18°C summer degree-days below 18°C</div>
+                    <div>DD_18_at</div>
+                    <div>DD18_wt DD18_sp DD18_sm DD18_at</div>
+                    <div>NFFD_wt NFFD_sp NFFD_sm NFFD_at</div>
+                    <div>PAS_wt PAS_sp PAS_sm PAS_at</div>
+                    <div>Eref_wt Eref_sp Eref_sm Eref_at</div>
+                    <div>CMD_wt CMD_sp CMD_sm CMD_at</div>
+                    <div>RH_wt RH_sp RH_sm RH_at</div>
+                    <div>autumn degree-days below 18°C</div>
+                    <div>
+                        winter degree-days below 18°C spring degree-days above 18°C summer degree-days above 18°C
+                        autumn degree-days above 18°C
+                    </div>
+                    <div>
+                        winter number of frost-free days spring number of frost-free days summer number of frost-free
+                        days autumn number of frost-free days
+                    </div>
+                    <div>
+                        winter precipitation as snow (mm) spring precipitation as snow (mm) summer precipitation as
+                        snow (mm) autumn precipitation as snow (mm)
+                    </div>
+                    <div>
+                        winter Hargreaves reference evaporation (mm) spring Hargreaves reference evaporation (mm)
+                        summer Hargreaves reference evaporation (mm) autumn Hargreaves reference evaporation (mm)
+                    </div>
+                    <div>
+                        winter Hargreaves climatic moisture deficit (mm) spring Hargreaves climatic moisture deficit
+                        (mm) summer Hargreaves climatic moisture deficit (mm) autumn Hargreaves climatic moisture
+                        deficit (mm)
+                    </div>
+                    <div>
+                        winter relative humidity (%) winter relative humidity (%) winter relative humidity (%) winter
+                        relative humidity (%)
+                    </div>
+
+                    <p><em>3) Monthly variables</em></p>
+                    <p><em>Primary monthly variables: </em></p>
+                    <div>Tave01 – Tave12 TMX01 – TMX12 TMN01 – TMN12</div>
+                    <div>January - December mean temperatures (°C) </div>
+                    <div>January - December maximum mean temperatures (°C)</div>
+                    <div>January - December minimum mean temperatures (°C)</div>
+                    <div>
+                        PPT01 – PPT12 January - December precipitation (mm) RAD01 – RAD12 January - December solar
+                        radiation (MJ m‐2 d‐1)
+                    </div>
+                    <p><em>Derived monthly variables:</em></p>
+                    <div>
+                        DD_0_01 – DD_0_12 DD5_01 – DD5_12 DD_18_01 – DD_18_12 DD18_01 – DD18_12 NFFD01 –
+                        NFFD12 PAS01 – PAS12
+                    </div>
+                    <div>January - December degree-days below 0°C January - December degree-days above 5°C</div>
+                    <div>
+                        January - December degree-days below 18°C January - December degree-days above 18°C January -
+                        December number of frost-free days January – December precipitation as snow (mm)
+                    </div>
+                    <div>Eref01 – Eref12 CMD01 – CMD12 RH01 – RH12</div>
+
+                    <h4>References</h4>
+                    <p>
+                        Wang, T., Hamann, A. Spittlehouse, D.L. and Murdock, T.Q. 2012. ClimateWNA – High-resolution
+                        spatial climate data for western North America. Journal of Applied Meteorology and Climatology
+                        51:16-29.
+                    </p>
+                    <p>
+                        Wang, T., Hamann, A., Spittlehouse, D., and Aitken, S. N. 2006. Development of scale-free
+                        climate data for western Canada for use in resource management. International Journal of
+                        Climatology, 26(3):383-397.
+                    </p>
+                    <p>
+                        Daly. C., M. Halbleib, J. I. Smith, W. P. Gibson, M. K. Doggett, G. H. Taylor, and J. Curtis,
+                        2008. Physiographically sensitive mapping of temperature and precipitation across the
+                        conterminous United States. Int. J. Climatol., 28, 2031–2064.
+                    </p>
+                    <p>
+                        Harris, I., Jones, P.D., Osborn, T.J. and Lister, D.H. (2014), Updated high-resolution grids
+                        of monthly climatic observations - the CRU TS3.10 Dataset. International Journal of
+                        Climatology, 34. pp. 623-642.
+                    </p>
                 </div>
                 <div class="modal-body" id="ForestGeneticsContent">
                     Todo... <em>Overview of genetic variation in forest trees, potential effects of climate change, and links to key papers.</em>

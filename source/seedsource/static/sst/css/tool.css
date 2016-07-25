@@ -6,6 +6,11 @@ body {
     height: 100%;
 }
 
+#InfoModal .modal-body {
+    max-height: 500px;
+    overflow: auto;
+}
+
 .form-inline {
     display: inline;
     width: auto;
