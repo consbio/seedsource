@@ -21,7 +21,7 @@ export default () => (
             <img src="/static/sst/images/about_location.gif" />
             <h4>2. Select Location</h4>
             <p>
-                You can click on the map or enter coordinates for the location of your seedlot of planting site
+                You can click on the map or enter coordinates to locate your seedlot or planting site
             </p>
         </div>
         <div className="aboutStep">

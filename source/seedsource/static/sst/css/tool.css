@@ -93,7 +93,7 @@ body {
 
 .aboutImage {
     float: right;
-    margin-left: 15px;
+    margin-left: 5px;
     margin-right: -15px;
 }
 
@@ -134,9 +134,7 @@ body {
 }
 
 .aboutStep {
-    min-height: 80px;
     border-bottom: 1px solid #CCC;
-    padding-bottom: 10px;
 }
 
 .aboutStep:last-child {
