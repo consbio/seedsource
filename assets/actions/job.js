@@ -110,7 +110,13 @@ export const fetchJobStatus = jobId => {
             }
 
             return response.json()
-        }).then(json => dispatch(receiveJobStatus(json))).catch(err => {
+        }).then(json => {
+            if (json.status === 'failure') {
+                alert('Score calculation failed.')
+            }
+
+            dispatch(receiveJobStatus(json))
+        }).catch(err => {
             console.log(err)
             dispatch(failJob())
             alert('Sorry, there was an error getting the job status.')

@@ -31,6 +31,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onRun: configuration => {
+            if (configuration.variables.some(item => item.transfer === null)) {
+                alert('Cannot calculate scores: one or more of your variables has no transfer limit, or a limit of 0.')
+                return
+            }
+
             dispatch(createJob(configuration))
         },
 
