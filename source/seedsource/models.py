@@ -31,4 +31,5 @@ class TransferLimit(models.Model):
     low = models.IntegerField(null=True)
     high = models.IntegerField(null=True)
     transfer = models.FloatField()
+    avg_transfer = models.FloatField(default=0)
     center = models.FloatField()

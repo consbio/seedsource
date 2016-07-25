@@ -1,5 +1,6 @@
 import json
 import os
+from statistics import mean
 
 import numpy
 from clover.geometry.bbox import BBox
@@ -928,13 +929,17 @@ ELEVATION_BANDS = {
 }
 
 VARIABLES = (
-    'AHM', 'bFFP', 'CMD', 'DD_0', 'DD_18', 'DD5', 'DD18', 'eFFP', 'EMT', 'Eref', 'EXT', 'FFP', 'MAP', 'MAT',
-    'MCMT', 'MSP', 'MWMT', 'NFFD', 'PAS', 'RH', 'SHM', 'TD'
+    'MAT', 'MWMT', 'MCMT', 'TD', 'MAP', 'MSP', 'AHM', 'SHM', 'DD_0', 'DD5', 'FFP', 'PAS', 'EMT', 'EXT', 'Eref', 'CMD'
 )
 
 
 class Command(BaseCommand):
     help = 'Calculates default variable transfer limits for each available seed zone'
+
+    def __init__(self, *args, **kwargs):
+        self.transfers_by_source = {}
+
+        return super().__init__(*args, **kwargs)
 
     def _get_subsets(self, elevation, data, coords: SpatialCoordinateVariables, bbox):
         """ Returns subsets of elevation, data, and coords, clipped to the given bounds """
@@ -943,6 +948,26 @@ class Command(BaseCommand):
         y_slice = slice(*coords.y.indices_for_range(bbox.ymin, bbox.ymax))
 
         return elevation[y_slice, x_slice], data[y_slice, x_slice], coords.slice_by_bbox(bbox)
+
+    def write_limit(self, variable, time_period, zone, masked_data, low=None, high=None):
+        minValue = numpy.nanmin(masked_data)
+        maxValue = numpy.nanmax(masked_data)
+        transfer = (maxValue - minValue) / 2.0
+        center = maxValue - transfer
+
+        if numpy.isnan(transfer) or hasattr(transfer, 'mask'):
+            print('WARNING: Transfer limit is NaN for {}, zone {}, band {}-{}'.format(
+                zone.source, zone.zone_id, low, high
+            ))
+            return
+
+        TransferLimit.objects.create(
+            variable=variable, time_period=time_period, zone=zone, transfer=transfer, center=center, low=low, high=high
+        )
+
+        transfers_by_variable = self.transfers_by_source.get(zone.source, {})
+        transfers_by_variable[variable] = transfers_by_variable.get(variable, []) + [transfer]
+        self.transfers_by_source[zone.source] = transfers_by_variable
 
     def handle(self, *args, **options):
         elevation_service = Service.objects.get(name='west1_dem')
@@ -955,6 +980,8 @@ class Command(BaseCommand):
         message = 'WARNING: This will replace all your transfer limits. Do you want to continue? [y/n]'
         if input(message).lower() not in {'y', 'yes'}:
             return
+
+        self.transfers_by_source = {}
 
         with transaction.atomic():
             TransferLimit.objects.all().delete()
@@ -995,26 +1022,17 @@ class Command(BaseCommand):
                                     (zone_mask == 0) | (clipped_elevation < low) | (clipped_elevation >= high),
                                     clipped_data
                                 )
-                                transfer = (numpy.nanmax(masked_data) - numpy.nanmin(masked_data)) / 2.0
-                                center = numpy.nanmax(masked_data) - transfer
 
-                                if numpy.isnan(transfer) or hasattr(transfer, 'mask'):
-                                    print('WARNING: Transfer limit is NaN for {}, zone {}, band {}-{}'.format(
-                                        zone.source, zone.zone_id, low, high
-                                    ))
-                                    continue
-
-                                TransferLimit.objects.create(
-                                    variable=variable, time_period=time_period, zone=zone, low=low, high=high,
-                                    transfer=transfer, center=center
-                                )
+                                self.write_limit(variable, time_period, zone, masked_data, low, high)
                         else:
                             masked_data = numpy.ma.masked_where(zone_mask == 0, clipped_data)
-                            transfer = (numpy.nanmax(masked_data) - numpy.nanmin(masked_data)) / 2.0
-                            center = numpy.nanmax(masked_data) - transfer
 
-                            assert not (numpy.isnan(transfer) or hasattr(transfer, 'mask'))
+                            self.write_limit(variable, time_period, zone, masked_data)
 
-                            TransferLimit.objects.create(
-                                variable=variable, time_period=time_period, zone=zone, transfer=transfer, center=center
-                            )
+            for source, transfers_by_variable in self.transfers_by_source.items():
+                for variable, transfers in transfers_by_variable.items():
+                    TransferLimit.objects.filter(
+                        variable=variable, zone__source=source
+                    ).update(
+                        avg_transfer=mean(transfers)
+                    )

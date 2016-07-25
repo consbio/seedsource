@@ -11,7 +11,7 @@ const mapStateToProps = (state, { variable, index }) => {
     let active = activeVariable === variable.name
     let { unit, method, point, zones, climate } = runConfiguration
     let variableConfig = variables.find(item => item.name === variable.name)
-    let { name, value, zoneCenter, transfer, transferIsModified } = variable
+    let { name, value, zoneCenter, transfer, avgTransfer, transferIsModified } = variable
     let { label, multiplier, units } = variableConfig
 
     let convert = number => {
@@ -28,22 +28,29 @@ const mapStateToProps = (state, { variable, index }) => {
         return number
     }
 
-    if (transfer === null) {
-        transfer = 0
+    let convertTransfer = number => {
+        if (number === null) {
+            number = 0
+        }
+
+        number /= multiplier
+
+        if (unit === 'imperial') {
+            let { convertTransfer, convert } = units.imperial
+
+            if (convertTransfer) {
+                return convertTransfer(number)
+            }
+            else if (convert !== null) {
+                return convert(number)
+            }
+        }
+
+        return parseFloat(number.toFixed(2))
     }
 
-    transfer /= multiplier
-
-    if (unit === 'imperial') {
-        if (units.imperial.convertTransfer) {
-            transfer = units.imperial.convertTransfer(transfer)
-        }
-        else if (units.imperial.convert !== null) {
-            transfer = units.imperial.convert(transfer)
-        }
-    }
-
-    transfer = parseFloat(transfer.toFixed(2))
+    transfer = convertTransfer(transfer)
+    avgTransfer = convertTransfer(avgTransfer)
     value = convert(value)
     zoneCenter = convert(zoneCenter)
 
@@ -56,6 +63,7 @@ const mapStateToProps = (state, { variable, index }) => {
         value,
         zoneCenter,
         transfer,
+        avgTransfer,
         transferIsModified,
         unit,
         units,
@@ -117,8 +125,8 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
 
                 return get(url).then(response => response.json()).then(json => {
                     if (json.results.length) {
-                        let { transfer, center } = json.results[0]
-                        return {transfer, center}
+                        let { transfer, avg_transfer, center } = json.results[0]
+                        return {transfer, center, avgTransfer: avg_transfer}
                     }
                     else {
                         return null
@@ -130,8 +138,8 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
         },
         
         receiveTransfer: result => {
-            let { transfer, center } = result
-            dispatch(receiveTransfer(variable.name, transfer, center))
+            let { transfer, avgTransfer, center } = result
+            dispatch(receiveTransfer(variable.name, transfer, avgTransfer, center))
         }
     }
 }

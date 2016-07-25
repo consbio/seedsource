@@ -24,4 +24,4 @@ class TransferLimitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TransferLimit
-        fields = ('variable', 'zone', 'transfer', 'center', 'low', 'high', 'time_period')
+        fields = ('variable', 'zone', 'transfer', 'avg_transfer', 'center', 'low', 'high', 'time_period')
