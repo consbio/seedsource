@@ -112,6 +112,7 @@ ELEVATION_BANDS = {
         },
         12: {
             'bands': [
+                [0, 1000],
                 [1000, 1500],
                 [1500, 2000],
                 [2000, 2500],
@@ -1018,8 +1019,10 @@ class Command(BaseCommand):
                             for band in bands:
                                 low, high = band
 
+                                # Elevation bands are stored in feet
                                 masked_data = numpy.ma.masked_where(
-                                    (zone_mask == 0) | (clipped_elevation < low) | (clipped_elevation >= high),
+                                    (zone_mask == 0) | (clipped_elevation < low * 0.3048) |
+                                    (clipped_elevation >= high * 0.3048),
                                     clipped_data
                                 )
 

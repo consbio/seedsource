@@ -94,6 +94,8 @@ class TransferLimitViewset(viewsets.ReadOnlyModelViewSet):
                 raise ParseError()
 
             elevation = self._get_elevation_at_point(Point(x, y))
+
+            # Elevation bands are stored in feet
             return self.queryset.filter(
-                Q(low__lte=elevation, high__gt=elevation) | Q(low__isnull=True, high__isnull=True)
+                Q(low__lte=elevation/0.3048, high__gt=elevation/0.3048) | Q(low__isnull=True, high__isnull=True)
             )

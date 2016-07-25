@@ -28,8 +28,8 @@ class TransferLimit(models.Model):
     variable = models.CharField(max_length=10)
     time_period = models.CharField(max_length=10)
     zone = models.ForeignKey(SeedZone)
-    low = models.IntegerField(null=True)
-    high = models.IntegerField(null=True)
+    low = models.IntegerField(null=True)  # Stored in feet
+    high = models.IntegerField(null=True)  # Stored in feet
     transfer = models.FloatField()
     avg_transfer = models.FloatField(default=0)
     center = models.FloatField()
