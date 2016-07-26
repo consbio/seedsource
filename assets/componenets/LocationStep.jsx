@@ -3,15 +3,52 @@ import ConfigurationStep from '../containers/ConfigurationStep'
 import PointChooser from '../containers/PointChooser'
 
 let getObjectiveLabel = objective => (
-    objective == 'seedlots' ? 'Select a planting site' : 'Select a seedlot location'
+    objective === 'seedlots' ? 'Select a planting site' : 'Select a seedlot location'
 )
 
 class LocationStep extends React.Component {
     render() {
-        let { objective, number, active } = this.props
+        let { objective, number, active, point } = this.props
+
+        if (!active) {
+            if (point !== null) {
+                return (
+                    <ConfigurationStep
+                        title={getObjectiveLabel(objective)}
+                        number={number}
+                        name="location"
+                        active={false}
+                    >
+                        <div>Lat: {point.y.toFixed(4)}, Lon: {point.x.toFixed(4)}</div>
+                    </ConfigurationStep>
+                )
+            }
+            else {
+                return (
+                    <ConfigurationStep
+                        title={getObjectiveLabel(objective)}
+                        number={number}
+                        name="location"
+                        active={false}
+                    >
+                        <div><em>Click to select a point.</em></div>
+                    </ConfigurationStep>
+                )
+            }
+        }
+
+        let instruction = 'Locate your planting site'
+        if (objective === 'sites') {
+            instruction = 'Locate your seedlot (its climatic center)'
+        }
 
         return (
-            <ConfigurationStep title={getObjectiveLabel(objective)} number={number} name="location" active={active}>
+            <ConfigurationStep title={getObjectiveLabel(objective)} number={number} name="location" active={true}>
+                <div><em>{instruction}</em></div>
+                <div><em>Use the map or enter coordinates</em></div>
+
+                <div>&nbsp;</div>
+
                 <PointChooser />
 
                 <div>&nbsp;</div>
@@ -30,6 +67,7 @@ LocationStep.shouldRender = () => true
 
 LocationStep.propTypes = {
     active: PropTypes.bool.isRequired,
+    point: PropTypes.object,
     objective: PropTypes.string.isRequired
 }
 

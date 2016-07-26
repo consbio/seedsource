@@ -1,39 +1,39 @@
 import React, { PropTypes } from 'react'
 import Variable from '../containers/Variable'
 
-const Variables = ({ variables, unusedVariables, onChange }) => {
+const Variables = ({ variables, unusedVariables, edit, onChange }) => {
     let table = null
 
     if (variables.length > 0) {
         table = (
             <table className="table">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th>
-                        <div className="modifyStatus">&nbsp;</div>
-                        Name
-                    </th>
-                    <th>Value</th>
-                    <th>Transfer limit (+/-)</th>
-                    <th></th>
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th>
+                            <div className="modifyStatus">&nbsp;</div>
+                            Name
+                        </th>
+                        <th>Value</th>
+                        <th>Transfer limit (+/-)</th>
+                        <th></th>
+                    </tr>
                 </thead>
                 <tbody>
                     {variables.map((item, index) => (
-                        <Variable variable={item} index={index} key={item.name}/>
+                        <Variable variable={item} index={index} key={item.name} edit={edit} />
                     ))}
                 </tbody>
             </table>
         )
     }
     return (
-        <div className="variablesList">
+        <div className={"variablesList" + (edit ? " edit" : "")}>
             {table}
 
             <div>
                 <select
-                    className="form-control"
+                    className={"form-control" + (edit ? "" : " hidden")}
                     value=""
                     onChange={e => {
                         e.preventDefault()

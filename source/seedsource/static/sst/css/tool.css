@@ -49,7 +49,8 @@ body {
 }
 
 .step .gradientTop, .step .gradientBottom {
-    height: 0px;
+    height: 1px;
+    background: rgba(0, 0, 0, 0);
     margin-left: -35px;
     margin-right: -15px;
     transition: height .5s;
@@ -60,11 +61,11 @@ body {
     transition: height .5s;
 }
 
-.step .gradientTop{
+.step.active .gradientTop {
     background: linear-gradient(rgba(38, 90, 136, .6), rgba(38, 90, 136, 0));
 }
 
-.step .gradientBottom {
+.step.active .gradientBottom {
     background: linear-gradient(rgba(38, 90, 136, 0), rgba(38, 90, 136, .6));
 }
 
@@ -222,7 +223,7 @@ body {
     color: #999;
 }
 
-.variablesList table tr:hover td {
+.variablesList.edit table tr:hover td {
     background-color: #f4f4f4;
 }
 
@@ -230,7 +231,7 @@ body {
     color: #000;
 }
 
-.variablesList span.transferNode {
+.variablesList.edit span.transferNode {
     border-bottom: 1.5px dashed blue;
     cursor: pointer;
     color: blue;

@@ -10,8 +10,23 @@ class SpeciesStep extends React.Component {
             return null
         }
 
+        if (!active) {
+            let label = 'Generic'
+            let selected = speciesList.find(item => item.name === species)
+
+            if (selected !== undefined) {
+                label = selected.label
+            }
+
+            return (
+                <ConfigurationStep title="Select a species" number={number} name="species" active={false}>
+                    <div>{label}</div>
+                </ConfigurationStep>
+            )
+        }
+
         return (
-            <ConfigurationStep title="Select a species" number={number} name="species" active={active}>
+            <ConfigurationStep title="Select a species" number={number} name="species" active={true}>
                 <select
                     className="form-control"
                     value={species}

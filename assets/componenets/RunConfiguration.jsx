@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react'
 import SaveModal from '../containers/SaveModal'
 import SeedzoneButton from '../containers/SeedzoneButton'
-import ObjectiveStep from './ObjectiveStep'
+import ObjectiveStep from '../containers/ObjectiveStep'
 import LocationStep from '../containers/LocationStep'
 import ClimateStep from '../containers/ClimateStep'
-import TransferStep from './TransferStep'
+import TransferStep from '../containers/TransferStep'
 import SpeciesStep from '../containers/SpeciesStep'
 import SeedZoneStep from '../containers/SeedZoneStep'
-import VariableStep from '../componenets/VariableStep'
+import VariableStep from '../containers/VariableStep'
 
 let getObjectiveLabel = objective => (
     objective == 'seedlots' ? 'Select a planting site' : 'Select a seedlot location'

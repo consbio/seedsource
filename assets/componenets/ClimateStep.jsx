@@ -1,11 +1,26 @@
 import React, { PropTypes } from 'react'
 import ConfigurationStep from '../containers/ConfigurationStep'
+import { timeLabels } from '../config'
 
 class ClimateStep extends React.Component {
     render() {
         let { climate, number, active, onChange } = this.props
         let { seedlot, site } = climate
         let modelSelect = null
+
+        if (!active) {
+            let siteKey = site.time
+            if (site.time !== '1961_1990' && site.time !== '1981_2010') {
+                siteKey += site.model
+            }
+
+            return (
+                <ConfigurationStep title="Select climate scenarios" number={number} name="climate" active={false}>
+                    <div><strong>Seedlot climate: </strong> {timeLabels[seedlot.time]}</div>
+                    <div><strong>Planting site climate: </strong> {timeLabels[siteKey]}</div>
+                </ConfigurationStep>
+            )
+        }
 
         if (site.time !== '1961_1990' && site.time !== '1981_2010') {
             modelSelect = (
@@ -24,7 +39,7 @@ class ClimateStep extends React.Component {
         }
 
         return (
-            <ConfigurationStep title="Select climate scenarios" number={number} name="climate" active={active}>
+            <ConfigurationStep title="Select climate scenarios" number={number} name="climate" active={true}>
                 <div>
                     <em>Which climate are the seedlots adapted to?</em>
                 </div>

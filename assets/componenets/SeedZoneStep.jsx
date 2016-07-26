@@ -20,6 +20,20 @@ class SeedZoneStep extends React.Component {
             return null
         }
 
+        if (!active) {
+            let label = 'Select a location...'
+
+            if (selected) {
+                label = zones.find(item => item.id === selected).name
+            }
+
+            return (
+                <ConfigurationStep title="Select a seed zone" number={number} name="seedzone" active={false}>
+                    <div>{label}</div>
+                </ConfigurationStep>
+            )
+        }
+
         let content = (
             <select className="form-control" disabled>
                 <option>Select a location...</option>
@@ -45,7 +59,7 @@ class SeedZoneStep extends React.Component {
         }
 
         return (
-            <ConfigurationStep title="Select a seed zone" number={number} name="seedzone" active={active}>
+            <ConfigurationStep title="Select a seed zone" number={number} name="seedzone" active={true}>
                 {content}
             </ConfigurationStep>
         )

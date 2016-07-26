@@ -5,10 +5,24 @@ import Variables from '../containers/Variables'
 
 class VariableStep extends React.Component {
     render() {
-        let { number, active } = this.props
+        let { number, active, variables } = this.props
+
+        if (!active) {
+            let content = <div><em>Click to add variables</em></div>
+
+            if (variables.length > 0) {
+                content = <Variables edit={false} />
+            }
+
+            return (
+                <ConfigurationStep title="Select climate variables" number={number} name="variables" active={false}>
+                    {content}
+                </ConfigurationStep>
+            )
+        }
 
         return (
-            <ConfigurationStep title="Select climate variables" number={number} name="variables" active={active}>
+            <ConfigurationStep title="Select climate variables" number={number} name="variables" active={true}>
                 <div>
                     <strong>Units: </strong>
                     <div className="btn-group-sm btn-group" style={{display: 'inline-block'}}>
@@ -17,7 +31,7 @@ class VariableStep extends React.Component {
                     </div>
                 </div>
 
-                <Variables />
+                <Variables edit={true} />
             </ConfigurationStep>
         )
     }
@@ -26,7 +40,9 @@ class VariableStep extends React.Component {
 VariableStep.shouldRender = () => true
 
 VariableStep.propTypes = {
-    active: PropTypes.bool.isRequired
+    active: PropTypes.bool.isRequired,
+    number: PropTypes.number.isRequired,
+    variables: PropTypes.array.isRequired
 }
 
 export default VariableStep
