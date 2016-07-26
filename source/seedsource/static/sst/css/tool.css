@@ -40,8 +40,10 @@ body {
 }
 
 .sidebar .step {
-    margin-bottom: 20px;
-    padding-left: 20px;
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-left: 35px;
+    padding-right: 15px;
 }
 
 .sidebar .step h4 {
@@ -54,6 +56,16 @@ body {
     margin-left: -35px;
     margin-right: -15px;
     transition: height .5s;
+}
+
+.step:hover {
+    cursor: pointer;
+    background-color: #f4f4f4;
+}
+
+.step.active:hover {
+    cursor: default;
+    background-color: #FFF;
 }
 
 .step.active .gradientTop, .step.active .gradientBottom {
