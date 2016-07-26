@@ -79,7 +79,7 @@ export const fetchValue = name => {
         let {runConfiguration} = getState()
         let {objective, point, climate, variables} = runConfiguration
         let variable = variables.find(item => item.name === name)
-        let pointIsValid = point !== null && point.x !== null && point.y !== null
+        let pointIsValid = point !== null && point.x && point.y
 
         if (variable !== undefined && variable.value === null && !variable.isFetching && pointIsValid) {
             dispatch(requestValue(name))

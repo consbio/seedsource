@@ -112,7 +112,7 @@ class MapConnector extends React.Component {
     }
 
     updatePointMarker(point) {
-        let pointIsValid = point !== null && point.x !== null && point.y !== null
+        let pointIsValid = point !== null && point.x && point.y
 
         if (pointIsValid) {
             if (this.pointMarker === null) {

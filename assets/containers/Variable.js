@@ -113,7 +113,7 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
         fetchTransfer: (method, point, zone, year) => {
             dispatch(requestTransfer(variable.name))
 
-            let pointIsValid = point !== null && point.x !== null && point.y !== null
+            let pointIsValid = point !== null && point.x && point.y
 
             if (method === 'seedzone' && pointIsValid) {
                 let url = '/sst/transfer-limits/?' + urlEncode({
