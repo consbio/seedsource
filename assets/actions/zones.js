@@ -25,7 +25,7 @@ export const fetchZones = () => {
         let { runConfiguration } = getState()
         let { species, point, zones } = runConfiguration
         let { isFetchingZones } = zones
-        let pointIsValid = point !== null && point.x !== null && point.y !== null
+        let pointIsValid = point !== null && point.x && point.y
 
         if (pointIsValid && !isFetchingZones) {
             dispatch(requestZones())

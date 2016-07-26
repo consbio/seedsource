@@ -3,11 +3,11 @@ import ConfigurationStep from './ConfigurationStep'
 
 class SeedZoneStep extends React.Component {
     componentWillUpdate(newProps) {
-        let { method, zones, onFetchZones, point, species } = newProps
+        let { method, onFetchZones, point, species } = newProps
         let pointChanged = JSON.stringify(point) != JSON.stringify(this.props.point)
         let methodChanged = method !== this.props.method
         let speciesChanged = species !== this.props.species
-
+        
         if (method === 'seedzone' && (pointChanged || methodChanged || speciesChanged)) {
             onFetchZones()
         }
