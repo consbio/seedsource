@@ -39,10 +39,10 @@ const mapStateToProps = (state, { variable, index }) => {
             let { convertTransfer, convert } = units.imperial
 
             if (convertTransfer) {
-                return convertTransfer(number)
+                return parseFloat(convertTransfer(number).toFixed(2))
             }
             else if (convert !== null) {
-                return convert(number)
+                return parseFloat(convert(number).toFixed(2))
             }
         }
 

@@ -13,7 +13,15 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onChange: variable => {
+        onChange: (variable, variables) => {
+            if (variables.length >= 6) {
+                alert(
+                    'You may only add 6 variables to your configuration. Please remove an exiting variable before ' +
+                    'adding another.'
+                )
+                return
+            }
+
             dispatch(addVariable(variable))
             dispatch(fetchValue(variable))
         }

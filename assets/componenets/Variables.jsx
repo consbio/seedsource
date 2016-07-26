@@ -37,7 +37,7 @@ const Variables = ({ variables, unusedVariables, onChange }) => {
                     value=""
                     onChange={e => {
                         e.preventDefault()
-                        onChange(e.target.value)
+                        onChange(e.target.value, variables)
                     }}
                 >
                     <option value="none">Add a variable...</option>
