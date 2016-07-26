@@ -12,7 +12,7 @@ const configurationCanRun = ({point, variables}) =>  {
 }
 
 const mapStateToProps = state => {
-    let { runConfiguration, lastRun, job, isLoggedIn } = state
+    let { activeStep, runConfiguration, lastRun, job, isLoggedIn } = state
     let { objective, species, method } = runConfiguration
 
     return {
@@ -24,7 +24,8 @@ const mapStateToProps = state => {
         species,
         method,
         job,
-        isLoggedIn
+        isLoggedIn,
+        activeStep
     }
 }
 

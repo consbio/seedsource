@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import ConfigurationStep from './ConfigurationStep'
+import ConfigurationStep from '../containers/ConfigurationStep'
 import PointChooser from '../containers/PointChooser'
 
 let getObjectiveLabel = objective => (
@@ -8,10 +8,10 @@ let getObjectiveLabel = objective => (
 
 class LocationStep extends React.Component {
     render() {
-        let { objective, number } = this.props
+        let { objective, number, active } = this.props
 
         return (
-            <ConfigurationStep title={getObjectiveLabel(objective)} number={number}>
+            <ConfigurationStep title={getObjectiveLabel(objective)} number={number} name="location" active={active}>
                 <PointChooser />
 
                 <div>&nbsp;</div>
@@ -29,6 +29,7 @@ class LocationStep extends React.Component {
 LocationStep.shouldRender = () => true
 
 LocationStep.propTypes = {
+    active: PropTypes.bool.isRequired,
     objective: PropTypes.string.isRequired
 }
 

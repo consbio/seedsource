@@ -29,7 +29,7 @@ class RunConfiguration extends React.Component {
 
     render() {
         let {
-            state, objective, species, method, canRun, canSave, configuration, job, isLoggedIn, onRun,
+            state, objective, species, method, canRun, canSave, configuration, job, isLoggedIn, activeStep, onRun,
             onSave
         } = this.props
         let overlay = null
@@ -78,9 +78,9 @@ class RunConfiguration extends React.Component {
                 {overlay}
 
                 {steps.filter(item => item.type.shouldRender(state)).map((item, i) => {
-                    let content = <item.type number={i + 1} title={item.title} key={item.key} />
-
-                    return content
+                    return (
+                        <item.type number={i + 1} title={item.title} key={item.key} active={activeStep === item.key} />
+                    )
                 })}
 
                 <div>
@@ -126,6 +126,7 @@ class RunConfiguration extends React.Component {
 }
 
 RunConfiguration.propTypes = {
+    activeStep: PropTypes.string.isRequired,
     state: PropTypes.object.isRequired,
     objective: PropTypes.string.isRequired,
     species: PropTypes.string.isRequired,

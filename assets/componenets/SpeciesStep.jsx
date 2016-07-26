@@ -1,17 +1,17 @@
 import React, { PropTypes } from 'react'
-import ConfigurationStep from './ConfigurationStep'
+import ConfigurationStep from '../containers/ConfigurationStep'
 import { species as speciesList } from '../config'
 
 class SpeciesStep extends React.Component {
     render() {
-        let { method, species, number, onSpeciesChange } = this.props
+        let { method, species, number, active, onSpeciesChange } = this.props
 
         if (method !== 'seedzone') {
             return null
         }
 
         return (
-            <ConfigurationStep title="Select a species" number={number}>
+            <ConfigurationStep title="Select a species" number={number} name="species" active={active}>
                 <select
                     className="form-control"
                     value={species}
@@ -32,6 +32,7 @@ class SpeciesStep extends React.Component {
 }
 
 SpeciesStep.propTypes = {
+    active: PropTypes.bool.isRequired,
     method: PropTypes.string.isRequired,
     species: PropTypes.string.isRequired,
     onSpeciesChange: PropTypes.func.isRequired

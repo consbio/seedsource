@@ -1,15 +1,11 @@
 import React, { PropTypes } from 'react'
 
 const TabContent = ({ active, children }) => {
-    if (active) {
-        return (
-            <div className="tab-content">
-                {children}
-            </div>
-        )
-    }
-
-    return null
+    return (
+        <div className={"tab-content" + (active ? "" : " hidden")}>
+            {children}
+        </div>
+    )
 }
 
 TabContent.propTypes = {

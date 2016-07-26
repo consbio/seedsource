@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import ConfigurationStep from './ConfigurationStep'
+import ConfigurationStep from '../containers/ConfigurationStep'
 
 class SeedZoneStep extends React.Component {
     componentWillUpdate(newProps) {
@@ -14,7 +14,7 @@ class SeedZoneStep extends React.Component {
     }
 
     render() {
-        let { method, selected, zones, number, isFetchingZones, onZoneChange } = this.props
+        let { method, selected, zones, number, active, isFetchingZones, onZoneChange } = this.props
 
         if (method !== 'seedzone') {
             return null
@@ -45,7 +45,7 @@ class SeedZoneStep extends React.Component {
         }
 
         return (
-            <ConfigurationStep title="Select a seed zone" number={number}>
+            <ConfigurationStep title="Select a seed zone" number={number} name="seedzone" active={active}>
                 {content}
             </ConfigurationStep>
         )
@@ -53,6 +53,7 @@ class SeedZoneStep extends React.Component {
 }
 
 SeedZoneStep.propTypes = {
+    active: PropTypes.bool.isRequired,
     selected: PropTypes.number,
     method: PropTypes.string.isRequired,
     zones: PropTypes.array.isRequired,

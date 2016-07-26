@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react'
-import ConfigurationStep from './ConfigurationStep'
+import ConfigurationStep from '../containers/ConfigurationStep'
 
 class ClimateStep extends React.Component {
     render() {
-        let { climate, number, onChange } = this.props
+        let { climate, number, active, onChange } = this.props
         let { seedlot, site } = climate
         let modelSelect = null
 
@@ -24,7 +24,7 @@ class ClimateStep extends React.Component {
         }
 
         return (
-            <ConfigurationStep title="Select climate scenarios" number={number}>
+            <ConfigurationStep title="Select climate scenarios" number={number} name="climate" active={active}>
                 <div>
                     <em>Which climate are the seedlots adapted to?</em>
                 </div>
@@ -73,6 +73,7 @@ class ClimateStep extends React.Component {
 }
 
 ClimateStep.propTypes = {
+    active: PropTypes.bool.isRequired,
     climate: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired
 }

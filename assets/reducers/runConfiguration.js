@@ -64,3 +64,13 @@ export const lastRun = (state = null, action) => {
             return state
     }
 }
+
+export const activeStep = (state = 'objective', action) => {
+    switch (action.type) {
+        case 'SELECT_STEP':
+            return action.step
+
+        default:
+            return state
+    }
+}

@@ -48,6 +48,30 @@ body {
     margin-left: -20px;
 }
 
+.step .gradientTop, .step .gradientBottom {
+    height: 0px;
+    margin-left: -35px;
+    margin-right: -15px;
+    transition: height .5s;
+}
+
+.step.active .gradientTop, .step.active .gradientBottom {
+    height: 15px;
+    transition: height .5s;
+}
+
+.step .gradientTop{
+    background: linear-gradient(rgba(38, 90, 136, .6), rgba(38, 90, 136, 0));
+}
+
+.step .gradientBottom {
+    background: linear-gradient(rgba(38, 90, 136, 0), rgba(38, 90, 136, .6));
+}
+
+.step.active .badge {
+    background-color: #265A88;
+}
+
 .sidebar .overlay {
     position: absolute;
     width: 100%;
