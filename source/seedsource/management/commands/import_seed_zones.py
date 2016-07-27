@@ -54,9 +54,14 @@ class Command(BaseCommand):
         with fiona.open(path, 'r') as shp:
             for feature in shp:
                 try:
-                    zone_id = int(feature['properties'][zone_field])
+                    zone_id = feature['properties'][zone_field]
                 except KeyError:
-                    zone_id = int(feature['properties'][zone_field.lower()])
+                    zone_id = feature['properties'][zone_field.lower()]
+
+                if zone_id is None:
+                    continue
+
+                zone_id = int(zone_id)
 
                 if zone_id == 0:
                     continue
@@ -109,7 +114,7 @@ class Command(BaseCommand):
 
                 self._add_zones(
                     os.path.join(HISTORIC_ZONES_DIR, HISTORIC_ZONES), 'Washington / Oregon Historic Zone {zone_id}',
-                    'generic', os.path.join(historic_zones, HISTORIC_ZONES), 'OBJECTID'
+                    'generic', os.path.join(historic_zones, HISTORIC_ZONES), 'SUBJ_FSZ'
                 )
 
 

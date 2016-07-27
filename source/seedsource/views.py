@@ -97,5 +97,5 @@ class TransferLimitViewset(viewsets.ReadOnlyModelViewSet):
 
             # Elevation bands are stored in feet
             return self.queryset.filter(
-                Q(low__lte=elevation/0.3048, high__gt=elevation/0.3048) | Q(low__isnull=True, high__isnull=True)
+                Q(low__lt=elevation/0.3048, high__gte=elevation/0.3048) | Q(low__isnull=True, high__isnull=True)
             )
