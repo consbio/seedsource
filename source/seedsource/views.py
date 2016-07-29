@@ -8,6 +8,7 @@ from io import BytesIO
 import aiohttp
 import mercantile
 from PIL import Image
+from PIL import ImageDraw
 from clover.geometry.bbox import BBox
 from django.conf import settings
 from django.contrib.gis.geos import Point
@@ -160,7 +161,6 @@ class GeneratePDFView(GenericAPIView):
 
             async with client.get(layer_url) as r:
                 tile_im = Image.open(BytesIO(await r.read()))
-                print(((tile.x - ul_tile.x) * 256, (tile.y - ul_tile.y) * 256))
                 im.paste(tile_im, ((tile.x - ul_tile.x) * 256, (tile.y - ul_tile.y) * 256))
 
         layer_images = [Image.new('RGBA', im.size) for _ in tile_layers]
@@ -193,7 +193,18 @@ class GeneratePDFView(GenericAPIView):
         marker_im.paste(marker, (point_px[0] - marker.size[0] // 2, point_px[1] - marker.size[1]))
         im.paste(marker_im, (0, 0), marker_im)
 
-        # Todo: draw zone
+        if zone_id is not None:
+            geometry = SeedZone.objects.get(pk=zone_id).polygon.coords[0]
+            canvas = ImageDraw.Draw(im)
+
+            canvas.line(
+                [tuple(round(x) for x in to_image(*mercantile.xy(*p))) for p in geometry], fill=(0, 255, 0), width=3
+            )
+
+            del canvas
+
+        im_ul = (point_px[0] - size[0] // 2, point_px[1] - size[1] // 2)
+        im = im.crop((*im_ul, im_ul[0] + size[0], im_ul[1] + size[1]))
 
         return im
 
@@ -204,8 +215,13 @@ class GeneratePDFView(GenericAPIView):
 
         point = data['configuration']['point']
 
+        if data['configuration']['method'] ==  'seedzone':
+            zone_id = data['configuration']['zones']['selected']
+        else:
+            zone_id = None
+
         map_image = self._create_map_image(
-            IMAGE_SIZE, (point['x'], point['y']), data['zoom'], data['tile_layers'], None
+            IMAGE_SIZE, (point['x'], point['y']), data['zoom'], data['tile_layers'], zone_id
         )
 
         map_image.save('/Users/nikmolnar/Desktop/test.png')
