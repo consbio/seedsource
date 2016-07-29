@@ -8,9 +8,11 @@ from io import BytesIO
 import aiohttp
 import mercantile
 from PIL import Image
+from clover.geometry.bbox import BBox
 from django.conf import settings
 from django.contrib.gis.geos import Point
 from django.db.models import Q
+from ncdjango.geoimage import world_to_image
 from ncdjango.models import Service
 from netCDF4 import Dataset
 from rest_framework import viewsets
@@ -26,6 +28,7 @@ from seedsource.serializers import RunConfigurationSerializer, SeedZoneSerialize
 from seedsource.serializers import TransferLimitSerializer
 
 PORT = getattr(settings, 'PORT', '80')
+BASE_DIR = settings.BASE_DIR
 
 TILE_SIZE = (256, 256)
 IMAGE_SIZE = (900, 600)
@@ -126,16 +129,27 @@ class GeneratePDFView(GenericAPIView):
     def _create_map_image(self, size, point, zoom, tile_layers, zone_id):
         self._configure_event_loop()
 
+        num_tiles = [math.ceil(size[x] / TILE_SIZE[x]) + 1 for x in (0, 1)]
         center_tile = mercantile.tile(point[0], point[1], zoom)
-        bounds = mercantile.bounds(*center_tile)
-        resolution = (
-            TILE_SIZE[0] / (bounds.east - bounds.west),
-            TILE_SIZE[1] / (bounds.north - bounds.south)
-        )
-        num_tiles = [math.ceil(size[x] / TILE_SIZE[x]) for x in (0, 1)]
-        image_ul = (point[0] - (size[0] / resolution[0]) // 2, point[1] + (size[1] / resolution[1]) // 2)
-        ul_tile = mercantile.tile(*image_ul, zoom)
 
+        ul_tile = mercantile.Tile(
+            x=max(0, center_tile[0] - num_tiles[0] // 2),
+            y=max(0, center_tile[1] - num_tiles[1] // 2),
+            z=zoom
+        )
+        lr_tile = mercantile.Tile(
+            x=min(zoom**2, ul_tile.x + num_tiles[0]),
+            y=min(zoom**2, ul_tile.y + num_tiles[1]),
+            z=zoom
+        )
+
+        ul = mercantile.xy(*mercantile.ul(*ul_tile))
+        lr = mercantile.xy(*mercantile.ul(*lr_tile))
+
+        im = Image.new('RGBA', (TILE_SIZE[0] * num_tiles[0], TILE_SIZE[1] * num_tiles[1]))
+
+        im_bbox = BBox((ul[0], lr[1], lr[0], ul[1]))
+        to_image = world_to_image(im_bbox, im.size)
 
         async def fetch_tile(client, layer_url, tile, im):
             layer_url = layer_url.format(x=tile.x, y=tile.y, z=tile.z, s='server')
@@ -146,32 +160,40 @@ class GeneratePDFView(GenericAPIView):
 
             async with client.get(layer_url) as r:
                 tile_im = Image.open(BytesIO(await r.read()))
-                ul = mercantile.ul(*tile)
-                im.paste(tile_im, (
-                    round((ul.lng - image_ul[0]) * resolution[0]),
-                    round((image_ul[1] - ul.lat) * resolution[1])
-                ))
+                print(((tile.x - ul_tile.x) * 256, (tile.y - ul_tile.y) * 256))
+                im.paste(tile_im, ((tile.x - ul_tile.x) * 256, (tile.y - ul_tile.y) * 256))
 
-        layer_images = [Image.new('RGBA', size) for _ in tile_layers]
+        layer_images = [Image.new('RGBA', im.size) for _ in tile_layers]
 
         with aiohttp.ClientSession() as client:
             requests = []
 
             for i in range(num_tiles[0] * num_tiles[1]):
                 tile = mercantile.Tile(x=ul_tile.x + i % num_tiles[0], y=ul_tile.y + i // num_tiles[0], z=zoom)
-                print(tile)
 
                 for j, layer_url in enumerate(tile_layers):
                     requests.append(fetch_tile(client, layer_url, tile, layer_images[j]))
 
             asyncio.get_event_loop().run_until_complete(asyncio.gather(*requests))
 
-        im = Image.new('RGBA', size)
         for image in layer_images:
             im.paste(image, (0, 0), image)
 
+        leaflet_images_dir = os.path.join(BASE_DIR, 'seedsource', 'static', 'leaflet', 'images')
+        marker = Image.open(os.path.join(leaflet_images_dir, 'marker-icon.png'))
+        shadow = Image.open(os.path.join(leaflet_images_dir, 'marker-shadow.png'))
+
+        point_px = [round(x) for x in to_image(*mercantile.xy(*point))]
+
+        shadow_im = Image.new('RGBA', im.size)
+        shadow_im.paste(shadow, (point_px[0] - 12, point_px[1] - shadow.size[1]))
+        im.paste(shadow_im, (0, 0), shadow_im)
+
+        marker_im = Image.new('RGBA', im.size)
+        marker_im.paste(marker, (point_px[0] - marker.size[0] // 2, point_px[1] - marker.size[1]))
+        im.paste(marker_im, (0, 0), marker_im)
+
         # Todo: draw zone
-        # Todo: draw marker
 
         return im
 
@@ -182,7 +204,9 @@ class GeneratePDFView(GenericAPIView):
 
         point = data['configuration']['point']
 
-        map_image = self._create_map_image(IMAGE_SIZE, (point['x'], point['y']), data['zoom'], data['tile_layers'], None)
+        map_image = self._create_map_image(
+            IMAGE_SIZE, (point['x'], point['y']), data['zoom'], data['tile_layers'], None
+        )
 
         map_image.save('/Users/nikmolnar/Desktop/test.png')
 
