@@ -28,6 +28,7 @@ class TransferLimitSerializer(serializers.ModelSerializer):
 
 
 class GeneratePDFSerializer(serializers.Serializer):
+    title = serializers.CharField()
     configuration = serializers.DictField()
     tile_layers = serializers.ListField(child=serializers.CharField())
     zoom = serializers.IntegerField()
