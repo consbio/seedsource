@@ -42,20 +42,30 @@ body {
 .sidebar .step {
     margin-left: -15px;
     margin-right: -15px;
-    padding-left: 35px;
+    padding-left: 41px;
     padding-right: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    opacity: .8;
 }
 
-.sidebar .step h4 {
-    margin-left: -20px;
+.sidebar .step.active {
+    opacity: 1;
+}
+
+.sidebar .step>h4 {
+    margin-left: -26px;
 }
 
 .step .gradientTop, .step .gradientBottom {
     height: 1px;
-    background: rgba(0, 0, 0, 0);
-    margin-left: -35px;
+    margin-left: -41px;
     margin-right: -15px;
+    border: 0px;
     transition: height .5s;
+}
+
+.step .gradientBottom {
+    margin-top: 3px;
 }
 
 .step:hover {
@@ -69,20 +79,22 @@ body {
 }
 
 .step.active .gradientTop, .step.active .gradientBottom {
-    height: 15px;
-    transition: height .5s;
+    transition: height .5s, border .25s;
 }
 
 .step.active .gradientTop {
-    background: linear-gradient(rgba(38, 90, 136, .6), rgba(38, 90, 136, 0));
+    height: 10px;
+    border-top: 3px solid #f0ad4e;
 }
 
 .step.active .gradientBottom {
-    background: linear-gradient(rgba(38, 90, 136, 0), rgba(38, 90, 136, .6));
+    height: 15px;
+    border-bottom: 3px solid #f0ad4e;
 }
 
 .step.active .badge {
-    background-color: #265A88;
+    background-color: #1c681c;
+    font-size: 16px;
 }
 
 .sidebar .overlay {
