@@ -64,3 +64,16 @@ export const lastRun = (state = null, action) => {
             return state
     }
 }
+
+export const pdfIsFetching = (state = false, action) => {
+    switch (action.type) {
+        case 'REQUEST_PDF':
+            return true
+
+        case 'RECEIVE_PDF':
+            return false
+
+        default:
+            return state
+    }
+}

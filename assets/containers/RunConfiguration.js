@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import RunConfiguration from '../componenets/RunConfiguration'
 import { createJob, fetchJobStatus, finishJob } from '../actions/job'
 import { showSaveModal } from '../actions/saves'
+import { createPDF } from '../actions/pdf'
 
 const configurationCanRun = ({point, variables}) =>  {
     if (point === null || point.x === null || point.y === null) {
@@ -12,7 +13,7 @@ const configurationCanRun = ({point, variables}) =>  {
 }
 
 const mapStateToProps = state => {
-    let { runConfiguration, lastRun, job, isLoggedIn } = state
+    let { runConfiguration, lastRun, job, isLoggedIn, pdfIsFetching } = state
     let { objective, species, method } = runConfiguration
 
     return {
@@ -24,7 +25,8 @@ const mapStateToProps = state => {
         species,
         method,
         job,
-        isLoggedIn
+        isLoggedIn,
+        pdfIsFetching
     }
 }
 
@@ -49,6 +51,10 @@ const mapDispatchToProps = (dispatch) => {
 
         onSave: () => {
             dispatch(showSaveModal())
+        },
+
+        onPDF: () => {
+            dispatch(createPDF())
         }
     }
 }

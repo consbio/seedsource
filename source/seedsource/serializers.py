@@ -25,3 +25,9 @@ class TransferLimitSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransferLimit
         fields = ('variable', 'zone', 'transfer', 'avg_transfer', 'center', 'low', 'high', 'time_period')
+
+
+class GeneratePDFSerializer(serializers.Serializer):
+    configuration = serializers.DictField()
+    tile_layers = serializers.ListField(child=serializers.CharField())
+    zoom = serializers.IntegerField()
