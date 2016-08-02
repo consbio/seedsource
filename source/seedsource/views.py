@@ -1,13 +1,8 @@
 import json
-import os
-from netCDF4 import Dataset
-from urllib.parse import quote
 
-from django.conf import settings
 from django.contrib.gis.geos import Point
 from django.db.models import Q
 from django.http import HttpResponse
-from ncdjango.models import Service
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.exceptions import ParseError
@@ -20,6 +15,7 @@ from seedsource.models import TransferLimit, SeedZone, RunConfiguration
 from seedsource.report import Report
 from seedsource.serializers import RunConfigurationSerializer, SeedZoneSerializer, GeneratePDFSerializer
 from seedsource.serializers import TransferLimitSerializer
+from seedsource.utils import get_elevation_at_point
 
 
 class RunConfigurationViewset(viewsets.ModelViewSet):
@@ -64,30 +60,6 @@ class TransferLimitViewset(viewsets.ReadOnlyModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('variable', 'time_period', 'zone_id')
 
-    def _get_elevation_at_point(self, point):
-        service = Service.objects.get(name='west1_dem')
-        variable = service.variable_set.all().get()
-
-        with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, service.data_path)) as ds:
-            data = ds.variables[variable.variable]
-
-            cell_size = (
-                float(variable.full_extent.width) / data.shape[1],
-                float(variable.full_extent.height) / data.shape[0]
-            )
-
-            cell_index = [
-                int(float(point.x - variable.full_extent.xmin) / cell_size[0]),
-                int(float(point.y - variable.full_extent.ymin) / cell_size[1])
-            ]
-
-            y_increasing = data[0][1] > data[0][0]
-
-            if not y_increasing:
-                cell_index[1] = data.shape[0] - cell_index[1] - 1
-
-            return data[cell_index[1]][cell_index[0]]
-
     def get_queryset(self):
         if not self.request.query_params.get('point'):
             return self.queryset
@@ -97,7 +69,7 @@ class TransferLimitViewset(viewsets.ReadOnlyModelViewSet):
             except ValueError:
                 raise ParseError()
 
-            elevation = self._get_elevation_at_point(Point(x, y))
+            elevation = get_elevation_at_point(Point(x, y))
 
             # Elevation bands are stored in feet
             return self.queryset.filter(

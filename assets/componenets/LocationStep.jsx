@@ -9,6 +9,16 @@ let getObjectiveLabel = objective => (
 class LocationStep extends React.Component {
     render() {
         let { objective, number, active, point } = this.props
+        let elevation = null
+
+        if (elevationAtPoint !== null) {
+            elevation = (
+                <div>
+                    <div>&nbsp;</div>
+                    <div><strong>Elevation at point:</strong> {elevationAtPoint.toFixed(2)} ft</div>
+                </div>
+            )
+        }
 
         if (!active) {
             if (point !== null) {
@@ -50,8 +60,8 @@ class LocationStep extends React.Component {
                 <div>&nbsp;</div>
 
                 <PointChooser />
-
-                <div>&nbsp;</div>
+                {elevation}
+                
                 <div className="hidden">
                     <label className="control-label">Region</label>
                     <select className="form-control">
@@ -68,7 +78,9 @@ LocationStep.shouldRender = () => true
 LocationStep.propTypes = {
     active: PropTypes.bool.isRequired,
     point: PropTypes.object,
-    objective: PropTypes.string.isRequired
+    objective: PropTypes.string.isRequired,
+    elevationAtPoint: PropTypes.number,
+    number: PropTypes.number.isRequired
 }
 
 export default LocationStep

@@ -1,5 +1,6 @@
 const defaultState = {
     matched: [],
+    elevationAtPoint: null,
     selected: null,
     geometry: null,
     isFetchingZones: false,
@@ -16,6 +17,13 @@ export default (state = defaultState, action) => {
 
         case 'RECEIVE_ZONES':
             let newState =  Object.assign({}, state, {matched: action.zones, isFetchingZones: false})
+
+            if (newState.matched.length) {
+                newState.elevationAtPoint = newState.matched[0].elevation_at_point
+            }
+            else {
+                newState.elevationAtPoint = null
+            }
 
             // Clear zone geometry if new set doesn't match selected zone
             if (action.zones.find(item => item.id === state.selected) === undefined) {

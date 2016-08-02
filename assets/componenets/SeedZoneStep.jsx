@@ -51,9 +51,15 @@ class SeedZoneStep extends React.Component {
                         onZoneChange(e.target.value)
                     }}
                 >
-                    {zones.map(item => (
-                        <option value={item.id} key={item.id}>{item.name}</option>
-                    ))}
+                    {zones.map(item => {
+                        let name = item.name
+
+                        if (item.elevation_band) {
+                            name += ", " + item.elevation_band[0] + "' - " + item.elevation_band[1] + "'"
+                        }
+
+                        return <option value={item.id} key={item.id}>{name}</option>
+                    })}
                 </select>
             )
         }
