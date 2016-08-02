@@ -29,8 +29,8 @@ class RunConfiguration extends React.Component {
 
     render() {
         let {
-            state, objective, species, method, canRun, canSave, configuration, job, isLoggedIn, activeStep, onRun,
-            onSave
+            state, objective, species, method, canRun, canSave, configuration, job, isLoggedIn, activeStep, 
+            pdfIsFetching, onRun, onSave, onPDF
         } = this.props
         let overlay = null
 
@@ -112,8 +112,15 @@ class RunConfiguration extends React.Component {
                         >
                             <span className="glyphicon glyphicon-save" aria-hidden="true"></span> Save Last Run
                         </button>
-                        <button className="btn btn-default pull-right" disabled={!canSave}>
-                            <span className="glyphicon glyphicon-file" aria-hidden="true"></span> Export PDF
+                        <button
+                            className="btn btn-default pull-right"
+                            disabled={!canSave || pdfIsFetching}
+                            onClick={e => {
+                                onPDF()
+                            }}
+                        >
+                            <span className="glyphicon glyphicon-file" aria-hidden="true"></span>
+                            {pdfIsFetching ? 'Please wait...' : 'Export PDF'}
                         </button>
                     </div>
                     <div style={{clear: 'both'}}></div>
@@ -136,10 +143,12 @@ RunConfiguration.propTypes = {
     configuration: PropTypes.object.isRequired,
     job: PropTypes.object.isRequired,
     isLoggedIn: PropTypes.bool.isRequired,
+    pdfIsFetching: PropTypes.bool.isRequired,
     onRun: PropTypes.func.isRequired,
     onPoll: PropTypes.func.isRequired,
     onDone: PropTypes.func.isRequired,
-    onSave: PropTypes.func.isRequired
+    onSave: PropTypes.func.isRequired,
+    onPDF: PropTypes.func.isRequired
 }
 
 export default RunConfiguration

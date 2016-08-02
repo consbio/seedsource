@@ -5,7 +5,7 @@
 
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { setMapOpacity, toggleVisibility } from '../actions/map'
+import { setMapOpacity, setBasemap, setZoom, toggleVisibility } from '../actions/map'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
 import { fetchVariableLegend, fetchResultsLegend } from '../actions/legends'
@@ -36,7 +36,9 @@ class MapConnector extends React.Component {
 
         this.map.zoomControl.setPosition('topright')
 
-        this.map.addControl(L.control.basemaps({
+        this.map.addControl(L.control.zoomBox({position: 'topright'}))
+
+        let basemapControl = L.control.basemaps({
             basemaps: [
                 L.tileLayer('//{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
                     attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
@@ -70,9 +72,12 @@ class MapConnector extends React.Component {
             tileY: 0,
             tileZ: 1,
             position: 'bottomleft'
-        }))
+        })
+        this.map.addControl(basemapControl)
 
-        this.map.addControl(L.control.zoomBox({position: 'topright'}))
+        this.map.on('baselayerchange', layer => {
+            this.props.onBasemapChange(layer._url)
+        })
 
         let opacityControl = L.control.opacity()
         this.map.addControl(opacityControl)
@@ -83,6 +88,10 @@ class MapConnector extends React.Component {
 
         this.map.on('click', e => {
             this.props.onMapClick(e.latlng.lat, e.latlng.lng)
+        })
+
+        this.map.on('zoomend', () => {
+            this.props.onZoomChange(this.map.getZoom())
         })
     }
 
@@ -306,6 +315,8 @@ class MapConnector extends React.Component {
 }
 
 MapConnector.propTypes = {
+    onBasemapChange: PropTypes.func.isRequired,
+    onZoomChange: PropTypes.func.isRequired,
     onOpacityChange: PropTypes.func.isRequired,
     onMapClick: PropTypes.func.isRequired,
     onToggleVisibility: PropTypes.func.isRequired,
@@ -328,6 +339,14 @@ const mapStatetoProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        onBasemapChange: basemap => {
+            dispatch(setBasemap(basemap))
+        },
+
+        onZoomChange: zoom => {
+            dispatch(setZoom(zoom))
+        },
+
         onOpacityChange: opacity => {
             dispatch(setMapOpacity(opacity))
         },

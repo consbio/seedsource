@@ -1,20 +1,24 @@
 import json
 import os
+from netCDF4 import Dataset
+from urllib.parse import quote
 
 from django.conf import settings
 from django.contrib.gis.geos import Point
 from django.db.models import Q
+from django.http import HttpResponse
 from ncdjango.models import Service
-from netCDF4 import Dataset
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.exceptions import ParseError
 from rest_framework.filters import DjangoFilterBackend
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from seedsource.models import TransferLimit, SeedZone, RunConfiguration
-from seedsource.serializers import RunConfigurationSerializer, SeedZoneSerializer
+from seedsource.report import Report
+from seedsource.serializers import RunConfigurationSerializer, SeedZoneSerializer, GeneratePDFSerializer
 from seedsource.serializers import TransferLimitSerializer
 
 
@@ -99,3 +103,19 @@ class TransferLimitViewset(viewsets.ReadOnlyModelViewSet):
             return self.queryset.filter(
                 Q(low__lt=elevation/0.3048, high__gte=elevation/0.3048) | Q(low__isnull=True, high__isnull=True)
             )
+
+
+class GeneratePDFView(GenericAPIView):
+    serializer_class = GeneratePDFSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
+        pdf_data = Report(data['configuration'], data['zoom'], data['tile_layers']).get_pdf_data()
+
+        response = HttpResponse(content=pdf_data.getvalue(), content_type='application/x-pdf')
+        response['Content-disposition'] = 'attachment; filename=report.pdf'
+
+        return response

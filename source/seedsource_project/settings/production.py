@@ -4,7 +4,7 @@ from seedsource_project.settings.base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['seedlotselectiontool.org']
 
 BROKER_URL = 'amqp://{}:{}@localhost:5672'.format(
         CONFIG.get('amqp_username', ''), CONFIG.get('amqp_password', '')
