@@ -8,7 +8,7 @@ let getObjectiveLabel = objective => (
 
 class LocationStep extends React.Component {
     render() {
-        let { objective, number, active, point } = this.props
+        let { objective, number, point, elevationAtPoint, active } = this.props
         let elevation = null
 
         if (elevationAtPoint !== null) {
@@ -30,6 +30,7 @@ class LocationStep extends React.Component {
                         active={false}
                     >
                         <div>Lat: {point.y.toFixed(4)}, Lon: {point.x.toFixed(4)}</div>
+                        {elevation}
                     </ConfigurationStep>
                 )
             }
