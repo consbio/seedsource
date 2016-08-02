@@ -18,8 +18,9 @@ from weasyprint import HTML
 from seedsource.models import SeedZone
 from seedsource.variables import VARIABLE_CONFIG
 
-DOMAIN = getattr(settings, 'DOMAIN', 'seedlotselectiontool.org')
+ALLOWED_HOSTS = getattr(settings, 'ALLOWED_HOSTS')
 BASE_DIR = settings.BASE_DIR
+PORT = getattr(settings, 'PORT', 80)
 
 TILE_SIZE = (256, 256)
 IMAGE_SIZE = (900, 600)
@@ -153,11 +154,15 @@ class MapImage(object):
 
     def get_layer_images(self):
         async def fetch_tile(client, layer_url, tile, im):
+            headers = {}
+
             layer_url = layer_url.format(x=tile.x, y=tile.y, z=tile.z, s='server')
             if layer_url.startswith('//'):
                 layer_url = 'https:{}'.format(layer_url)
             elif layer_url.startswith('/'):
-                layer_url = 'http://{}{}'.format(DOMAIN, layer_url)
+                layer_url = 'http://127.0.0.1:{}{}'.format(PORT, layer_url)
+                if ALLOWED_HOSTS:
+                    headers['Host'] = ALLOWED_HOSTS[0]
 
             async with client.get(layer_url) as r:
                 tile_im = Image.open(BytesIO(await r.read()))
