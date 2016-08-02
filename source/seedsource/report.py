@@ -35,9 +35,8 @@ SPECIES_LABELS = {
 
 
 class Report(object):
-    def __init__(self, configuration, title, zoom, tile_layers):
+    def __init__(self, configuration, zoom, tile_layers):
         self.configuration = configuration
-        self.title = title
         self.zoom = zoom
         self.tile_layers = tile_layers
 
@@ -84,13 +83,13 @@ class Report(object):
             zone = SeedZone.objects.get(pk=zone_id)
         else:
             zone_id = None
+            zone = None
 
         map_image = MapImage(IMAGE_SIZE, (point['x'], point['y']), self.zoom, self.tile_layers, zone_id).get_image()
         image_data = BytesIO()
         map_image.save(image_data, 'png')
 
         return {
-            'title': self.title,
             'image_data': b64encode(image_data.getvalue()),
             'objective': 'Find seedlots' if objective == 'seedlots' else 'Find planting sites',
             'location_label': 'Planting site location' if objective == 'seedlots' else 'Seedlot location',
@@ -100,7 +99,7 @@ class Report(object):
             'site_model': self.get_model(climates['site']),
             'method': 'Seed Zone' if method == 'seedzone' else 'Custom',
             'species': SPECIES_LABELS[self.configuration['species']] if method == 'seedzone' else None,
-            'zone': zone.name,
+            'zone': getattr(zone, 'name', None),
             'variables': self.get_context_variables(),
         }
 
