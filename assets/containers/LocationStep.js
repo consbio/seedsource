@@ -2,9 +2,14 @@ import { connect } from 'react-redux'
 import LocationStep from '../componenets/LocationStep'
 
 const mapStateToProps = ({ runConfiguration }) => {
-    let { objective } = runConfiguration
+    let { objective, zones } = runConfiguration
+    let { elevationAtPoint } = zones
 
-    return {objective}
+    if (elevationAtPoint !== null) {
+        elevationAtPoint = elevationAtPoint / 0.3048
+    }
+
+    return {objective, elevationAtPoint}
 }
 
 let container = connect(mapStateToProps)(LocationStep)

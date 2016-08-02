@@ -48,7 +48,7 @@ class SeedZoneSerializer(serializers.ModelSerializer):
         return self._elevation_at_point
 
     def get_elevation_band(self, obj: SeedZone):
-        elevation = self._elevation_at_point / 0.3048  # Elevation bands are stored in feet
+        elevation = self._elevation_at_point / 0.3048  # Elevation bands are stored in feet, elevation is in meters
 
         try:
             transfer = obj.transferlimit_set.filter(low__lt=elevation, high__gte=elevation)[:1].get()
