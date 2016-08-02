@@ -25,6 +25,7 @@
         table.variables td {
             border-top: 1px solid #ddd;
             padding: 8px;
+            max-width: 4in;
         }
     </style>
 </head>
@@ -78,9 +79,9 @@
                 {% for variable in variables %}
                     <tr>
                         <td>{{ variable.label }}</td>
-                        <td>{{ variable.value }} {{ variable.units }}</td>
+                        <td>{{ variable.value }} {{ variable.units|safe }}</td>
                         <td>
-                            {{ variable.limit }} {{ variable.units }}
+                            {{ variable.limit }} {{ variable.units|safe }}
                             {% if variable.modified %}(modified){% endif %}
                         </td>
                     </tr>

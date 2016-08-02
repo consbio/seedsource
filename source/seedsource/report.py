@@ -1,11 +1,9 @@
 import asyncio
+import math
 import os
+import sys
 from base64 import b64encode
 from io import BytesIO
-
-import sys
-
-import math
 
 import aiohttp
 import mercantile
@@ -129,8 +127,8 @@ class MapImage(object):
             z=zoom
         )
         lr_tile = mercantile.Tile(
-            x=min(zoom ** 2, self.ul_tile.x + self.num_tiles[0]),
-            y=min(zoom ** 2, self.ul_tile.y + self.num_tiles[1]),
+            x=min(2 ** zoom, self.ul_tile.x + self.num_tiles[0]),
+            y=min(2 ** zoom, self.ul_tile.y + self.num_tiles[1]),
             z=zoom
         )
 

@@ -19,9 +19,9 @@ def no_conversion(value): return value
 
 
 VARIABLE_CONFIG = {
-    'MAT': Variable('Mean annual temperature', 10, convert_to_f, convert_relative_to_f, '°C', '°F'),
-    'MWMT': Variable('Mean warmest month temperature', 10, convert_to_f, convert_relative_to_f, '°C', '°F'),
-    'MCMT': Variable('Mean coldest month temperature', 10, convert_to_f, convert_relative_to_f, '°C', '°F'),
+    'MAT': Variable('Mean annual temperature', 10, convert_to_f, convert_relative_to_f, '&deg;C', '&deg;F'),
+    'MWMT': Variable('Mean warmest month temperature', 10, convert_to_f, convert_relative_to_f, '&deg;C', '°F'),
+    'MCMT': Variable('Mean coldest month temperature', 10, convert_to_f, convert_relative_to_f, '&deg;C', '°F'),
     'TD': Variable(
         'Temperature difference between MWMT and MCMT, or continentality', 10, convert_relative_to_f,
         convert_relative_to_f, '°C', '°F'
@@ -34,8 +34,12 @@ VARIABLE_CONFIG = {
     'DD5': Variable('Degree-days above 5°C', 1, no_conversion, no_conversion, 'dd', 'dd'),
     'FFP': Variable('Frost-free period', 1, no_conversion, no_conversion, 'days', 'days'),
     'PAS': Variable('Precipitation as snow, August to July', 1, convert_to_in, convert_to_in, 'mm', 'in'),
-    'EMT': Variable('Extreme minimum temperature over 30 years', 10, convert_to_f, convert_relative_to_f, '°C', '°F'),
-    'EXT': Variable('Extreme maximum temperature over 30 years', 10, convert_to_f, convert_relative_to_f, '°C', '°F'),
+    'EMT': Variable(
+        'Extreme minimum temperature over 30 years', 10, convert_to_f, convert_relative_to_f, '&deg;C', '&deg;F'
+    ),
+    'EXT': Variable(
+        'Extreme maximum temperature over 30 years', 10, convert_to_f, convert_relative_to_f, '&deg;C', '&deg;F'
+    ),
     'Eref': Variable('Hargreaves reference evaporation', 1, convert_to_in, convert_to_in, 'mm', 'in'),
     'CMD': Variable('Hargreaves climatic moisture deficit', 1, convert_to_in, convert_to_in, 'mm', 'in')
 }
