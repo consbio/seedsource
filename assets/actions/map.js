@@ -5,6 +5,20 @@ export const setMapOpacity = opacity => {
     }
 }
 
+export const setBasemap = basemap => {
+    return {
+        type: 'SET_BASEMAP',
+        basemap
+    }
+}
+
+export const setZoom = zoom => {
+    return {
+        type: 'SET_ZOOM',
+        zoom
+    }
+}
+
 export const toggleVisibility = () => {
     return {
         type: 'TOGGLE_VISIBILITY'
