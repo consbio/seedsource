@@ -1,5 +1,15 @@
 import React, { PropTypes } from 'react'
-import ConfigurationStep from './ConfigurationStep'
+import ConfigurationStep from '../containers/ConfigurationStep'
+
+const getZoneLabel = zone => {
+    let label = zone.name
+
+    if (zone.elevation_band) {
+        label += ", " + zone.elevation_band[0] + "' - " + zone.elevation_band[1] + "'"
+    }
+
+    return label
+}
 
 class SeedZoneStep extends React.Component {
     componentWillUpdate(newProps) {
@@ -14,10 +24,24 @@ class SeedZoneStep extends React.Component {
     }
 
     render() {
-        let { method, selected, zones, number, isFetchingZones, onZoneChange } = this.props
+        let { method, selected, zones, number, active, isFetchingZones, onZoneChange } = this.props
 
         if (method !== 'seedzone') {
             return null
+        }
+
+        if (!active) {
+            let label = 'Select a location...'
+
+            if (selected) {
+                label = getZoneLabel(zones.find(item => item.id === selected))
+            }
+
+            return (
+                <ConfigurationStep title="Select a seed zone" number={number} name="seedzone" active={false}>
+                    <div>{label}</div>
+                </ConfigurationStep>
+            )
         }
 
         let content = (
@@ -37,21 +61,15 @@ class SeedZoneStep extends React.Component {
                         onZoneChange(e.target.value)
                     }}
                 >
-                    {zones.map(item => {
-                        let name = item.name
-
-                        if (item.elevation_band) {
-                            name += ", " + item.elevation_band[0] + "' - " + item.elevation_band[1] + "'"
-                        }
-
-                        return <option value={item.id} key={item.id}>{name}</option>
-                    })}
+                    {zones.map(item => (
+                        <option value={item.id} key={item.id}>{getZoneLabel(item)}</option>
+                    ))}
                 </select>
             )
         }
 
         return (
-            <ConfigurationStep title="Select a seed zone" number={number}>
+            <ConfigurationStep title="Select a seed zone" number={number} name="seedzone" active={true}>
                 {content}
             </ConfigurationStep>
         )
@@ -59,6 +77,7 @@ class SeedZoneStep extends React.Component {
 }
 
 SeedZoneStep.propTypes = {
+    active: PropTypes.bool.isRequired,
     selected: PropTypes.number,
     method: PropTypes.string.isRequired,
     zones: PropTypes.array.isRequired,

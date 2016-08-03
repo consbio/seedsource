@@ -40,12 +40,61 @@ body {
 }
 
 .sidebar .step {
-    margin-bottom: 20px;
-    padding-left: 20px;
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-left: 41px;
+    padding-right: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    opacity: .8;
 }
 
-.sidebar .step h4 {
-    margin-left: -20px;
+.sidebar .step.active {
+    opacity: 1;
+}
+
+.sidebar .step>h4 {
+    margin-left: -26px;
+}
+
+.step .gradientTop, .step .gradientBottom {
+    height: 1px;
+    margin-left: -41px;
+    margin-right: -15px;
+    border: 0px;
+    transition: height .5s;
+}
+
+.step .gradientBottom {
+    margin-top: 3px;
+}
+
+.step:hover {
+    cursor: pointer;
+    background-color: #f4f4f4;
+}
+
+.step.active:hover {
+    cursor: default;
+    background-color: #FFF;
+}
+
+.step.active .gradientTop, .step.active .gradientBottom {
+    transition: height .5s, border .25s;
+}
+
+.step.active .gradientTop {
+    height: 10px;
+    border-top: 3px solid #f0ad4e;
+}
+
+.step.active .gradientBottom {
+    height: 15px;
+    border-bottom: 3px solid #f0ad4e;
+}
+
+.step.active .badge {
+    background-color: #1c681c;
+    font-size: 16px;
 }
 
 .sidebar .overlay {
@@ -198,7 +247,7 @@ body {
     color: #999;
 }
 
-.variablesList table tr:hover td {
+.variablesList.edit table tr:hover td {
     background-color: #f4f4f4;
 }
 
@@ -206,7 +255,7 @@ body {
     color: #000;
 }
 
-.variablesList span.transferNode {
+.variablesList.edit span.transferNode {
     border-bottom: 1.5px dashed blue;
     cursor: pointer;
     color: blue;

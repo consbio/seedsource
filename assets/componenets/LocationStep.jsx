@@ -1,14 +1,14 @@
 import React, { PropTypes } from 'react'
-import ConfigurationStep from './ConfigurationStep'
+import ConfigurationStep from '../containers/ConfigurationStep'
 import PointChooser from '../containers/PointChooser'
 
 let getObjectiveLabel = objective => (
-    objective == 'seedlots' ? 'Select a planting site' : 'Select a seedlot location'
+    objective === 'seedlots' ? 'Select a planting site' : 'Select a seedlot location'
 )
 
 class LocationStep extends React.Component {
     render() {
-        let { objective, elevationAtPoint, number } = this.props
+        let { objective, number, point, elevationAtPoint, active } = this.props
         let elevation = null
 
         if (elevationAtPoint !== null) {
@@ -20,8 +20,46 @@ class LocationStep extends React.Component {
             )
         }
 
+        if (!active) {
+            if (point !== null) {
+                return (
+                    <ConfigurationStep
+                        title={getObjectiveLabel(objective)}
+                        number={number}
+                        name="location"
+                        active={false}
+                    >
+                        <div>Lat: {point.y.toFixed(4)}, Lon: {point.x.toFixed(4)}</div>
+                        {elevation}
+                    </ConfigurationStep>
+                )
+            }
+            else {
+                return (
+                    <ConfigurationStep
+                        title={getObjectiveLabel(objective)}
+                        number={number}
+                        name="location"
+                        active={false}
+                    >
+                        <div><em>Click to select a point.</em></div>
+                    </ConfigurationStep>
+                )
+            }
+        }
+
+        let instruction = 'Locate your planting site'
+        if (objective === 'sites') {
+            instruction = 'Locate your seedlot (its climatic center)'
+        }
+
         return (
-            <ConfigurationStep title={getObjectiveLabel(objective)} number={number}>
+            <ConfigurationStep title={getObjectiveLabel(objective)} number={number} name="location" active={true}>
+                <div><em>{instruction}</em></div>
+                <div><em>Use the map or enter coordinates</em></div>
+
+                <div>&nbsp;</div>
+
                 <PointChooser />
                 {elevation}
                 
@@ -39,6 +77,8 @@ class LocationStep extends React.Component {
 LocationStep.shouldRender = () => true
 
 LocationStep.propTypes = {
+    active: PropTypes.bool.isRequired,
+    point: PropTypes.object,
     objective: PropTypes.string.isRequired,
     elevationAtPoint: PropTypes.number,
     number: PropTypes.number.isRequired

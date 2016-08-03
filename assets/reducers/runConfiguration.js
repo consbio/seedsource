@@ -65,6 +65,16 @@ export const lastRun = (state = null, action) => {
     }
 }
 
+export const activeStep = (state = 'objective', action) => {
+    switch (action.type) {
+        case 'SELECT_STEP':
+            return action.step
+
+        default:
+            return state
+    }
+}
+
 export const pdfIsFetching = (state = false, action) => {
     switch (action.type) {
         case 'REQUEST_PDF':

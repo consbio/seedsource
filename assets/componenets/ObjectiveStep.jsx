@@ -1,13 +1,21 @@
-import React from 'react'
-import ConfigurationStep from './ConfigurationStep'
+import React, { PropTypes } from 'react'
+import ConfigurationStep from '../containers/ConfigurationStep'
 import ObjectiveButton from '../containers/ObjectiveButton'
 
 class ObjectiveStep extends React.Component {
     render() {
-        let { number } = this.props
+        let { number, active, objective } = this.props
+
+        if (!active) {
+            return (
+                <ConfigurationStep title="Choose an objective" number={number} name="objective" active={false}>
+                    <div>{objective === 'seedlots' ? 'Find seedlots' : 'Find planting sites'}</div>
+                </ConfigurationStep>
+            )
+        }
 
         return (
-            <ConfigurationStep title="Choose an objective" number={number}>
+            <ConfigurationStep title="Choose an objective" number={number} name="objective" active={true}>
                 <div className="btn-group">
                     <ObjectiveButton name="seedlots">Find seedlots</ObjectiveButton>
                     <ObjectiveButton name="sites">Find planting sites</ObjectiveButton>
@@ -18,5 +26,11 @@ class ObjectiveStep extends React.Component {
 }
 
 ObjectiveStep.shouldRender = () => true
+
+ObjectiveStep.propTypes = {
+    number: PropTypes.number.isRequired,
+    active: PropTypes.bool.isRequired,
+    objective: PropTypes.string.isRequired
+}
 
 export default ObjectiveStep

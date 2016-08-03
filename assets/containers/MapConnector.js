@@ -10,18 +10,7 @@ import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
 import { fetchVariableLegend, fetchResultsLegend } from '../actions/legends'
 import { fetchGeometry } from '../actions/zones'
-import { variables } from '../config'
-
-const timeLabels = {
-    '1961_1990': '1961 - 1990',
-    '1981_2010': '1981 - 2010',
-    '2025rcp45': '2025 RCP 4.5',
-    '2025rcp85': '2025 RCP 8.5',
-    '2055rcp45': '2055 RCP 4.5',
-    '2055rcp85': '2055 RCP 8.5',
-    '2085rcp45': '2085 RCP 4.5',
-    '2085rcp85': '2085 RCP 8.5'
-}
+import { variables, timeLabels } from '../config'
 
 class MapConnector extends React.Component {
     constructor(props) {

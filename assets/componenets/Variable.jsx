@@ -23,7 +23,8 @@ class Variable extends React.Component {
     render() {
         let {
             active, name, label, value, zoneCenter, transfer, avgTransfer, transferIsModified, unit, units, method,
-            point, zone, climate, onTransferChange, onResetTransfer, onToggle, onRemove, fetchTransfer, receiveTransfer
+            point, zone, climate, edit, onTransferChange, onResetTransfer, onToggle, onRemove, fetchTransfer,
+            receiveTransfer
         } = this.props
         let { transferValue, editTransfer } = this.state
         let className = 'variableConfig'
@@ -72,7 +73,7 @@ class Variable extends React.Component {
                 </span>
             )
         }
-        else if (transferIsModified) {
+        else if (transferIsModified && edit) {
             transferNode = (
                 <div>
                     <div className="transferReset" onClick={() => onResetTransfer()}>reset</div>
@@ -88,6 +89,25 @@ class Variable extends React.Component {
             value = <span>{value} {units[unit].label}</span>
         }
 
+        let tooltip = null
+        if (edit) {
+            tooltip = (
+                <ReactTooltip id={name + "_Tooltip"} type="info" place="right" effect="solid">
+                    <strong>{name}: {label}</strong>
+                    <div>Value at point: {value}</div>
+                    <div>
+                        Transfer limit (+/-): {transfer} {units[unit].label} {transferIsModified ? "(modified)" : ""}
+                    </div>
+                    <div>
+                        Avg. transfer limit for zone set: {avgTransfer} {units[unit].label}
+                    </div>
+                    <div>
+                        Zone climatic center: {zoneCenter} {units[unit].label}
+                    </div>
+                </ReactTooltip>
+            )
+        }
+
         return (
             <tr className={active ? "visible" : ""} data-tip data-for={name + "_Tooltip"}>
                 <Synchro
@@ -99,7 +119,7 @@ class Variable extends React.Component {
                 <td>
                     <button
                         type="button"
-                        className="close"
+                        className={"close" + (edit ? "" : " hidden")}
                         onClick={e => {
                             e.stopPropagation()
                             onRemove()
@@ -115,7 +135,7 @@ class Variable extends React.Component {
                 <td>{transferNode}</td>
                 <td>
                     <span
-                        className="visibilityToggle glyphicon glyphicon-eye-open"
+                        className={"visibilityToggle glyphicon glyphicon-eye-open" + (edit ? "" : " hidden")}
                         onClick={e => {
                             e.stopPropagation()
                             onToggle()
@@ -123,19 +143,7 @@ class Variable extends React.Component {
                     >
                     </span>
 
-                    <ReactTooltip id={name + "_Tooltip"} type="info" place="right" effect="solid">
-                        <strong>{name}: {label}</strong>
-                        <div>Value at point: {value}</div>
-                        <div>
-                            Transfer limit (+/-): {transfer} {units[unit].label} {transferIsModified ? "(modified)" : ""}
-                        </div>
-                        <div>
-                            Avg. transfer limit for zone set: {avgTransfer} {units[unit].label}
-                        </div>
-                        <div>
-                            Zone climatic center: {zoneCenter} {units[unit].label}
-                        </div>
-                    </ReactTooltip>
+                    {tooltip}
                 </td>
             </tr>
         )
