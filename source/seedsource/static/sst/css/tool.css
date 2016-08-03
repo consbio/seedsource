@@ -28,9 +28,14 @@ body {
 }
 
 .sidebar .nav.nav-tabs {
-    margin: 0px -15px;
-    margin-right: 0px;
+    margin: 0px 0px 0px -15px;
     padding-left: 15px;
+    background-color: #f9f9f9;
+}
+
+.sidebar .nav.nav-tabs li.active>a {
+    font-weight: bold;
+    color: #333;
 }
 
 .sidebar .tab-content {
@@ -93,7 +98,7 @@ body {
 }
 
 .step.active .badge {
-    background-color: #1c681c;
+    background-color: #000;
     font-size: 16px;
 }
 
