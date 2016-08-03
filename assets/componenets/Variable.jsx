@@ -92,17 +92,20 @@ class Variable extends React.Component {
         let tooltip = null
         if (edit) {
             tooltip = (
-                <ReactTooltip id={name + "_Tooltip"} type="info" place="right" effect="solid">
-                    <strong>{name}: {label}</strong>
-                    <div>Value at point: {value}</div>
+                <ReactTooltip id={name + "_Tooltip"} class="variable-tooltip" place="right" effect="solid">
+                    <h4>{name}: {label}</h4>
+                    <div><span className="tooltip-label">Value at point:</span> <strong>{value}</strong></div>
                     <div>
-                        Transfer limit (+/-): {transfer} {units[unit].label} {transferIsModified ? "(modified)" : ""}
+                        <span className="tooltip-label">Transfer limit (+/-):</span>
+                        <strong>{transfer} {units[unit].label} {transferIsModified ? "(modified)" : ""}</strong>
                     </div>
                     <div>
-                        Avg. transfer limit for zone set: {avgTransfer} {units[unit].label}
+                        <span className="tooltip-label">Avg. transfer limit for zone set:</span>
+                        <strong>{avgTransfer} {units[unit].label}</strong>
                     </div>
                     <div>
-                        Zone climatic center: {zoneCenter} {units[unit].label}
+                        <span className="tooltip-label">Zone climatic center:</span>
+                        <strong>{zoneCenter} {units[unit].label}</strong>
                     </div>
                 </ReactTooltip>
             )
