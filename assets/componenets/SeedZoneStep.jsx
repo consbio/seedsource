@@ -1,6 +1,16 @@
 import React, { PropTypes } from 'react'
 import ConfigurationStep from '../containers/ConfigurationStep'
 
+const getZoneLabel = zone => {
+    let label = zone.name
+
+    if (zone.elevation_band) {
+        label += ", " + zone.elevation_band[0] + "' - " + zone.elevation_band[1] + "'"
+    }
+
+    return label
+}
+
 class SeedZoneStep extends React.Component {
     componentWillUpdate(newProps) {
         let { method, onFetchZones, point, species } = newProps
@@ -24,7 +34,7 @@ class SeedZoneStep extends React.Component {
             let label = 'Select a location...'
 
             if (selected) {
-                label = zones.find(item => item.id === selected).name
+                label = getZoneLabel(zones.find(item => item.id === selected))
             }
 
             return (
@@ -51,15 +61,9 @@ class SeedZoneStep extends React.Component {
                         onZoneChange(e.target.value)
                     }}
                 >
-                    {zones.map(item => {
-                        let name = item.name
-
-                        if (item.elevation_band) {
-                            name += ", " + item.elevation_band[0] + "' - " + item.elevation_band[1] + "'"
-                        }
-
-                        return <option value={item.id} key={item.id}>{name}</option>
-                    })}
+                    {zones.map(item => (
+                        <option value={item.id} key={item.id}>{getZoneLabel(item)}</option>
+                    ))}
                 </select>
             )
         }
