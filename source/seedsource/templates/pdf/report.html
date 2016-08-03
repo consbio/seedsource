@@ -27,45 +27,44 @@
             padding: 8px;
             max-width: 4in;
         }
+
+        h3 {
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
-    <h2>{{ objective }}</h2>
+    <h2>Seedlot Selection Tool Report - {{ today|date:"d/m/Y" }}</h2>
     <img class="map-image" src="data:image/png;base64,{{ image_data }}" />
 
-    <h4>Objective</h4>
-    <div>{{ objective }}</div>
+    <div>&nbsp;</div>
 
-    <h4>{{ location_label }}</h4>
-    <div><strong>Lon:</strong> {{ point.x }} <strong>Lat:</strong> {{ point.y }}</div>
+    <div><strong>Objective:</strong> {{ objective }}</div>
 
-    <h4>Climate scenarios</h4>
-    <h5>Seedlot climate</h5>
-    <div>Year: {{ seedlot_year }}</div>
+    <div>&nbsp;</div>
 
-    <h5>Planting site climate</h5>
-    <div>Year: {{ site_year }}</div>
-    {% if site_model %}<div>Model: {{ site_model }}</div>{% endif %}
+    <div><strong>{{ location_label }}</strong> Lat: {{ point.y }}&deg;, Lon: {{ point.x }}&deg;</div>
+    <div><strong>Elevation:</strong> {{ elevation }} ft</div>
 
-    <h5>Data URL</h5>
-    <div>
-        <a href="http://cfcg.forestry.ubc.ca/projects/climate-data/climatebcwna/#ClimateWNA">
-            http://cfcg.forestry.ubc.ca/projects/climate-data/climatebcwna/#ClimateWNA
-        </a>
-    </div>
+    <h3>Climate scenarios</h3>
+    <div><strong>Seedlot climate:</strong> {{ seedlot_year }}</div>
+    <div><strong>Planting site climate:</strong> {{ site_year }} {{ site_model|default:"" }}</div>
 
-    <h4>Transfer limit method</h4>
-    <div>{{ method }}</div>
+    <div>&nbsp;</div>
+
+    <div><strong>Transfer limit method:</strong> {{ method }}</div>
 
     {% if method == "Seed Zone" %}
-        <h4>Species</h4>
-        <div>{{ species }}</div>
+        <div>&nbsp;</div>
 
-        <h4>Seed zone</h4>
-        <div>{{ zone }}</div>
+        <div><strong>Species:</strong> {{ species }}</div>
+
+        <div>&nbsp;</div>
+
+        <div><strong>Seed zone:</strong> {{ zone }}{% if band %}, {{ band.0 }}' - {{ band.1 }}'{% endif %}</div>
     {% endif %}
 
-    <h4>Climate variables</h4>
+    <h3>Climate variables</h3>
     <div>
         <table class="variables">
             <thead>
@@ -88,6 +87,15 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <div>&nbsp;</div>
+
+    <div>
+        <strong>Data URL:</strong>
+        <a href="http://cfcg.forestry.ubc.ca/projects/climate-data/climatebcwna/#ClimateWNA">
+            http://cfcg.forestry.ubc.ca/projects/climate-data/climatebcwna/#ClimateWNA
+        </a>
     </div>
 </body>
 </html>

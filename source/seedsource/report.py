@@ -3,6 +3,7 @@ import math
 import os
 import sys
 from base64 import b64encode
+from datetime import datetime
 from io import BytesIO
 
 import aiohttp
@@ -11,11 +12,13 @@ from PIL import Image
 from PIL import ImageDraw
 from clover.geometry.bbox import BBox
 from django.conf import settings
+from django.contrib.gis.geos import Point
 from django.template.loader import render_to_string
 from ncdjango.geoimage import world_to_image
 from weasyprint import HTML
 
-from seedsource.models import SeedZone
+from seedsource.models import SeedZone, TransferLimit
+from seedsource.utils import get_elevation_at_point
 from seedsource.variables import VARIABLE_CONFIG
 
 ALLOWED_HOSTS = getattr(settings, 'ALLOWED_HOSTS')
@@ -68,13 +71,14 @@ class Report(object):
                 'value': round(config.value_to_imperial(value) if is_imperial else value, 2),
                 'limit': round(config.transfer_to_imperial(transfer) if is_imperial else transfer, 2),
                 'units': config.imperial_label if is_imperial else config.metric_label,
-                'modified': transfer != variable['defaultTransfer']
+                'modified': variable['transfer'] != variable['defaultTransfer']
             })
 
         return variables
 
     def get_context(self):
         point = self.configuration['point']
+        elevation = get_elevation_at_point(Point(point['x'], point['y'])) / 0.3048
         method = self.configuration['method']
         objective = self.configuration['objective']
         climates = self.configuration['climate']
@@ -82,6 +86,11 @@ class Report(object):
         if self.configuration['method'] == 'seedzone':
             zone_id = self.configuration['zones']['selected']
             zone = SeedZone.objects.get(pk=zone_id)
+            try:
+                limit = zone.transferlimit_set.filter(low__lt=elevation, high__gte=elevation)[:1].get()
+                band = [0 if limit.low == -1 else limit.low, limit.high]
+            except TransferLimit.DoesNotExist:
+                band = None
         else:
             zone_id = None
             zone = None
@@ -91,16 +100,19 @@ class Report(object):
         map_image.save(image_data, 'png')
 
         return {
+            'today': datetime.today(),
             'image_data': b64encode(image_data.getvalue()),
             'objective': 'Find seedlots' if objective == 'seedlots' else 'Find planting sites',
             'location_label': 'Planting site location' if objective == 'seedlots' else 'Seedlot location',
             'point': {'x': round(point['x'], 4), 'y': round(point['y'], 4)},
+            'elevation': round(elevation, 2),
             'seedlot_year': self.get_year(climates['seedlot']),
             'site_year': self.get_year(climates['site']),
             'site_model': self.get_model(climates['site']),
             'method': 'Seed Zone' if method == 'seedzone' else 'Custom',
             'species': SPECIES_LABELS[self.configuration['species']] if method == 'seedzone' else None,
             'zone': getattr(zone, 'name', None),
+            'band': band,
             'variables': self.get_context_variables(),
         }
 
