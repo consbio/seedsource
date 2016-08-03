@@ -80,7 +80,8 @@ class Command(BaseCommand):
                     continue
 
                 if hasattr(name, '__call__'):
-                    zone_name = name(zone_id)
+                    object_id = feature['properties'].get('OBJECTID')
+                    zone_name = name(zone_id, object_id)
                 else:
                     zone_name = name.format(zone_id=zone_id, species=SPECIES_NAMES.get(species))
 
@@ -129,8 +130,15 @@ class Command(BaseCommand):
 
                 print('Loading historic seed zones...')
 
-                def get_historic_name(zone_id):
-                    if zone_id in WA_HISTORIC:
+                def get_historic_name(zone_id, object_id):
+                    # Special case: there are two zone 842s: one in WA and the other in OR
+                    if zone_id == 842:
+                        if object_id == 28:
+                            state = 'Washington'
+                        else:
+                            state = 'Oregon'
+
+                    elif zone_id in WA_HISTORIC:
                         state = 'Washington'
                     elif zone_id in OR_HISTORIC:
                         state = 'Oregon'
