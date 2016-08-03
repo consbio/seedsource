@@ -11,6 +11,10 @@ body {
     overflow: auto;
 }
 
+#LoginModal input.form-control, #RegisterModal input.form-control, #SettingsModal input.form-control {
+    margin-bottom: 10px;
+}
+
 .form-inline {
     display: inline;
     width: auto;

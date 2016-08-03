@@ -14,8 +14,7 @@ class LocationStep extends React.Component {
         if (elevationAtPoint !== null) {
             elevation = (
                 <div>
-                    <div>&nbsp;</div>
-                    <div><strong>Elevation at point:</strong> {elevationAtPoint.toFixed(2)} ft</div>
+                    <div><strong>Elevation:</strong> {elevationAtPoint.toFixed(2)} ft</div>
                 </div>
             )
         }
@@ -29,7 +28,7 @@ class LocationStep extends React.Component {
                         name="location"
                         active={false}
                     >
-                        <div>Lat: {point.y.toFixed(4)}, Lon: {point.x.toFixed(4)}</div>
+                        <div><strong>Point:</strong> {point.y.toFixed(4)}, {point.x.toFixed(4)}</div>
                         {elevation}
                     </ConfigurationStep>
                 )
@@ -61,6 +60,7 @@ class LocationStep extends React.Component {
                 <div>&nbsp;</div>
 
                 <PointChooser />
+                {elevation !== null ? <div>&nbsp;</div> : null}
                 {elevation}
                 
                 <div className="hidden">
