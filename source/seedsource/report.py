@@ -11,6 +11,8 @@ import mercantile
 from PIL import Image
 from PIL import ImageDraw
 from clover.geometry.bbox import BBox
+from clover.render.renderers.stretched import StretchedRenderer
+from clover.utilities.color import Color
 from django.conf import settings
 from django.contrib.gis.geos import Point
 from django.template.loader import render_to_string
@@ -36,6 +38,12 @@ SPECIES_LABELS = {
     'thpl': 'Western redcedar',
     'pimo': 'Wester white pine'
 }
+
+RESULTS_RENDERER = StretchedRenderer([
+    (0, Color(240, 59, 32)),
+    (50, Color(254, 178, 76)),
+    (100, Color(255, 237, 160))
+])
 
 
 class Report(object):
@@ -99,9 +107,12 @@ class Report(object):
         image_data = BytesIO()
         map_image.save(image_data, 'png')
 
+        legend = RESULTS_RENDERER.get_legend()[0]
+
         return {
             'today': datetime.today(),
             'image_data': b64encode(image_data.getvalue()),
+            'legend_image_data': legend.image_base64,
             'objective': 'Find seedlots' if objective == 'seedlots' else 'Find planting sites',
             'location_label': 'Planting site location' if objective == 'seedlots' else 'Seedlot location',
             'point': {'x': round(point['x'], 4), 'y': round(point['y'], 4)},

@@ -7,6 +7,10 @@
             margin: 0.5in;
         }
 
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
         body .map-image {
             margin-left: auto;
             margin-right: auto;
@@ -38,6 +42,25 @@
     <img class="map-image" src="data:image/png;base64,{{ image_data }}" />
 
     <div>&nbsp;</div>
+
+    <div style="float: right;">
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="2">Results</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="2"><img src="data:image/png;base64,{{ legend_image_data }}" /></td>
+                    <td style="vertical-align: top;">Low</td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: bottom;">High</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <div><strong>Objective:</strong> {{ objective }}</div>
 
