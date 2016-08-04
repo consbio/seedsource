@@ -16,6 +16,7 @@ from clover.utilities.color import Color
 from django.conf import settings
 from django.contrib.gis.geos import Point
 from django.template.loader import render_to_string
+from geopy.distance import vincenty
 from ncdjango.geoimage import world_to_image, image_to_world
 from pyproj import Proj, transform
 from weasyprint import HTML
@@ -29,7 +30,7 @@ BASE_DIR = settings.BASE_DIR
 PORT = getattr(settings, 'PORT', 80)
 
 TILE_SIZE = (256, 256)
-IMAGE_SIZE = (900, 600)
+IMAGE_SIZE = (682, 455)
 
 SPECIES_LABELS = {
     'generic': 'Generic',
@@ -111,13 +112,29 @@ class Report(object):
             zone = None
             band = None
 
+        mercator = Proj(init='epsg:3857')
+        wgs84 = Proj(init='epsg:4326')
+
         map_image, map_bbox = MapImage(
             IMAGE_SIZE, (point['x'], point['y']), self.zoom, self.tile_layers, zone_id
         ).get_image()
+        to_world = image_to_world(map_bbox, map_image.size)
         map_bbox = map_bbox.project(Proj(init='epsg:4326'), edge_points=0)
 
         image_data = BytesIO()
         map_image.save(image_data, 'png')
+
+        with open(os.path.join(BASE_DIR, 'seedsource', 'static', 'sst', 'images', 'north.png'), 'rb') as f:
+            north_image_data = b64encode(f.read())
+
+        with open(os.path.join(BASE_DIR, 'seedsource', 'static', 'sst', 'images', 'scale.png'), 'rb') as f:
+            scale_image_data = b64encode(f.read())
+
+        scale_bar_x = 38
+        scale_bar_y = map_image.size[1] - 15
+        scale_bar_start = transform(mercator, wgs84, *to_world(scale_bar_x, scale_bar_y))
+        scale_bar_end = transform(mercator, wgs84, *to_world(scale_bar_x + 96, scale_bar_y))
+        scale = '{} mi'.format(round(vincenty(scale_bar_start, scale_bar_end).miles, 1))
 
         legend = RESULTS_RENDERER.get_legend()[0]
 
@@ -134,6 +151,9 @@ class Report(object):
             'east': format_x_coord(map_bbox.xmax),
             'south': format_y_coord(map_bbox.ymin),
             'west': format_x_coord(map_bbox.xmin),
+            'north_image_data': north_image_data,
+            'scale_image_data': scale_image_data,
+            'scale': scale,
             'legend_image_data': legend.image_base64,
             'objective': 'Find seedlots' if objective == 'seedlots' else 'Find planting sites',
             'location_label': 'Planting site location' if objective == 'seedlots' else 'Seedlot location',

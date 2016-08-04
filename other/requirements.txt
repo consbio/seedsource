@@ -32,3 +32,4 @@ rasterio==0.32.0
 Shapely==1.5.13
 django-filter==0.13.0
 aiohttp==0.22.3
+geopy==1.11.0
