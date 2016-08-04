@@ -11,13 +11,53 @@
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
 
-        body .map-image {
-            margin-left: auto;
-            margin-right: auto;
+        .map-container {
+            padding: 1px;
             width: 100%;
         }
 
-        body h2 {
+        .label-east {
+            font-size: 10px;
+            padding-left: 4px;
+            border-left: 1px solid #000;
+        }
+
+        .label-north {
+            font-size: 10px;
+            position: absolute;
+            margin-left: -27px;
+            margin-top: 27px;
+            padding-right: 4px;
+            border-right: 1px solid #000;
+            transform: rotate(-90deg);
+        }
+
+        .label-south {
+            font-size: 10px;
+            position: absolute;
+            right: -25px;
+            margin-top: -27px;
+            padding-left: 4px;
+            border-left: 1px solid #000;
+            transform: rotate(-90deg);
+        }
+
+        .label-west {
+            font-size: 10px;
+            padding-right: 4px;
+            border-right: 1px solid #000;
+            text-align: right;
+            margin-right: -4px;
+        }
+
+        .map-image {
+            width: 100%;
+            display: block;
+            border: 1px solid #000;
+            padding: 1px;
+        }
+
+        h2 {
             text-align: center;
         }
 
@@ -39,7 +79,14 @@
 </head>
 <body>
     <h2>Seedlot Selection Tool Report - {{ today|date:"d/m/Y" }}</h2>
-    <img class="map-image" src="data:image/png;base64,{{ image_data }}" />
+
+    <div class="map-container">
+        <div class="label-north">{{ north|safe }}</div>
+        <div class="label-east">{{ west|safe }}</div>
+        <img class="map-image" src="data:image/png;base64,{{ image_data }}" />
+        <div class="label-south">{{ south|safe }}</div>
+        <div class="label-west">{{ east|safe }}</div>
+    </div>
 
     <div>&nbsp;</div>
 

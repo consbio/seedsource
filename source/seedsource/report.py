@@ -16,7 +16,8 @@ from clover.utilities.color import Color
 from django.conf import settings
 from django.contrib.gis.geos import Point
 from django.template.loader import render_to_string
-from ncdjango.geoimage import world_to_image
+from ncdjango.geoimage import world_to_image, image_to_world
+from pyproj import Proj, transform
 from weasyprint import HTML
 
 from seedsource.models import SeedZone, TransferLimit
@@ -93,25 +94,46 @@ class Report(object):
 
         if self.configuration['method'] == 'seedzone':
             zone_id = self.configuration['zones']['selected']
-            zone = SeedZone.objects.get(pk=zone_id)
+
             try:
-                limit = zone.transferlimit_set.filter(low__lt=elevation, high__gte=elevation)[:1].get()
-                band = [0 if limit.low == -1 else limit.low, limit.high]
-            except TransferLimit.DoesNotExist:
+                zone = SeedZone.objects.get(pk=zone_id)
+                try:
+                    limit = zone.transferlimit_set.filter(low__lt=elevation, high__gte=elevation)[:1].get()
+                    band = [0 if limit.low == -1 else limit.low, limit.high]
+                except TransferLimit.DoesNotExist:
+                    band = None
+            except SeedZone.DoesNotExist:
+                zone_id = None
+                zone = None
                 band = None
         else:
             zone_id = None
             zone = None
+            band = None
 
-        map_image = MapImage(IMAGE_SIZE, (point['x'], point['y']), self.zoom, self.tile_layers, zone_id).get_image()
+        map_image, map_bbox = MapImage(
+            IMAGE_SIZE, (point['x'], point['y']), self.zoom, self.tile_layers, zone_id
+        ).get_image()
+        map_bbox = map_bbox.project(Proj(init='epsg:4326'), edge_points=0)
+
         image_data = BytesIO()
         map_image.save(image_data, 'png')
 
         legend = RESULTS_RENDERER.get_legend()[0]
 
+        def format_x_coord(x):
+            return '{} &deg;W'.format(round(abs(x), 2)) if x < 0 else '{} &deg;E'.format(round(x, 2))
+
+        def format_y_coord(y):
+            return '{} &deg;S'.format(round(abs(y), 2)) if y < 0 else '{} &deg;N'.format(round(y, 2))
+
         return {
             'today': datetime.today(),
             'image_data': b64encode(image_data.getvalue()),
+            'north': format_y_coord(map_bbox.ymax),
+            'east': format_x_coord(map_bbox.xmax),
+            'south': format_y_coord(map_bbox.ymin),
+            'west': format_x_coord(map_bbox.xmin),
             'legend_image_data': legend.image_base64,
             'objective': 'Find seedlots' if objective == 'seedlots' else 'Find planting sites',
             'location_label': 'Planting site location' if objective == 'seedlots' else 'Seedlot location',
@@ -160,7 +182,10 @@ class MapImage(object):
 
         self.image_bbox = BBox((ul[0], lr[1], lr[0], ul[1]))
         self.image_size = (TILE_SIZE[0] * self.num_tiles[0], TILE_SIZE[1] * self.num_tiles[1])
+
         self.to_image = world_to_image(self.image_bbox, self.image_size)
+        self.to_world = image_to_world(self.image_bbox, self.image_size)
+
         self.point_px = [round(x) for x in self.to_image(*mercantile.xy(*point))]
 
         self.target_size = size
@@ -221,8 +246,6 @@ class MapImage(object):
                 width=3
             )
 
-            del canvas
-
     def get_marker_image(self):
         leaflet_images_dir = os.path.join(BASE_DIR, 'seedsource', 'static', 'leaflet', 'images')
         marker = Image.open(os.path.join(leaflet_images_dir, 'marker-icon.png'))
@@ -239,9 +262,13 @@ class MapImage(object):
 
     def crop_image(self, im):
         im_ul = (self.point_px[0] - self.target_size[0] // 2, self.point_px[1] - self.target_size[1] // 2)
-        return im.crop((*im_ul, im_ul[0] + self.target_size[0], im_ul[1] + self.target_size[1]))
+        box = (*im_ul, im_ul[0] + self.target_size[0], im_ul[1] + self.target_size[1])
 
-    def get_image(self) -> Image:
+        return im.crop(box), BBox(
+            (self.to_world(box[0], box[3])) + self.to_world(box[2], box[1]), projection=Proj(init='epsg:3857')
+        )
+
+    def get_image(self) -> (Image, BBox):
         im = Image.new('RGBA', self.image_size)
 
         for layer_im in self.get_layer_images():
