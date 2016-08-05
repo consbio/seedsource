@@ -14,7 +14,7 @@ class LocationStep extends React.Component {
         if (elevationAtPoint !== null) {
             elevation = (
                 <div>
-                    <div><strong>Elevation:</strong> {elevationAtPoint.toFixed(2)} ft</div>
+                    <div><strong>Elevation:</strong> {Math.round(elevationAtPoint)} ft</div>
                 </div>
             )
         }

@@ -162,7 +162,7 @@ class Report(object):
             'objective': 'Find seedlots' if objective == 'seedlots' else 'Find planting sites',
             'location_label': 'Planting site location' if objective == 'seedlots' else 'Seedlot location',
             'point': {'x': round(point['x'], 4), 'y': round(point['y'], 4)},
-            'elevation': round(elevation, 2),
+            'elevation': round(elevation),
             'seedlot_year': self.get_year(climates['seedlot']),
             'site_year': self.get_year(climates['site']),
             'site_model': self.get_model(climates['site']),

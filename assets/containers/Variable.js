@@ -12,7 +12,7 @@ const mapStateToProps = (state, { variable, index }) => {
     let { unit, method, center, point, zones, climate } = runConfiguration
     let variableConfig = variables.find(item => item.name === variable.name)
     let { name, value, zoneCenter, transfer, avgTransfer, transferIsModified } = variable
-    let { label, multiplier, units } = variableConfig
+    let { label, multiplier, units, precision, transferPrecision } = variableConfig
 
     transferIsModified = transferIsModified && method === 'seedzone'
 
@@ -24,7 +24,7 @@ const mapStateToProps = (state, { variable, index }) => {
                 number = units.imperial.convert(number)
             }
 
-            return parseFloat(number.toFixed(2))
+            return parseFloat(number.toFixed(precision))
         }
 
         return number
@@ -41,14 +41,14 @@ const mapStateToProps = (state, { variable, index }) => {
             let { convertTransfer, convert } = units.imperial
 
             if (convertTransfer) {
-                return parseFloat(convertTransfer(number).toFixed(2))
+                return parseFloat(convertTransfer(number).toFixed(transferPrecision))
             }
             else if (convert !== null) {
-                return parseFloat(convert(number).toFixed(2))
+                return parseFloat(convert(number).toFixed(transferPrecision))
             }
         }
 
-        return parseFloat(number.toFixed(2))
+        return parseFloat(number.toFixed(transferPrecision))
     }
 
     transfer = convertTransfer(transfer)

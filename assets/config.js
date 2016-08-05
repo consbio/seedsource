@@ -44,19 +44,25 @@ export const variables = [
         name: 'MAT',
         label: 'Mean annual temperature',
         multiplier: 10,
-        units: celsiusUnits
+        units: celsiusUnits,
+        precision: 1,
+        transferPrecision: 2
     },
     {
         name: 'MWMT',
         label: 'Mean warmest month temperature',
         multiplier: 10,
-        units: celsiusUnits
+        units: celsiusUnits,
+        precision: 1,
+        transferPrecision: 2
     },
     {
         name: 'MCMT',
         label: 'Mean coldest month temperature',
         multiplier: 10,
-        units: celsiusUnits
+        units: celsiusUnits,
+        precision: 1,
+        transferPrecision: 2
     },
     {
         name: 'TD',
@@ -71,79 +77,105 @@ export const variables = [
                 label: '°F',
                 convert: value => value * 1.8 // Convert temp difference to F
             }
-        }
+        },
+        precision: 1,
+        transferPrecision: 2
     },
     {
         name: 'MAP',
         label: 'Mean annual precipitation',
         multiplier: 1,
-        units: mmUnits
+        units: mmUnits,
+        precision: 0,
+        transferPrecision: 0
     },
     {
         name: 'MSP',
         label: 'Mean summer precipitation, May to September',
         multiplier: 1,
-        units: mmUnits
+        units: mmUnits,
+        precision: 0,
+        transferPrecision: 0
     },
     {
         name: 'AHM',
         label: 'Annual heat-moisture index',
         multiplier: 10,
-        units: nullUnits
+        units: nullUnits,
+        precision: 1,
+        transferPrecision: 2
     },
     {
         name: 'SHM',
         label: 'Summer heat-moisture index',
         multiplier: 10,
-        units: nullUnits
+        units: nullUnits,
+        precision: 1,
+        transferPrecision: 2
     },
     {
         name: 'DD_0',
         label: 'Degree-days below 0°C',
         multiplier: 1,
-        units: degreeDaysUnits
+        units: degreeDaysUnits,
+        precision: 1,
+        transferPrecision: 1
     },
     {
         name: 'DD5',
         label: 'Degree-days above 5°C',
         multiplier: 1,
-        units: degreeDaysUnits
+        units: degreeDaysUnits,
+        precision: 1,
+        transferPrecision: 1
     },
     {
         name: 'FFP',
         label: 'Frost-free period',
         multiplier: 1,
-        units: daysUnits
+        units: daysUnits,
+        precision: 1,
+        transferPrecision: 1
     },
     {
         name: 'PAS',
         label: 'Precipitation as snow, August to July',
         multiplier: 1,
-        units: mmUnits
+        units: mmUnits,
+        precision: 0,
+        transferPrecision: 0
     },
     {
         name: 'EMT',
         label: 'Extreme minimum temperature over 30 years',
         multiplier: 10,
-        units: celsiusUnits
+        units: celsiusUnits,
+        precision: 1,
+        transferPrecision: 2
     },
     {
         name: 'EXT',
         label: 'Extreme maximum temperature over 30 years',
         multiplier: 10,
-        units: celsiusUnits
+        units: celsiusUnits,
+        precision: 1,
+        transferPrecision: 2
     },
     {
         name: 'Eref',
         label: 'Hargreaves reference evaporation',
         multiplier: 1,
-        units: mmUnits
+        units: mmUnits,
+        precision: 0,
+        transferPrecision: 0
     },
     {
         name: 'CMD',
         label: 'Hargreaves climatic moisture deficit',
         multiplier: 1,
-        units: mmUnits
+        units: mmUnits,
+        precision: 0,
+        transferPrecision: 0
     }
 ];
 
