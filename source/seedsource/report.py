@@ -186,11 +186,20 @@ class MapImage(object):
         self.num_tiles = [math.ceil(size[x] / TILE_SIZE[x]) + 1 for x in (0, 1)]
         center_tile = mercantile.tile(point[0], point[1], zoom)
 
-        self.ul_tile = mercantile.Tile(
-            x=max(0, center_tile[0] - self.num_tiles[0] // 2),
-            y=max(0, center_tile[1] - self.num_tiles[1] // 2),
-            z=zoom
-        )
+        mercator = Proj(init='epsg:3857')
+        wgs84 = Proj(init='epsg:4326')
+
+        center_tile_bbox = BBox(mercantile.bounds(*center_tile), projection=wgs84).project(mercator, edge_points=0)
+        center_to_image = world_to_image(center_tile_bbox, TILE_SIZE)
+        center_to_world = image_to_world(center_tile_bbox, TILE_SIZE)
+        center_point_px = center_to_image(*mercantile.xy(*point))
+
+        self.ul_tile = mercantile.tile(
+            *transform(mercator, wgs84, *center_to_world(
+                center_point_px[0] - math.ceil(IMAGE_SIZE[0] / 2),
+                center_point_px[1] - math.ceil(IMAGE_SIZE[1] / 2)
+            ), zoom))
+
         lr_tile = mercantile.Tile(
             x=min(2 ** zoom, self.ul_tile.x + self.num_tiles[0]),
             y=min(2 ** zoom, self.ul_tile.y + self.num_tiles[1]),
