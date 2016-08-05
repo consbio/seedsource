@@ -5,6 +5,7 @@
 
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
+import fetch from 'isomorphic-fetch'
 import { setMapOpacity, setBasemap, setZoom, toggleVisibility } from '../actions/map'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
@@ -15,6 +16,7 @@ import { variables, timeLabels } from '../config'
 class MapConnector extends React.Component {
     constructor(props) {
         super(props)
+
         this.map = null
         this.pointMarker = null
         this.variableLayer = null
@@ -23,6 +25,8 @@ class MapConnector extends React.Component {
         this.zoneLayer = null
         this.currentZone = null
         this.visibilityButton = null
+        this.boundaryData = null
+        this.boundaryLayers = null
     }
 
     // Initial map setup
@@ -93,6 +97,11 @@ class MapConnector extends React.Component {
         this.map.on('zoomend', () => {
             this.props.onZoomChange(this.map.getZoom())
         })
+
+        // Load boundary data
+        fetch('/static/sst/geometry/west1_boundary.json')
+            .then(result => result.json())
+            .then(json => {this.boundaryData = json})
     }
 
     componentWillUpdate({ activeVariable, job, legends, zone, geometry }) {
@@ -157,6 +166,27 @@ class MapConnector extends React.Component {
         else if (this.resultsLayer !== null) {
             this.map.removeLayer(this.resultsLayer)
             this.resultsLayer = null
+        }
+    }
+
+    updateBoundaryLayer(serviceId, showResults) {
+        if (serviceId !== null && showResults && this.boundaryData !== null) {
+            if (this.boundaryLayers === null) {
+                this.boundaryLayers = this.boundaryData.features.map(feature => (
+                    L.geoJson(feature, {
+                        style: {
+                            color: '#006',
+                            opacity: .7,
+                            weight: 2,
+                            fill: false
+                        }
+                    }).addTo(this.map)
+                ))
+            }
+        }
+        else if (this.boundaryLayers !== null) {
+            this.boundaryLayers.forEach(layer => this.map.removeLayer(layer))
+            this.boundaryLayers = null
         }
     }
 
@@ -304,6 +334,7 @@ class MapConnector extends React.Component {
         this.updatePointMarker(point)
         this.updateVariableLayer(activeVariable, objective, climate)
         this.updateResultsLayer(job.serviceId, showResults)
+        this.updateBoundaryLayer(job.serviceId, showResults)
         this.updateOpacity(opacity)
         this.updateVisibilityButton(job.serviceId, showResults)
         this.updateTimeOverlay(activeVariable, objective, climate)
