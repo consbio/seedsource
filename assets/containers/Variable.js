@@ -14,6 +14,8 @@ const mapStateToProps = (state, { variable, index }) => {
     let { name, value, zoneCenter, transfer, avgTransfer, transferIsModified } = variable
     let { label, multiplier, units } = variableConfig
 
+    transferIsModified = transferIsModified && method === 'seedzone'
+
     let convert = number => {
         if (number !== null) {
             number /= multiplier

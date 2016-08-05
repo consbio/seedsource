@@ -73,7 +73,7 @@ class Variable extends React.Component {
                 </span>
             )
         }
-        else if (transferIsModified && edit) {
+        else if (transferIsModified && edit && method) {
             transferNode = (
                 <div>
                     <div className="transferReset" onClick={() => onResetTransfer()}>reset</div>
