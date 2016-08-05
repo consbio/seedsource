@@ -8,7 +8,7 @@ from io import BytesIO
 
 import aiohttp
 import mercantile
-from PIL import Image
+from PIL import Image, ImageMath
 from PIL import ImageDraw
 from clover.geometry.bbox import BBox
 from clover.render.renderers.stretched import StretchedRenderer
@@ -281,6 +281,9 @@ class MapImage(object):
         leaflet_images_dir = os.path.join(BASE_DIR, 'seedsource', 'static', 'leaflet', 'images')
         marker = Image.open(os.path.join(leaflet_images_dir, 'marker-icon.png'))
         shadow = Image.open(os.path.join(leaflet_images_dir, 'marker-shadow.png'))
+
+        # Raise the shadow opacity
+        shadow.putalpha(ImageMath.eval('a * 2', a=shadow.convert('RGBA').split()[3]).convert('L'))
 
         im = Image.new('RGBA', self.image_size)
         im.paste(shadow, (self.point_px[0] - 12, self.point_px[1] - shadow.size[1]))
