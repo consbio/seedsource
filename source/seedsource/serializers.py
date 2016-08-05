@@ -70,3 +70,4 @@ class GeneratePDFSerializer(serializers.Serializer):
     configuration = serializers.DictField()
     tile_layers = serializers.ListField(child=serializers.CharField())
     zoom = serializers.IntegerField()
+    opacity = serializers.FloatField()

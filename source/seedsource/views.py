@@ -85,7 +85,7 @@ class GeneratePDFView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
-        pdf_data = Report(data['configuration'], data['zoom'], data['tile_layers']).get_pdf_data()
+        pdf_data = Report(data['configuration'], data['zoom'], data['tile_layers'], data['opacity']).get_pdf_data()
 
         response = HttpResponse(content=pdf_data.getvalue(), content_type='application/x-pdf')
         response['Content-disposition'] = 'attachment; filename=report.pdf'

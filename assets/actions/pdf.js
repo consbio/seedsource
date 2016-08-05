@@ -16,14 +16,15 @@ export const receivePDF = () => {
 export const createPDF = () => {
     return (dispatch, getState) => {
         let { lastRun, job, map } = getState()
-        let { basemap, zoom } = map
+        let { basemap, zoom, opacity } = map
 
         let resultsLayer = '/tiles/' + job.serviceId + '/{z}/{x}/{y}.png'
 
         let data = {
             configuration: lastRun,
             tile_layers: [basemap, resultsLayer],
-            zoom
+            zoom,
+            opacity
         }
 
         dispatch(requestPDF())

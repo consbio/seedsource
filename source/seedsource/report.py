@@ -49,10 +49,11 @@ RESULTS_RENDERER = StretchedRenderer([
 
 
 class Report(object):
-    def __init__(self, configuration, zoom, tile_layers):
+    def __init__(self, configuration, zoom, tile_layers, opacity):
         self.configuration = configuration
         self.zoom = zoom
         self.tile_layers = tile_layers
+        self.opacity = opacity
 
     def get_year(self, climate):
         return climate['time'].replace('_', '-')
@@ -116,7 +117,7 @@ class Report(object):
         wgs84 = Proj(init='epsg:4326')
 
         map_image, map_bbox = MapImage(
-            IMAGE_SIZE, (point['x'], point['y']), self.zoom, self.tile_layers, zone_id
+            IMAGE_SIZE, (point['x'], point['y']), self.zoom, self.tile_layers, zone_id, self.opacity
         ).get_image()
         to_world = image_to_world(map_bbox, map_image.size)
         map_bbox = map_bbox.project(Proj(init='epsg:4326'), edge_points=0)
@@ -180,7 +181,7 @@ class Report(object):
 
 
 class MapImage(object):
-    def __init__(self, size, point, zoom, tile_layers, zone_id):
+    def __init__(self, size, point, zoom, tile_layers, zone_id, opacity):
         self._configure_event_loop()
 
         self.num_tiles = [math.ceil(size[x] / TILE_SIZE[x]) + 1 for x in (0, 1)]
@@ -222,6 +223,7 @@ class MapImage(object):
         self.zoom = zoom
         self.tile_layers = tile_layers
         self.zone_id = zone_id
+        self.opacity = opacity
 
     def _configure_event_loop(self):
         if sys.platform == 'win32':
@@ -300,8 +302,8 @@ class MapImage(object):
     def get_image(self) -> (Image, BBox):
         im = Image.new('RGBA', self.image_size)
 
-        for layer_im in self.get_layer_images():
-            im.paste(layer_im, (0, 0), layer_im)
+        for i, layer_im in enumerate(self.get_layer_images()):
+            im.paste(Image.blend(im, layer_im, 1 if i == 0 else self.opacity), (0, 0), layer_im)
 
         self.draw_zone_geometry(im)
 
