@@ -30,7 +30,7 @@ BASE_DIR = settings.BASE_DIR
 PORT = getattr(settings, 'PORT', 80)
 
 TILE_SIZE = (256, 256)
-IMAGE_SIZE = (682, 455)
+IMAGE_SIZE = (645, 430)
 
 SPECIES_LABELS = {
     'generic': 'Generic',
@@ -140,10 +140,10 @@ class Report(object):
         legend = RESULTS_RENDERER.get_legend()[0]
 
         def format_x_coord(x):
-            return '{} &deg;W'.format(round(abs(x), 2)) if x < 0 else '{} &deg;E'.format(round(x, 2))
+            return '{}&deg; W'.format(round(abs(x), 2)) if x < 0 else '{}&deg; E'.format(round(x, 2))
 
         def format_y_coord(y):
-            return '{} &deg;S'.format(round(abs(y), 2)) if y < 0 else '{} &deg;N'.format(round(y, 2))
+            return '{}&deg; S'.format(round(abs(y), 2)) if y < 0 else '{}&deg; N'.format(round(y, 2))
 
         return {
             'today': datetime.today(),

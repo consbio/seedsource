@@ -9,57 +9,7 @@
 
         body {
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        }
-
-        .map-container {
-            padding: 1px;
-            width: 100%;
-        }
-
-        .label-east {
-            font-size: 10px;
-            padding-left: 4px;
-            border-left: 1px solid #000;
-        }
-
-        .label-north {
-            text-align: right;
-            width: 50px;
-            font-size: 10px;
-            position: absolute;
-            margin-left: -32px;
-            margin-top: 33px;
-            padding-right: 4px;
-            border-right: 1px solid #000;
-            transform: rotate(-90deg);
-        }
-
-        .label-south {
-            text-align: left;
-            width: 50px;
-            font-size: 10px;
-            position: absolute;
-            margin-left: 664px;
-            margin-top: -33px;
-            padding-top: 1px;
-            padding-left: 4px;
-            border-left: 1px solid #000;
-            transform: rotate(-90deg);
-        }
-
-        .label-west {
-            font-size: 10px;
-            padding-right: 4px;
-            border-right: 1px solid #000;
-            text-align: right;
-            padding-top: 1px;
-            margin-right: -4px;
-        }
-
-        .map-image {
-            display: block;
-            border: 1px solid #000;
-            padding: 1px;
+            color: #333;
         }
 
         .north-arrow {
@@ -73,9 +23,9 @@
 
         .scale-bar {
             position: absolute;
-            margin-top: -20px;
+            margin-top: -22px;
             margin-left: 35px;
-            padding: 1px 3px;
+            padding: 3px 3px 1px 3px;
             background-color: rgba(255, 255, 255, .8);
             border-radius: 2px;
             font-size: 10px;
@@ -87,6 +37,64 @@
             margin-right: 5px;
         }
 
+        .map-table {
+            width: 682px;
+            border-spacing: 0px;
+            border-collapse: collapse;
+        }
+
+        .map-table .west {
+            font-size: 10px;
+            border-left: 1px solid #000;
+            padding-left: 2px;
+        }
+
+        .map-table .north {
+            font-size: 10px;
+            border-top: 1px solid #000;
+            vertical-align: top;
+            max-width: 15px;
+            padding-top: 17px;
+        }
+
+        .map-table .north div {
+            white-space: nowrap;
+            transform: rotate(-90deg);
+            transform-origin: bottom right;
+        }
+
+        .map-table .image {
+            border: 1px solid #000;
+            padding: 1px;
+        }
+
+        .map-table .image .map-image {
+            margin-bottom: -4px;
+        }
+
+        .map-table .south {
+            font-size: 10px;
+            border-bottom: 1px solid #000;
+            vertical-align: bottom;
+            max-width: 15px;
+            padding-left: 2px;
+        }
+
+        .map-table .south div {
+            white-space: nowrap;
+            transform: rotate(-90deg);
+            transform-origin: top left;
+            margin-bottom: -8px;
+        }
+
+        .map-table .east {
+            font-size: 10px;
+            border-right: 1px solid #000;
+            text-align: right;
+            padding-top: 2px;
+            padding-right: 2px;
+        }
+
         h2 {
             text-align: center;
         }
@@ -94,6 +102,10 @@
         table.variables {
             width: 100%;
             border-spacing: 0px;
+        }
+
+        table.variables th {
+            color: #555;
         }
 
         table.variables td {
@@ -110,15 +122,29 @@
 <body>
     <h2>Seedlot Selection Tool Report - {{ today|date:"d/m/Y" }}</h2>
 
-    <div class="map-container">
-        <div class="label-north">{{ north|safe }}</div>
-        <div class="label-east">{{ west|safe }}</div>
-        <img class="map-image" src="data:image/png;base64,{{ image_data }}" />
-        <div class="north-arrow"><img src="data:image/png;base64,{{ north_image_data }}" /></div>
-        <div class="scale-bar"><img src="data:image/png;base64,{{ scale_image_data }}" /> {{ scale }}</div>
-        <div class="label-south">{{ south|safe }}</div>
-        <div class="label-west">{{ east|safe }}</div>
-    </div>
+    <table class="map-table">
+        <tbody>
+            <tr>
+                <td></td>
+                <td class="west">{{ west|safe }}</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="north"><div>{{ north|safe }}</div></td>
+                <td class="image">
+                    <img class="map-image" src="data:image/png;base64,{{ image_data }}" />
+                    <div class="north-arrow"><img src="data:image/png;base64,{{ north_image_data }}" /></div>
+                    <div class="scale-bar"><img src="data:image/png;base64,{{ scale_image_data }}" /> {{ scale }}</div>
+                </td>
+                <td class="south"><div>{{ south|safe }}</div></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td class="east">{{ east|safe }}</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
 
     <div>&nbsp;</div>
 
