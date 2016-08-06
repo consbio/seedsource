@@ -1,5 +1,4 @@
-import fetch from 'isomorphic-fetch'
-import { getCookies } from '../utils'
+import { get, post, put, ioDelete } from '../io'
 
 export const SHOW_SAVE_MODAL = 'SHOW_SAVE_MODAL'
 export const HIDE_SAVE_MODAL = 'HIDE_SAVE_MODAL'
@@ -59,15 +58,7 @@ export const createSave = (configuration, title) => {
 
         dispatch(requestSave())
 
-        return fetch('/sst/run-configurations/', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookies().csrftoken
-            },
-            body: JSON.stringify(data)
-        }).then(response => {
+        return post('/sst/run-configurations/', data).then(response => {
             let { status } = response
 
             if (status >= 200 && status < 300) {
@@ -99,15 +90,7 @@ export const updateSave = (configuration, lastSave) => {
 
         let url = '/sst/run-configurations/' + lastSave.saveId + '/'
 
-        return fetch(url, {
-            method: 'PUT',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookies().csrftoken
-            },
-            body: JSON.stringify(data)
-        }).then(response => {
+        return put(url, data).then(response => {
             let { status } = response
 
             if (status >= 200 && status < 300) {
@@ -155,9 +138,7 @@ export const fetchSaves = () => {
         if (isLoggedIn) {
             dispatch(requestSaves())
 
-            return fetch('/sst/run-configurations/', {
-                credentials: 'same-origin'
-            }).then(response => {
+            return get('/sst/run-configurations/').then(response => {
                 let {status} = response
 
                 if (status >= 200 && status < 300) {
@@ -185,11 +166,7 @@ export const deleteSave = uuid => {
     return dispatch => {
         let url = '/sst/run-configurations/' + uuid + '/'
 
-        return fetch(url, {
-            method: 'DELETE',
-            credentials: 'same-origin',
-            headers: {'X-CSRFToken': getCookies().csrftoken}
-        }).then(response => {
+        return ioDelete(url).then(response => {
             let { status } = response
 
             if (status >= 200 && status < 300) {

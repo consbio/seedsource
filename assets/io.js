@@ -11,7 +11,7 @@ export const get = url => {
     return fetch(url, {credentials: 'same-origin'})
 }
 
-export const post = (url, data, options) => {
+export const post = (url, data, options = {}) => {
     let { method } = options
 
     if (!method) {
@@ -32,3 +32,7 @@ export const post = (url, data, options) => {
         body: data
     })
 }
+
+export const put = (url, data, options) => post(url, data, Object.assign({method: 'PUT'}, options))
+
+export const ioDelete = (url, options) => post(url, null, Object.assign({method: 'DELETE'}, options))

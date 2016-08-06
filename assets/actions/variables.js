@@ -1,5 +1,5 @@
-import fetch from 'isomorphic-fetch'
 import { getServiceName } from '../utils'
+import { get, urlEncode } from '../io'
 
 export const SELECT_UNIT = 'SELECT_UNIT'
 export const SELECT_METHOD = 'SELECT_METHOD'
@@ -98,14 +98,16 @@ export const fetchValue = name => {
             dispatch(requestValue(name))
 
             let url = '/arcgis/rest/services/' + getServiceName(name, objective, climate) +
-                '/MapServer/identify/' + '?f=json&tolerance=2&imageDisplay=1600%2C1031%2C96&&' +
-                'geometryType=esriGeometryPoint&' +
-                'mapExtent=-12301562.058352625%2C6293904.1727356175%2C-12056963.567839967%2C6451517.325059711' +
-                '&geometry=' + JSON.stringify(point)
+                '/MapServer/identify/?' + urlEncode({
+                    f: 'json',
+                    tolerance: 2,
+                    imageDisplay: '1600,1031,96',
+                    geometryType: 'esriGeometryPoint',
+                    mapExtent: '0,0,0,0',
+                    geometry: JSON.stringify(point)
+                })
 
-            return fetch(url, {credentials: 'same-origin'})
-                .then(response => response.json())
-                .then(json => dispatch(receiveValue(name, json)))
+            return get(url).then(response => response.json()).then(json => dispatch(receiveValue(name, json)))
         }
 
         return Promise.resolve()

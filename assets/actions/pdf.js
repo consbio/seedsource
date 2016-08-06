@@ -1,5 +1,4 @@
-import fetch from 'isomorphic-fetch'
-import { getCookies } from '../utils'
+import { post } from '../io'
 
 export const REQUEST_PDF = 'REQUEST_PDF'
 export const RECEIVE_PDF = 'RECEIVE_PDF'
@@ -32,15 +31,7 @@ export const createPDF = () => {
 
         dispatch(requestPDF())
 
-        return fetch('/sst/create-pdf/', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookies().csrftoken
-            },
-            body: JSON.stringify(data)
-        }).then(response => {
+        return post('/sst/create-pdf/', data).then(response => {
             let { status } = response
 
             if (status >= 200 && status < 300) {

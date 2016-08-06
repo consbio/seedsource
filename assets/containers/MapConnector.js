@@ -5,7 +5,6 @@
 
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import fetch from 'isomorphic-fetch'
 import { setMapOpacity, setBasemap, setZoom, toggleVisibility } from '../actions/map'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
@@ -139,7 +138,7 @@ class MapConnector extends React.Component {
         })
 
         // Load boundary data
-        fetch('/static/sst/geometry/west1_boundary.json')
+        get('/static/sst/geometry/west1_boundary.json')
             .then(result => result.json())
             .then(json => {this.boundaryData = json})
     }

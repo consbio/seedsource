@@ -1,5 +1,5 @@
-import fetch from 'isomorphic-fetch'
 import { getServiceName } from '../utils'
+import { get } from '../io'
 
 export const RECEIVE_VARIABLE_LEGEND = 'RECEIVE_VARIABLE_LEGEND'
 export const REQUEST_VARIABLE_LEGEND = 'REQUEST_VARIABLE_LEGEND'
@@ -30,9 +30,7 @@ export const fetchVariableLegend = () => {
             let url = '/arcgis/rest/services/' + getServiceName(activeVariable, objective, climate) +
                 '/MapServer/legend'
 
-            return fetch(url, {credentials: 'same-origin'})
-                .then(response => response.json())
-                .then(json => dispatch(receiveVariableLegend(json)))
+            return get(url).then(response => response.json()).then(json => dispatch(receiveVariableLegend(json)))
         }
 
         return Promise.resolve()
@@ -73,9 +71,7 @@ export const fetchResultsLegend = () => {
 
             let url = '/arcgis/rest/services/' + job.serviceId + '/MapServer/legend'
 
-            return fetch(url, {credentials: 'same-origin'})
-                .then(response => response.json())
-                .then(json => dispatch(receiveResultsLegend(json)))
+            return get(url).then(response => response.json()).then(json => dispatch(receiveResultsLegend(json)))
         }
 
         return Promise.resolve()

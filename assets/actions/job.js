@@ -1,5 +1,4 @@
-import fetch from 'isomorphic-fetch'
-import { getCookies } from '../utils'
+import { get, post } from '../io'
 
 export const RECEIVE_JOB = 'RECEIVE_JOB'
 export const FAIL_JOB = 'FAIL_JOB'
@@ -41,7 +40,7 @@ export const createJob = configuration => {
                 let year = selectedClimate.time
 
                 if (year !== '1961_1990' && year !== '1981_2010') {
-                    year = selectedClimate.model + '_' +selectedClimate.time
+                    year = selectedClimate.model + '_' + selectedClimate.time
                 }
 
                 return 'service://west1_' + year + 'Y_' + item.name + ':' + item.name
@@ -51,23 +50,14 @@ export const createJob = configuration => {
             })
         }
 
-        let url = '/geoprocessing/rest/jobs/'
+        dispatch(requestJob(configuration))
+
         let data = {
             job: 'generate_scores',
             inputs: JSON.stringify(inputs)
         }
 
-        dispatch(requestJob(configuration))
-
-        return fetch(url, {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookies().csrftoken
-            },
-            body: JSON.stringify(data)
-        }).then(response => {
+        return post('/geoprocessing/rest/jobs/', data).then(response => {
             let { status } = response
 
             if (status >= 200 && status < 300) {
@@ -106,7 +96,7 @@ export const fetchJobStatus = jobId => {
     
         dispatch(requestJobStatus())
 
-        return fetch(url, {credentials: 'same-origin'}).then(response => {
+        return get(url).then(response => {
             let { status } = response
 
             if (status >= 200 && status < 300) {

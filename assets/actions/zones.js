@@ -1,4 +1,4 @@
-import fetch from 'isomorphic-fetch'
+import { get, urlEncode } from '../io'
 
 export const SELECT_ZONE = 'SELECT_ZONE'
 export const REQUEST_ZONES = 'REQUEST_ZONES'
@@ -36,11 +36,12 @@ export const fetchZones = () => {
         if (pointIsValid && !isFetchingZones) {
             dispatch(requestZones())
 
-            let url = '/sst/seedzones/?point=' + point.x + ',' + point.y + '&species=' + species
+            let url = '/sst/seedzones/?' + urlEncode({
+                point: point.x + ',' + point.y,
+                species
+            })
 
-            return fetch(url, {credentials: 'same-origin'})
-                .then(response => response.json())
-                .then(json => dispatch(receiveZones(json.results)))
+            return get(url).then(response => response.json()).then(json => dispatch(receiveZones(json.results)))
         }
 
         return Promise.resolve()
@@ -71,9 +72,7 @@ export const fetchGeometry = () => {
 
             let url = '/sst/seedzones/' + selected + '/geometry/'
 
-            return fetch(url, {credentials: 'same-origin'})
-                .then(response => response.json())
-                .then(json => dispatch(receiveGeometry(json)))
+            return get(url).then(response => response.json()).then(json => dispatch(receiveGeometry(json)))
         }
 
         return Promise.resolve()
