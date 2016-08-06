@@ -12,6 +12,7 @@ import { getServiceName } from '../utils'
 import { fetchVariableLegend, fetchResultsLegend } from '../actions/legends'
 import { fetchGeometry } from '../actions/zones'
 import { variables, timeLabels } from '../config'
+import { get } from '../io'
 
 class MapConnector extends React.Component {
     constructor(props) {
@@ -91,7 +92,41 @@ class MapConnector extends React.Component {
         })
 
         this.map.on('click', e => {
-            this.props.onMapClick(e.latlng.lat, e.latlng.lng)
+            let container = L.DomUtil.create('div', 'map-info-popup')
+            let info = L.DomUtil.create('p', '', container)
+            let elevation = '--'
+
+            let updateInfo = () => {
+                info.innerHTML = (
+                    '<strong>Location:</strong> ' + e.latlng.lat.toFixed(2) + ', ' + e.latlng.lng.toFixed(2) +
+                    '<br />' +
+                    '<strong>Elevation:</strong> ' + elevation
+                )
+            }
+
+            updateInfo()
+
+            let url = '/arcgis/rest/services/west1_dem/MapServer/identify/' +
+                '?f=json&tolerance=2&imageDisplay=1600%2C1031%2C96&&geometryType=esriGeometryPoint&' +
+                'mapExtent=-12301562.058352625%2C6293904.1727356175%2C-12056963.567839967%2C6451517.325059711' +
+                '&geometry=' + JSON.stringify({x: e.latlng.lng, y: e.latlng.lat})
+            get(url).then(response => response.json()).then(json => {
+                elevation = Math.round(json.results[0].attributes['Pixel value'] / 0.3048) + 'ft'
+                updateInfo()
+            })
+
+            let button = L.DomUtil.create('button', 'btn btn-sm btn-primary', container)
+            button.innerHTML = 'Set Point'
+
+            let popup = L.popup()
+                .setLatLng(e.latlng)
+                .setContent(container)
+                .openOn(this.map);
+
+            L.DomEvent.on(button, 'click', () => {
+                this.map.closePopup(popup)
+                this.props.onMapClick(e.latlng.lat, e.latlng.lng)
+            })
         })
 
         this.map.on('zoomend', () => {

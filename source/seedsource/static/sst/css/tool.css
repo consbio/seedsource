@@ -430,3 +430,11 @@ body {
 .leaflet-legend tbody tr:last-child td {
     vertical-align: bottom;
 }
+
+.map-info-popup {
+    min-width: 100px;
+}
+
+.leaflet-popup .map-info-popup button {
+    width: 100%;
+}
