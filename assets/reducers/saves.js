@@ -2,6 +2,7 @@ import {
     SHOW_SAVE_MODAL, HIDE_SAVE_MODAL, RECEIVE_SAVE, REQUEST_SAVE, REQUEST_SAVES, RECEIVE_SAVES, REMOVE_SAVE,
     LOAD_CONFIGURATION
 } from '../actions/saves'
+import { morph } from '../utils'
 
 const defaultState = {
     showModal: false,
@@ -14,37 +15,37 @@ const defaultState = {
 export default (state = defaultState, action) => {
     switch(action.type) {
         case SHOW_SAVE_MODAL:
-            return Object.assign({}, state, {showModal: true})
+            return morph(state, {showModal: true})
 
         case HIDE_SAVE_MODAL:
-            return Object.assign({}, state, {showModal: false})
+            return morph(state, {showModal: false})
 
         case RECEIVE_SAVE:
             let { title, saveId } = action
 
-            return Object.assign({}, state, {
+            return morph(state, {
                 showModal: false,
                 isSaving: false,
                 lastSave: {title, saveId}
             })
 
         case REQUEST_SAVE:
-            return Object.assign({}, state, {isSaving: true})
+            return morph(state, {isSaving: true})
 
         case REQUEST_SAVES:
-            return Object.assign({}, state, {isFetching: true})
+            return morph(state, {isFetching: true})
 
         case RECEIVE_SAVES:
-            return Object.assign({}, state, {isFetching: false, saves: action.saves})
+            return morph(state, {isFetching: false, saves: action.saves})
 
         case LOAD_CONFIGURATION:
             let { save } = action
-            return Object.assign({}, state, {lastSave: {title: save.title, saveId: save.uuid}})
+            return morph(state, {lastSave: {title: save.title, saveId: save.uuid}})
 
         case REMOVE_SAVE:
             let { lastSave, saves } = state
             
-            return Object.assign({}, state, {
+            return morph(state, {
                 saves: saves.filter(item => item.uuid !== action.uuid),
                 lastSave: lastSave !== null && lastSave.saveId === action.uuid ? null : lastSave
             })

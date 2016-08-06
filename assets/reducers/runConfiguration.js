@@ -10,6 +10,7 @@ import { LOAD_CONFIGURATION } from '../actions/saves'
 import { FINISH_JOB } from '../actions/job'
 import { SELECT_STEP } from '../actions/step'
 import { REQUEST_PDF, RECEIVE_PDF } from '../actions/pdf'
+import { morph } from '../utils'
 
 const defaultConfiguration = {
     objective: 'seedlots',
@@ -27,24 +28,24 @@ export default (state = defaultConfiguration, action) => {
     let runConfiguration = () => {
         switch(action.type) {
             case SELECT_OBJECTIVE:
-                return Object.assign({}, state, {objective: action.objective})
+                return morph(state, {objective: action.objective})
 
             case SET_LATITUDE:
             case SET_LONGITUDE:
             case SET_POINT:
-                return Object.assign({}, state, {point: point(state.point, action)})
+                return morph(state, {point: point(state.point, action)})
 
             case SELECT_SPECIES:
-                return Object.assign({}, state, {species: action.species})
+                return morph(state, {species: action.species})
 
             case SELECT_UNIT:
-                return Object.assign({}, state, {unit: action.unit})
+                return morph(state, {unit: action.unit})
 
             case SELECT_METHOD:
-                return Object.assign({}, state, {method: action.method})
+                return morph(state, {method: action.method})
 
             case LOAD_CONFIGURATION:
-                return Object.assign({}, defaultConfiguration, action.configuration)
+                return morph(defaultConfiguration, action.configuration)
 
             default:
                 return state
@@ -53,7 +54,7 @@ export default (state = defaultConfiguration, action) => {
 
     state = runConfiguration()
 
-    return Object.assign({}, state, {
+    return morph(state, {
         variables: variables(state.variables, action),
         zones: zones(state.zones || undefined, action),
         climate: climate(state.climate || undefined, action)

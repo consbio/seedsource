@@ -1,4 +1,5 @@
 import { SELECT_ZONE, REQUEST_ZONES, RECEIVE_ZONES, REQUEST_GEOMETRY, RECEIVE_GEOMETRY } from '../actions/zones'
+import { morph } from '../utils'
 
 const defaultState = {
     matched: [],
@@ -12,13 +13,13 @@ const defaultState = {
 export default (state = defaultState, action) => {
     switch(action.type) {
         case SELECT_ZONE:
-            return Object.assign({}, state, {selected: action.zone, geometry: null, isFetchingGeometry: null})
+            return morph(state, {selected: action.zone, geometry: null, isFetchingGeometry: null})
 
         case REQUEST_ZONES:
-            return Object.assign({}, state, {isFetchingZones: true})
+            return morph(state, {isFetchingZones: true})
 
         case RECEIVE_ZONES:
-            let newState =  Object.assign({}, state, {matched: action.zones, isFetchingZones: false})
+            let newState =  morph(state, {matched: action.zones, isFetchingZones: false})
 
             if (newState.matched.length) {
                 newState.elevationAtPoint = newState.matched[0].elevation_at_point
@@ -39,10 +40,10 @@ export default (state = defaultState, action) => {
             return newState
 
         case REQUEST_GEOMETRY:
-            return Object.assign({}, state, {isFetchingGeometry: true})
+            return morph(state, {isFetchingGeometry: true})
 
         case RECEIVE_GEOMETRY:
-            return Object.assign({}, state, {geometry: action.geometry, isFetchingGeometry: false})
+            return morph(state, {geometry: action.geometry, isFetchingGeometry: false})
 
         default:
             return state

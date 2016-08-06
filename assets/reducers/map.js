@@ -1,5 +1,6 @@
 import { SET_MAP_OPACITY, SET_BASEMAP, SET_ZOOM, TOGGLE_VISIBILITY } from '../actions/map'
 import { FINISH_JOB } from '../actions/job'
+import { morph } from '../utils'
 
 const defaultState = {
     opacity: 1,
@@ -11,19 +12,19 @@ const defaultState = {
 export default (state=defaultState, action) => {
     switch (action.type) {
         case SET_MAP_OPACITY:
-            return Object.assign({}, state, {opacity: action.opacity})
+            return morph(state, {opacity: action.opacity})
 
         case SET_BASEMAP:
-            return Object.assign({}, state, {basemap: action.basemap})
+            return morph(state, {basemap: action.basemap})
 
         case SET_ZOOM:
-            return Object.assign({}, state, {zoom: action.zoom})
+            return morph(state, {zoom: action.zoom})
 
         case TOGGLE_VISIBILITY:
-            return Object.assign({}, state, {showResults: !state.showResults})
+            return morph(state, {showResults: !state.showResults})
 
         case FINISH_JOB:
-            return Object.assign({}, state, {showResults: true})
+            return morph(state, {showResults: true})
 
         default:
             return state

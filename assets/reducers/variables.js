@@ -8,6 +8,7 @@ import { SELECT_OBJECTIVE } from '../actions/objectives'
 import { SELECT_CLIMATE_YEAR, SELECT_CLIMATE_MODEL } from '../actions/climate'
 import { SELECT_ZONE } from '../actions/zones'
 import { FINISH_JOB } from '../actions/job'
+import { morph } from '../utils'
 
 
 export default (state = [], action) => {
@@ -22,7 +23,7 @@ export default (state = [], action) => {
             return state
         }
         else {
-            variable = Object.assign({}, state[index], values)
+            variable = morph(state[index], values)
             return state.slice(0, index).concat([variable, ...state.slice(index + 1)])
         }
     }
@@ -65,7 +66,7 @@ export default (state = [], action) => {
         case SET_LATITUDE:
         case SET_LONGITUDE:
         case SET_POINT:
-            return state.map(item => Object.assign({}, item, {
+            return state.map(item => morph(item, {
                 isFetching: false,
                 isFetchingTransfer: false,
                 value: null,
@@ -78,11 +79,11 @@ export default (state = [], action) => {
         case SELECT_OBJECTIVE:
         case SELECT_CLIMATE_YEAR:
         case SELECT_CLIMATE_MODEL:
-            return state.map(item => Object.assign({}, item, {isFetching: false, value: null}))
+            return state.map(item => morph(item, {isFetching: false, value: null}))
         
         case SELECT_ZONE:
         case SELECT_METHOD:
-            return state.map(item => Object.assign({}, item, {
+            return state.map(item => morph(item, {
                 isFetchingTransfer: false,
                 defaultTransfer: null,
                 avgTransfer: null,

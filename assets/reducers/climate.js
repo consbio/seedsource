@@ -1,4 +1,5 @@
 import { SELECT_CLIMATE_YEAR, SELECT_CLIMATE_MODEL } from '../actions/climate'
+import { morph } from '../utils'
 
 const defaultState = {
     seedlot: {
@@ -14,15 +15,15 @@ const defaultState = {
 
 export default (state=defaultState, action) => {
     let climate = state[action.climate]
-    let newState = Object.assign({}, state)
+    let newState = morph(state)
 
     switch (action.type) {
         case SELECT_CLIMATE_YEAR:
-            newState[action.climate] = Object.assign({}, climate,  {time: action.year})
+            newState[action.climate] = morph(climate,  {time: action.year})
             return newState
 
         case SELECT_CLIMATE_MODEL:
-            newState[action.climate] = Object.assign({}, climate, {model: action.model})
+            newState[action.climate] = morph(climate, {model: action.model})
             return newState
 
         default:
