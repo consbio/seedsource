@@ -2,6 +2,14 @@ import point from './point'
 import variables from './variables'
 import zones from './zones'
 import climate from './climate'
+import { SELECT_OBJECTIVE } from '../actions/objectives'
+import { SET_LATITUDE, SET_LONGITUDE, SET_POINT } from '../actions/point'
+import { SELECT_SPECIES } from '../actions/species'
+import { SELECT_UNIT, SELECT_METHOD } from '../actions/variables'
+import { LOAD_CONFIGURATION } from '../actions/saves'
+import { FINISH_JOB } from '../actions/job'
+import { SELECT_STEP } from '../actions/step'
+import { REQUEST_PDF, RECEIVE_PDF } from '../actions/pdf'
 
 const defaultConfiguration = {
     objective: 'seedlots',
@@ -18,24 +26,24 @@ const defaultConfiguration = {
 export default (state = defaultConfiguration, action) => {
     let runConfiguration = () => {
         switch(action.type) {
-            case 'SELECT_OBJECTIVE':
+            case SELECT_OBJECTIVE:
                 return Object.assign({}, state, {objective: action.objective})
 
-            case 'SET_LATITUDE':
-            case 'SET_LONGITUDE':
-            case 'SET_POINT':
+            case SET_LATITUDE:
+            case SET_LONGITUDE:
+            case SET_POINT:
                 return Object.assign({}, state, {point: point(state.point, action)})
 
-            case 'SELECT_SPECIES':
+            case SELECT_SPECIES:
                 return Object.assign({}, state, {species: action.species})
 
-            case 'SELECT_UNIT':
+            case SELECT_UNIT:
                 return Object.assign({}, state, {unit: action.unit})
 
-            case 'SELECT_METHOD':
+            case SELECT_METHOD:
                 return Object.assign({}, state, {method: action.method})
 
-            case 'LOAD_CONFIGURATION':
+            case LOAD_CONFIGURATION:
                 return Object.assign({}, defaultConfiguration, action.configuration)
 
             default:
@@ -54,10 +62,10 @@ export default (state = defaultConfiguration, action) => {
 
 export const lastRun = (state = null, action) => {
     switch (action.type) {
-        case 'FINISH_JOB':
+        case FINISH_JOB:
             return action.configuration
 
-        case 'LOAD_CONFIGURATION':
+        case LOAD_CONFIGURATION:
             return null
 
         default:
@@ -67,7 +75,7 @@ export const lastRun = (state = null, action) => {
 
 export const activeStep = (state = 'objective', action) => {
     switch (action.type) {
-        case 'SELECT_STEP':
+        case SELECT_STEP:
             return action.step
 
         default:
@@ -77,10 +85,10 @@ export const activeStep = (state = 'objective', action) => {
 
 export const pdfIsFetching = (state = false, action) => {
     switch (action.type) {
-        case 'REQUEST_PDF':
+        case REQUEST_PDF:
             return true
 
-        case 'RECEIVE_PDF':
+        case RECEIVE_PDF:
             return false
 
         default:

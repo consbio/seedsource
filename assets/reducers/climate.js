@@ -1,3 +1,5 @@
+import { SELECT_CLIMATE_YEAR, SELECT_CLIMATE_MODEL } from '../actions/climate'
+
 const defaultState = {
     seedlot: {
         time: '1961_1990',
@@ -15,11 +17,11 @@ export default (state=defaultState, action) => {
     let newState = Object.assign({}, state)
 
     switch (action.type) {
-        case 'SELECT_CLIMATE_YEAR':
+        case SELECT_CLIMATE_YEAR:
             newState[action.climate] = Object.assign({}, climate,  {time: action.year})
             return newState
 
-        case 'SELECT_CLIMATE_MODEL':
+        case SELECT_CLIMATE_MODEL:
             newState[action.climate] = Object.assign({}, climate, {model: action.model})
             return newState
 

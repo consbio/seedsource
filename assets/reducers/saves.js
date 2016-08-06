@@ -1,3 +1,8 @@
+import {
+    SHOW_SAVE_MODAL, HIDE_SAVE_MODAL, RECEIVE_SAVE, REQUEST_SAVE, REQUEST_SAVES, RECEIVE_SAVES, REMOVE_SAVE,
+    LOAD_CONFIGURATION
+} from '../actions/saves'
+
 const defaultState = {
     showModal: false,
     isSaving: false,
@@ -8,13 +13,13 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch(action.type) {
-        case 'SHOW_SAVE_MODAL':
+        case SHOW_SAVE_MODAL:
             return Object.assign({}, state, {showModal: true})
 
-        case 'HIDE_SAVE_MODAL':
+        case HIDE_SAVE_MODAL:
             return Object.assign({}, state, {showModal: false})
 
-        case 'RECEIVE_SAVE':
+        case RECEIVE_SAVE:
             let { title, saveId } = action
 
             return Object.assign({}, state, {
@@ -23,20 +28,20 @@ export default (state = defaultState, action) => {
                 lastSave: {title, saveId}
             })
 
-        case 'REQUEST_SAVE':
+        case REQUEST_SAVE:
             return Object.assign({}, state, {isSaving: true})
 
-        case 'REQUEST_SAVES':
+        case REQUEST_SAVES:
             return Object.assign({}, state, {isFetching: true})
 
-        case 'RECEIVE_SAVES':
+        case RECEIVE_SAVES:
             return Object.assign({}, state, {isFetching: false, saves: action.saves})
 
-        case 'LOAD_CONFIGURATION':
+        case LOAD_CONFIGURATION:
             let { save } = action
             return Object.assign({}, state, {lastSave: {title: save.title, saveId: save.uuid}})
 
-        case 'REMOVE_SAVE':
+        case REMOVE_SAVE:
             let { lastSave, saves } = state
             
             return Object.assign({}, state, {

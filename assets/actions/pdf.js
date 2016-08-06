@@ -1,15 +1,18 @@
 import fetch from 'isomorphic-fetch'
 import { getCookies } from '../utils'
 
+export const REQUEST_PDF = 'REQUEST_PDF'
+export const RECEIVE_PDF = 'RECEIVE_PDF'
+
 export const requestPDF = () => {
     return {
-        type: 'REQUEST_PDF'
+        type: REQUEST_PDF
     }
 }
 
 export const receivePDF = () => {
     return {
-        type: 'RECEIVE_PDF'
+        type: RECEIVE_PDF
     }
 }
 

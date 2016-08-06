@@ -1,6 +1,15 @@
 import fetch from 'isomorphic-fetch'
 import { getCookies } from '../utils'
 
+export const SHOW_SAVE_MODAL = 'SHOW_SAVE_MODAL'
+export const HIDE_SAVE_MODAL = 'HIDE_SAVE_MODAL'
+export const RECEIVE_SAVE = 'RECEIVE_SAVE'
+export const LOAD_CONFIGURATION = 'LOAD_CONFIGURATION'
+export const REQUEST_SAVE = 'REQUEST_SAVE'
+export const RECEIVE_SAVES = 'RECEIVE_SAVES'
+export const REQUEST_SAVES = 'REQUEST_SAVES'
+export const REMOVE_SAVE = 'REMOVE_SAVE'
+
 const dumpConfiguration = configuration => {
     let { zones } = configuration
 
@@ -9,19 +18,19 @@ const dumpConfiguration = configuration => {
 
 export const showSaveModal = () => {
     return {
-        type: 'SHOW_SAVE_MODAL'
+        type: SHOW_SAVE_MODAL
     }
 }
 
 export const hideSaveModal = () => {
     return {
-        type: 'HIDE_SAVE_MODAL'
+        type: HIDE_SAVE_MODAL
     }
 }
 
 export const receiveSave = json => {
     return {
-        type: 'RECEIVE_SAVE',
+        type: RECEIVE_SAVE,
         saveId: json.uuid,
         title: json.title
     }
@@ -29,7 +38,7 @@ export const receiveSave = json => {
 
 export const loadConfiguration = (configuration, save) => {
     return {
-        type: 'LOAD_CONFIGURATION',
+        type: LOAD_CONFIGURATION,
         configuration,
         save
     }
@@ -37,7 +46,7 @@ export const loadConfiguration = (configuration, save) => {
 
 export const requestSave = () => {
     return {
-        type: 'REQUEST_SAVE'
+        type: REQUEST_SAVE
     }
 }
 
@@ -121,7 +130,7 @@ export const updateSave = (configuration, lastSave) => {
 
 export const receiveSaves = saves => {
     return {
-        type: 'RECEIVE_SAVES',
+        type: RECEIVE_SAVES,
         saves: saves.map(item => {
             let { modified, configuration } = item
 
@@ -135,7 +144,7 @@ export const receiveSaves = saves => {
 
 export const requestSaves = () => {
     return {
-        type: 'REQUEST_SAVES'
+        type: REQUEST_SAVES
     }
 }
 
@@ -167,7 +176,7 @@ export const fetchSaves = () => {
 
 export const removeSave = uuid => {
     return {
-        type: 'REMOVE_SAVE',
+        type: REMOVE_SAVE,
         uuid
     }
 }

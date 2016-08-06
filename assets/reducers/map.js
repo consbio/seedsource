@@ -1,3 +1,6 @@
+import { SET_MAP_OPACITY, SET_BASEMAP, SET_ZOOM, TOGGLE_VISIBILITY } from '../actions/map'
+import { FINISH_JOB } from '../actions/job'
+
 const defaultState = {
     opacity: 1,
     basemap: '//{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
@@ -7,19 +10,19 @@ const defaultState = {
 
 export default (state=defaultState, action) => {
     switch (action.type) {
-        case 'SET_MAP_OPACITY':
+        case SET_MAP_OPACITY:
             return Object.assign({}, state, {opacity: action.opacity})
 
-        case 'SET_BASEMAP':
+        case SET_BASEMAP:
             return Object.assign({}, state, {basemap: action.basemap})
 
-        case 'SET_ZOOM':
+        case SET_ZOOM:
             return Object.assign({}, state, {zoom: action.zoom})
 
-        case 'TOGGLE_VISIBILITY':
+        case TOGGLE_VISIBILITY:
             return Object.assign({}, state, {showResults: !state.showResults})
 
-        case 'FINISH_JOB':
+        case FINISH_JOB:
             return Object.assign({}, state, {showResults: true})
 
         default:

@@ -12,7 +12,7 @@ import { getServiceName } from '../utils'
 import { fetchVariableLegend, fetchResultsLegend } from '../actions/legends'
 import { fetchGeometry } from '../actions/zones'
 import { variables, timeLabels } from '../config'
-import { get } from '../io'
+import { get, urlEncode } from '../io'
 
 class MapConnector extends React.Component {
     constructor(props) {
@@ -106,10 +106,15 @@ class MapConnector extends React.Component {
 
             updateInfo()
 
-            let url = '/arcgis/rest/services/west1_dem/MapServer/identify/' +
-                '?f=json&tolerance=2&imageDisplay=1600%2C1031%2C96&&geometryType=esriGeometryPoint&' +
-                'mapExtent=-12301562.058352625%2C6293904.1727356175%2C-12056963.567839967%2C6451517.325059711' +
-                '&geometry=' + JSON.stringify({x: e.latlng.lng, y: e.latlng.lat})
+            let url = '/arcgis/rest/services/west1_dem/MapServer/identify/?' + urlEncode({
+                    f: 'json',
+                    tolerance: '2',
+                    imageDisplay: '1600,1031,96',
+                    geometryType: 'esriGeometryPoint',
+                    mapExtent: '0,0,0,0',
+                    geometry: JSON.stringify({x: e.latlng.lng, y: e.latlng.lat})
+                })
+
             get(url).then(response => response.json()).then(json => {
                 elevation = Math.round(json.results[0].attributes['Pixel value'] / 0.3048) + 'ft'
                 updateInfo()

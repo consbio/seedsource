@@ -1,22 +1,29 @@
 import fetch from 'isomorphic-fetch'
 import { getCookies } from '../utils'
 
+export const RECEIVE_JOB = 'RECEIVE_JOB'
+export const FAIL_JOB = 'FAIL_JOB'
+export const REQUEST_JOB = 'REQUEST_JOB'
+export const RECEIVE_JOB_STATUS = 'RECEIVE_JOB_STATUS'
+export const REQUEST_JOB_STATUS = 'REQUEST_JOB_STATUS'
+export const FINISH_JOB = 'FINISH_JOB'
+
 export const receiveJob = (configuration, json) => {
     return {
-        type: 'RECEIVE_JOB',
+        type: RECEIVE_JOB,
         jobId: json.uuid
     }
 }
 
 export const failJob = () => {
     return {
-        type: 'FAIL_JOB'
+        type: FAIL_JOB
     }
 }
 
 export const requestJob = configuration => {
     return {
-        type: 'REQUEST_JOB',
+        type: REQUEST_JOB,
         configuration
     }
 }
@@ -81,7 +88,7 @@ export const createJob = configuration => {
 
 export const receiveJobStatus = json => {
     return {
-        type: 'RECEIVE_JOB_STATUS',
+        type: RECEIVE_JOB_STATUS,
         status: json.status,
         serviceId: json.status === 'success' ? JSON.parse(json.outputs).raster_out : null
     }
@@ -89,7 +96,7 @@ export const receiveJobStatus = json => {
 
 export const requestJobStatus = () => {
     return {
-        type: 'REQUEST_JOB_STATUS'
+        type: REQUEST_JOB_STATUS
     }
 }
 
@@ -126,7 +133,7 @@ export const fetchJobStatus = jobId => {
 
 export const finishJob = configuration => {
     return {
-        type: 'FINISH_JOB',
+        type: FINISH_JOB,
         configuration
     }
 }

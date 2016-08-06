@@ -1,37 +1,50 @@
 import fetch from 'isomorphic-fetch'
 import { getServiceName } from '../utils'
 
+export const SELECT_UNIT = 'SELECT_UNIT'
+export const SELECT_METHOD = 'SELECT_METHOD'
+export const SELECT_SEEDZONE = 'SELECT_SEEDZONE'
+export const ADD_VARIABLE = 'ADD_VARIABLE'
+export const REMOVE_VARIABLE = 'REMOVE_VARIABLE'
+export const MODIFY_VARIABLE = 'MODIFY_VARIABLE'
+export const RESET_TRANSFER = 'RESET_TRANSFER'
+export const TOGGLE_VARIABLE = 'TOGGLE_VARIABLE'
+export const RECEIVE_VALUE = 'RECEIVE_VALUE'
+export const REQUEST_VALUE = 'REQUEST_VALUE'
+export const RECEIVE_TRANSFER = 'RECEIVE_TRANSFER'
+export const REQUEST_TRANSFER = 'REQUEST_TRANSFER'
+
 export const selectUnit = unit => {
     return {
-        type: 'SELECT_UNIT',
+        type: SELECT_UNIT,
         unit
     }
 }
 
 export const selectMethod = method => {
     return {
-        type: 'SELECT_METHOD',
+        type: SELECT_METHOD,
         method
     }
 }
 
 export const selectSeedzone = seedzone => {
     return {
-        type: 'SELECT_SEEDZONE',
+        type: SELECT_SEEDZONE,
         seedzone
     }
 }
 
 export const addVariable = variable => {
     return {
-        type: 'ADD_VARIABLE',
+        type: ADD_VARIABLE,
         variable
     }
 }
 
 export const removeVariable = (variable, index) => {
     return {
-        type: 'REMOVE_VARIABLE',
+        type: REMOVE_VARIABLE,
         variable,
         index
     }
@@ -39,7 +52,7 @@ export const removeVariable = (variable, index) => {
 
 export const modifyVariable = (variable, transfer) => {
     return {
-        type: 'MODIFY_VARIABLE',
+        type: MODIFY_VARIABLE,
         variable,
         transfer
     }
@@ -47,21 +60,21 @@ export const modifyVariable = (variable, transfer) => {
 
 export const resetTransfer = variable => {
     return {
-        type: 'RESET_TRANSFER',
+        type: RESET_TRANSFER,
         variable
     }
 }
 
 export const toggleVariable = variable => {
     return {
-        type: 'TOGGLE_VARIABLE',
+        type: TOGGLE_VARIABLE,
         variable
     }
 }
 
 export const receiveValue = (variable, json) => {
     return {
-        type: 'RECEIVE_VALUE',
+        type: RECEIVE_VALUE,
         value: json.results[0].attributes['Pixel value'],
         variable,
     }
@@ -69,7 +82,7 @@ export const receiveValue = (variable, json) => {
 
 export const requestValue = variable => {
     return {
-        type: 'REQUEST_VALUE',
+        type: REQUEST_VALUE,
         variable
     }
 }
@@ -101,7 +114,7 @@ export const fetchValue = name => {
 
 export const receiveTransfer = (variable, transfer, avgTransfer, center) => {
     return {
-        type: 'RECEIVE_TRANSFER',
+        type: RECEIVE_TRANSFER,
         transfer,
         avgTransfer,
         center,
@@ -111,7 +124,7 @@ export const receiveTransfer = (variable, transfer, avgTransfer, center) => {
 
 export const requestTransfer = variable => {
     return {
-        type: 'REQUEST_TRANSFER',
+        type: REQUEST_TRANSFER,
         variable
     }
 }
