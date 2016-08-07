@@ -179,7 +179,18 @@
 
     <div>&nbsp;</div>
 
-    <div><strong>Transfer limit method:</strong> {{ method }}</div>
+    <div>
+        <strong>Transfer limit method:</strong>
+        {% if method == 'seedzone' %}
+            {% if center == 'zone' %}
+                Transfer limits and climatic center based on seed zone
+            {% else %}
+                Transfer limits based on seed zone, climatic center based on the selected location
+            {% endif %}
+        {% else %}
+            Custom transfer limits, climatic center based on the selected location
+        {% endif %}
+    </div>
 
     {% if method == "Seed Zone" %}
         <div>&nbsp;</div>
@@ -197,7 +208,7 @@
             <thead>
                 <tr>
                     <th>Variable</th>
-                    <th>Value</th>
+                    <th>Center</th>
                     <th>Transfer limit (+/-)</th>
                 </tr>
             </thead>
