@@ -14,7 +14,7 @@ const Variables = ({ variables, unusedVariables, edit, onChange }) => {
                             <div className="modifyStatus">&nbsp;</div>
                             Name
                         </th>
-                        <th>Value</th>
+                        <th>Center</th>
                         <th>Transfer limit (+/-)</th>
                         <th></th>
                     </tr>

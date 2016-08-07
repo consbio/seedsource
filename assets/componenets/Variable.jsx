@@ -23,8 +23,8 @@ class Variable extends React.Component {
     render() {
         let {
             active, name, label, value, zoneCenter, transfer, avgTransfer, transferIsModified, unit, units, method,
-            point, zone, climate, edit, onTransferChange, onResetTransfer, onToggle, onRemove, fetchTransfer,
-            receiveTransfer
+            point, zone, climate, edit, centerValue, onTransferChange, onResetTransfer, onToggle, onRemove,
+            fetchTransfer, receiveTransfer
         } = this.props
         let { transferValue, editTransfer } = this.state
         let className = 'variableConfig'
@@ -82,11 +82,12 @@ class Variable extends React.Component {
             )
         }
 
-        if (value === null) {
-            value = <span className="nodata">--</span>
+        let center
+        if (centerValue === null) {
+            center = <span className="nodata">--</span>
         }
         else {
-            value = <span>{value} {units[unit].label}</span>
+            center = <span>{centerValue} {units[unit].label}</span>
         }
 
         let tooltip = null
@@ -134,7 +135,7 @@ class Variable extends React.Component {
                 <td>
                     <div className={"modifyStatus " + (transferIsModified ? "modified" : "")}>&nbsp;</div>
                     <strong>{name}</strong></td>
-                <td>{value}</td>
+                <td>{center}</td>
                 <td>{transferNode}</td>
                 <td>
                     <span
@@ -168,6 +169,7 @@ Variable.propTypes = {
     point: PropTypes.object,
     zone: PropTypes.number,
     climate: PropTypes.object.isRequired,
+    centerValue: PropTypes.number,
     onTransferChange: PropTypes.func.isRequired,
     onResetTransfer: PropTypes.func.isRequired,
     onToggle: PropTypes.func.isRequired,

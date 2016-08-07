@@ -1,10 +1,19 @@
 import { connect } from 'react-redux'
 import TransferStep from '../componenets/TransferStep'
+import { selectCenter } from '../actions/variables'
 
 const mapStateToProps = ({ runConfiguration }) => {
-    let { method } = runConfiguration
+    let { method, center } = runConfiguration
 
-    return {method}
+    return {method, center}
 }
 
-export default connect(mapStateToProps)(TransferStep)
+const mapDispatchToProps = dispatch => {
+    return {
+        onCenterChange: center => {
+            dispatch(selectCenter(center))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TransferStep)

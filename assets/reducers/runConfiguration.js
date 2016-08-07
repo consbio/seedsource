@@ -5,7 +5,7 @@ import climate from './climate'
 import { SELECT_OBJECTIVE } from '../actions/objectives'
 import { SET_LATITUDE, SET_LONGITUDE, SET_POINT } from '../actions/point'
 import { SELECT_SPECIES } from '../actions/species'
-import { SELECT_UNIT, SELECT_METHOD } from '../actions/variables'
+import { SELECT_UNIT, SELECT_METHOD, SELECT_CENTER } from '../actions/variables'
 import { LOAD_CONFIGURATION } from '../actions/saves'
 import { FINISH_JOB } from '../actions/job'
 import { SELECT_STEP } from '../actions/step'
@@ -19,6 +19,7 @@ const defaultConfiguration = {
     region: 'west1',
     climate: null,
     method: 'seedzone',
+    center: 'point',
     unit: 'metric',
     zones: null,
     variables: []
@@ -43,6 +44,9 @@ export default (state = defaultConfiguration, action) => {
 
             case SELECT_METHOD:
                 return morph(state, {method: action.method})
+
+            case SELECT_CENTER:
+                return morph(state, {center: action.center})
 
             case LOAD_CONFIGURATION:
                 return morph(defaultConfiguration, action.configuration)

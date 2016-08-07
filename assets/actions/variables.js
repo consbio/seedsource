@@ -3,6 +3,7 @@ import { get, urlEncode } from '../io'
 
 export const SELECT_UNIT = 'SELECT_UNIT'
 export const SELECT_METHOD = 'SELECT_METHOD'
+export const SELECT_CENTER = 'SELECT_CENTER'
 export const SELECT_SEEDZONE = 'SELECT_SEEDZONE'
 export const ADD_VARIABLE = 'ADD_VARIABLE'
 export const REMOVE_VARIABLE = 'REMOVE_VARIABLE'
@@ -25,6 +26,13 @@ export const selectMethod = method => {
     return {
         type: SELECT_METHOD,
         method
+    }
+}
+
+export const selectCenter = center => {
+    return {
+        type: SELECT_CENTER,
+        center
     }
 }
 
