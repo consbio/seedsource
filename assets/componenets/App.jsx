@@ -5,10 +5,12 @@ import RunConfiguration from '../containers/RunConfiguration'
 import MapConnector from '../containers/MapConnector'
 import SavedRuns from '../containers/SavedRuns'
 import About from './About'
+import ErrorModal from '../containers/ErrorModal'
 
 export default () => (
     <div className="sidebar">
         <MapConnector />
+        <ErrorModal />
         
         <ul className="nav nav-tabs">
             <TabHeader name="about">About</TabHeader>

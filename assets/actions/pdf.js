@@ -1,7 +1,9 @@
 import { post } from '../io'
+import { setError } from './error'
 
 export const REQUEST_PDF = 'REQUEST_PDF'
 export const RECEIVE_PDF = 'RECEIVE_PDF'
+export const FAIL_PDF = 'FAIL_PDF'
 
 export const requestPDF = () => {
     return {
@@ -12,6 +14,12 @@ export const requestPDF = () => {
 export const receivePDF = () => {
     return {
         type: RECEIVE_PDF
+    }
+}
+
+export const failPDF = () => {
+    return {
+        type: FAIL_PDF
     }
 }
 
@@ -60,9 +68,15 @@ export const createPDF = () => {
             dispatch(receivePDF())
         }).catch(err => {
             console.log(err)
-            alert('Sorry, there was an error creating the PDF.')
 
-            dispatch(receivePDF())
+            dispatch(setError(
+                'Error creating PDF', 'Sorry, there was an error creating the PDF report.', JSON.stringify({
+                    action: 'createPDF',
+                    error: err ? err.message : null,
+                    data
+                }, null, 2)
+            ))
+            dispatch(failPDF())
         })
     }
 }

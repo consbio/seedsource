@@ -1,6 +1,6 @@
 import {
-    SHOW_SAVE_MODAL, HIDE_SAVE_MODAL, RECEIVE_SAVE, REQUEST_SAVE, REQUEST_SAVES, RECEIVE_SAVES, REMOVE_SAVE,
-    LOAD_CONFIGURATION
+    SHOW_SAVE_MODAL, HIDE_SAVE_MODAL, RECEIVE_SAVE, REQUEST_SAVE, FAIL_SAVE, REQUEST_SAVES, RECEIVE_SAVES, FAIL_SAVES,
+    REMOVE_SAVE, LOAD_CONFIGURATION
 } from '../actions/saves'
 import { morph } from '../utils'
 
@@ -29,6 +29,9 @@ export default (state = defaultState, action) => {
                 lastSave: {title, saveId}
             })
 
+        case FAIL_SAVE:
+            return morph(state, {isSaving: false})
+
         case REQUEST_SAVE:
             return morph(state, {isSaving: true})
 
@@ -37,6 +40,9 @@ export default (state = defaultState, action) => {
 
         case RECEIVE_SAVES:
             return morph(state, {isFetching: false, saves: action.saves})
+
+        case FAIL_SAVES:
+            return morph(state, {isFetching: false})
 
         case LOAD_CONFIGURATION:
             let { save } = action

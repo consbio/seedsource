@@ -1,12 +1,15 @@
 import { get, post, put, ioDelete } from '../io'
+import { setError } from './error'
 
 export const SHOW_SAVE_MODAL = 'SHOW_SAVE_MODAL'
 export const HIDE_SAVE_MODAL = 'HIDE_SAVE_MODAL'
 export const RECEIVE_SAVE = 'RECEIVE_SAVE'
+export const FAIL_SAVE = 'FAIL_SAVE'
 export const LOAD_CONFIGURATION = 'LOAD_CONFIGURATION'
 export const REQUEST_SAVE = 'REQUEST_SAVE'
 export const RECEIVE_SAVES = 'RECEIVE_SAVES'
 export const REQUEST_SAVES = 'REQUEST_SAVES'
+export const FAIL_SAVES = 'FAIL_SAVES'
 export const REMOVE_SAVE = 'REMOVE_SAVE'
 
 const dumpConfiguration = configuration => {
@@ -49,6 +52,12 @@ export const requestSave = () => {
     }
 }
 
+export const failSave = () => {
+    return {
+        type: FAIL_SAVE
+    }
+}
+
 export const createSave = (configuration, title) => {
     return dispatch => {
         let data = {
@@ -74,7 +83,13 @@ export const createSave = (configuration, title) => {
             dispatch(fetchSaves())
         }).catch(err => {
             console.log(err)
-            alert('There was an error saving the configuration.')
+
+            dispatch(failSave())
+            dispatch(setError('Save error', 'Sorry, there was an error saving the configuration', JSON.stringify({
+                action: 'createSave',
+                error: err ? err.message : null,
+                data
+            }, null, 2)))
         })
     }
 }
@@ -106,7 +121,13 @@ export const updateSave = (configuration, lastSave) => {
             dispatch(fetchSaves())
         }).catch(err => {
             console.log(err)
-            alert('There was an error updating the configuration.')
+
+            dispatch(failSave())
+            dispatch(setError('Save error', 'Sorry, there was an error saving the configuration', JSON.stringify({
+                action: 'updateSave',
+                error: err ? err.message : null,
+                data
+            }, null, 2)))
         })
     }
 }
@@ -128,6 +149,12 @@ export const receiveSaves = saves => {
 export const requestSaves = () => {
     return {
         type: REQUEST_SAVES
+    }
+}
+
+export const failSaves = () => {
+    return {
+        type: FAIL_SAVES
     }
 }
 

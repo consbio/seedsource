@@ -1,4 +1,5 @@
 import { get, post } from '../io'
+import { setError } from './error'
 
 export const RECEIVE_JOB = 'RECEIVE_JOB'
 export const FAIL_JOB = 'FAIL_JOB'
@@ -70,8 +71,15 @@ export const createJob = configuration => {
             return response.json()
         }).then(json => dispatch(receiveJob(configuration, json))).catch(err => {
             console.log(err)
+
             dispatch(failJob())
-            alert('Sorry, there was an error creating the job.')
+            dispatch(setError(
+                'Processing error', 'Sorry, there was an error running the tool.', JSON.stringify({
+                    action: 'createJob',
+                    error: err ? err.message : null,
+                    inputs
+                }, null, 2)
+            ))
         })
     }
 }
@@ -109,14 +117,22 @@ export const fetchJobStatus = jobId => {
             return response.json()
         }).then(json => {
             if (json.status === 'failure') {
-                alert('Score calculation failed.')
+                dispatch(failJob())
+                dispatch(setError('Processing error', 'Sorry, processing failed.', JSON.stringify({
+                    action: 'fetchJobStatus',
+                    response: json,
+                    jobId
+                }, null, 2)))
+
+                return
             }
 
             dispatch(receiveJobStatus(json))
         }).catch(err => {
             console.log(err)
+
             dispatch(failJob())
-            alert('Sorry, there was an error getting the job status.')
+            dispatch(setError('Processing error', 'Sorry, there was an error getting the job status.'))
         })
     }
 }

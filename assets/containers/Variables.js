@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import Variables from '../componenets/Variables'
 import { variables as allVariables } from '../config'
 import { addVariable, fetchValue } from '../actions/variables'
+import { setError } from '../actions/error'
 
 const mapStateToProps = state => {
     let variables = state.runConfiguration.variables
@@ -15,10 +16,11 @@ const mapDispatchToProps = dispatch => {
     return {
         onChange: (variable, variables) => {
             if (variables.length >= 6) {
-                alert(
-                    'You may only add 6 variables to your configuration. Please remove an exiting variable before ' +
-                    'adding another.'
-                )
+                dispatch(setError(
+                    'Configuration error', 'You may only add 6 variables to your configuration. Please remove an ' +
+                    'exiting variable before adding another.'
+                ))
+
                 return
             }
 

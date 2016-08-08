@@ -369,6 +369,11 @@ body {
     margin-right: 8px;
 }
 
+pre.error-debug-info {
+    max-height: 200px;
+    overflow: auto;
+}
+
 .leaflet-opacity-control {
     width: 26px;
     background-color: #fff;

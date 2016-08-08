@@ -3,6 +3,7 @@ import RunConfiguration from '../componenets/RunConfiguration'
 import { createJob, fetchJobStatus, finishJob } from '../actions/job'
 import { showSaveModal } from '../actions/saves'
 import { createPDF } from '../actions/pdf'
+import { setError } from '../actions/error'
 
 const configurationCanRun = ({point, variables}) =>  {
     if (point === null || point.x === null || point.y === null) {
@@ -35,7 +36,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onRun: configuration => {
             if (configuration.variables.some(item => item.transfer === null)) {
-                alert('Cannot calculate scores: one or more of your variables has no transfer limit, or a limit of 0.')
+                dispatch(setError(
+                    'Configuration error',
+                    'Cannot calculate scores: one or more of your variables has no transfer limit, or a limit of 0.'
+                ))
                 return
             }
 
@@ -50,7 +54,12 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(finishJob(configuration))
         },
 
-        onSave: () => {
+        onSave: isLoggedIn => {
+            if (!isLoggedIn) {
+                dispatch(setError('Login required', 'Please login to save your run.'))
+                return
+            }
+
             dispatch(showSaveModal())
         },
 

@@ -29,7 +29,7 @@ class RunConfiguration extends React.Component {
 
     render() {
         let {
-            state, objective, species, method, canRun, canSave, configuration, job, isLoggedIn, activeStep, 
+            state, objective, species, method, canRun, canSave, configuration, job, isLoggedIn, activeStep,
             pdfIsFetching, onRun, onSave, onPDF
         } = this.props
         let overlay = null
@@ -102,12 +102,7 @@ class RunConfiguration extends React.Component {
                             className="btn btn-default pull-left"
                             disabled={!canSave}
                             onClick={() => {
-                                if (!isLoggedIn) {
-                                    alert('Please login to save your run')
-                                    return
-                                }
-
-                                onSave()
+                                onSave(isLoggedIn)
                             }}
                         >
                             <span className="glyphicon glyphicon-save" aria-hidden="true"></span> Save Last Run
