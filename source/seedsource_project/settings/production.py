@@ -15,6 +15,10 @@ NC_GEOPROCESSING_JOBS_QUEUE = 'gp'
 
 INSTALLED_APPS += ('socket_logging',)
 
+RAVEN_CONFIG = {
+    'dsn': CONFIG.get('raven_dsn')
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -29,42 +33,26 @@ LOGGING = {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler'
         },
-        'socket': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.SocketHandler',
-            'host': 'localhost',
-            'port': logging.handlers.DEFAULT_TCP_LOGGING_PORT
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'level': 'WARNING',
-            'handlers': ['mail_admins', 'socket']
-        },
-        '': {
-            'level': 'DEBUG',
-            'handlers': ['mail_admins', 'socket']
-        }
-    }
-}
-
-SOCKET_LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': LOGGING['formatters'],
-    'handlers': {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'filename': CONFIG.get('logfile_path', '/tmp/seedsource.log'),
             'when': 'midnight',
             'formatter': 'verbose'
+        },
+        'sentry': {
+            'level': 'ERROR',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler'
         }
     },
     'loggers': {
+        'django.request': {
+            'level': 'WARNING',
+            'handlers': ['sentry', 'file']
+        },
         '': {
-            'handlers': ['file'],
-            'level': 'DEBUG'
+            'level': 'DEBUG',
+            'handlers': ['sentry', 'file']
         }
     }
 }
