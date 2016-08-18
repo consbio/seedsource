@@ -5,6 +5,7 @@ export const SHOW_SAVE_MODAL = 'SHOW_SAVE_MODAL'
 export const HIDE_SAVE_MODAL = 'HIDE_SAVE_MODAL'
 export const RECEIVE_SAVE = 'RECEIVE_SAVE'
 export const FAIL_SAVE = 'FAIL_SAVE'
+export const RESET_CONFIGURATION = 'RESET_CONFIGURATION'
 export const LOAD_CONFIGURATION = 'LOAD_CONFIGURATION'
 export const REQUEST_SAVE = 'REQUEST_SAVE'
 export const RECEIVE_SAVES = 'RECEIVE_SAVES'
@@ -35,6 +36,12 @@ export const receiveSave = json => {
         type: RECEIVE_SAVE,
         saveId: json.uuid,
         title: json.title
+    }
+}
+
+export const resetConfiguration = () => {
+    return {
+        type: RESET_CONFIGURATION
     }
 }
 

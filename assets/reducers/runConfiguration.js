@@ -6,7 +6,7 @@ import { SELECT_OBJECTIVE } from '../actions/objectives'
 import { SET_LATITUDE, SET_LONGITUDE, SET_POINT } from '../actions/point'
 import { SELECT_SPECIES } from '../actions/species'
 import { SELECT_UNIT, SELECT_METHOD, SELECT_CENTER } from '../actions/variables'
-import { LOAD_CONFIGURATION } from '../actions/saves'
+import { LOAD_CONFIGURATION, RESET_CONFIGURATION } from '../actions/saves'
 import { FINISH_JOB } from '../actions/job'
 import { SELECT_STEP } from '../actions/step'
 import { REQUEST_PDF, RECEIVE_PDF, FAIL_PDF } from '../actions/pdf'
@@ -47,6 +47,9 @@ export default (state = defaultConfiguration, action) => {
 
             case SELECT_CENTER:
                 return morph(state, {center: action.center})
+
+            case RESET_CONFIGURATION:
+                return defaultConfiguration
 
             case LOAD_CONFIGURATION:
                 return morph(defaultConfiguration, action.configuration)

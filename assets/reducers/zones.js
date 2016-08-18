@@ -51,7 +51,7 @@ export default (state = defaultState, action) => {
             return morph(state, {geometry: action.geometry, isFetchingGeometry: false})
 
         case FAIL_GEOMETRY:
-            return morph(state, {isFetchingGeometry: false, geometry: null})
+            return morph(state, {isFetchingGeometry: false, geometry: null, selected: null})
 
         default:
             return state
