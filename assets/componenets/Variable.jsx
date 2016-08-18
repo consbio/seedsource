@@ -167,7 +167,7 @@ Variable.propTypes = {
     units: PropTypes.object,
     method: PropTypes.string.isRequired,
     point: PropTypes.object,
-    zone: PropTypes.number,
+    zone: PropTypes.string,
     climate: PropTypes.object.isRequired,
     centerValue: PropTypes.number,
     onTransferChange: PropTypes.func.isRequired,

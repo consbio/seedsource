@@ -31,12 +31,12 @@ export default (state = defaultState, action) => {
             }
 
             // Clear zone geometry if new set doesn't match selected zone
-            if (action.zones.find(item => item.id === state.selected) === undefined) {
+            if (action.zones.find(item => item.zone_uid === state.selected) === undefined) {
                 newState = Object.assign(newState, {selected: null, geometry: null, isFetchingGeometry: false})
             }
 
             if (newState.selected === null && action.zones.length) {
-                newState.selected = action.zones[0].id
+                newState.selected = action.zones[0].zone_uid
             }
 
             return newState

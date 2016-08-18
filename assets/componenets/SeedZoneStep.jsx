@@ -66,7 +66,7 @@ class SeedZoneStep extends React.Component {
                     }}
                 >
                     {zones.map(item => (
-                        <option value={item.id} key={item.id}>{getZoneLabel(item)}</option>
+                        <option value={item.zone_uid} key={item.id}>{getZoneLabel(item)}</option>
                     ))}
                 </select>
             )
@@ -82,7 +82,7 @@ class SeedZoneStep extends React.Component {
 
 SeedZoneStep.propTypes = {
     active: PropTypes.bool.isRequired,
-    selected: PropTypes.number,
+    selected: PropTypes.string,
     method: PropTypes.string.isRequired,
     zones: PropTypes.array.isRequired,
     point: PropTypes.object,

@@ -22,7 +22,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(fetchZones())
         },
         onZoneChange: zone => {
-            dispatch(selectZone(parseInt(zone)))
+            dispatch(selectZone(zone))
         }
     }
 }

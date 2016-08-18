@@ -9,6 +9,7 @@ from django.contrib.gis.geos import LinearRing
 from django.contrib.gis.geos import Polygon
 from django.core.management import BaseCommand
 from django.db import transaction
+from django.db.utils import IntegrityError
 from rasterio.warp import transform_geom
 
 from seedsource.models import SeedZone
@@ -63,7 +64,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('zones_file', nargs=1, type=str)
 
-    def _add_zones(self, source, name, species, path, zone_field):
+    def _add_zones(self, source, name, uid, species, path, zone_field):
         with fiona.open(path, 'r') as shp:
             for feature in shp:
                 try:
@@ -87,9 +88,27 @@ class Command(BaseCommand):
 
                 geometry = transform_geom(shp.crs, {'init': 'EPSG:4326'}, feature['geometry'])
                 polygon = Polygon(*[LinearRing(x) for x in geometry['coordinates']])
-                SeedZone.objects.create(
-                    source=source, name=zone_name, species=species, zone_id=zone_id, polygon=polygon
-                )
+                uid_suffix = 0
+
+                while True:
+                    zone_uid = uid.format(zone_id=zone_id)
+
+                    if uid_suffix > 0:
+                        zone_uid += '_{}'.format(uid_suffix)
+
+                    try:
+                        with transaction.atomic():
+                            SeedZone.objects.create(
+                                source=source, name=zone_name, species=species, zone_id=zone_id, zone_uid=zone_uid,
+                                polygon=polygon
+                            )
+                        break
+                    except IntegrityError:
+                        if uid_suffix > 3:
+                            raise
+
+                        uid_suffix += 1
+
 
     def handle(self, zones_file, *args, **options):
         temp_dir = mkdtemp()
@@ -116,16 +135,16 @@ class Command(BaseCommand):
 
                 for species, (zone_file, name) in WASHINGTON_ZONES.items():
                     self._add_zones(
-                        os.path.join(WASHINGTON_ZONES_DIR, zone_file), name, species,
-                        os.path.join(wa_zones, zone_file), 'ZONE_NO'
+                        os.path.join(WASHINGTON_ZONES_DIR, zone_file), name, 'wa_{}_{{zone_id}}'.format(species),
+                        species, os.path.join(wa_zones, zone_file), 'ZONE_NO'
                     )
 
                 print('Loading Oregon seed zones...')
 
                 for species, (zone_file, name) in OREGON_ZONES.items():
                     self._add_zones(
-                        os.path.join(OREGON_ZONES_DIR, zone_file), name, species, os.path.join(or_zones, zone_file),
-                        'SZ{}'.format(species).upper()
+                        os.path.join(OREGON_ZONES_DIR, zone_file), name, 'or_{}_{{zone_id}}'.format(species), species,
+                        os.path.join(or_zones, zone_file), 'SZ{}'.format(species).upper()
                     )
 
                 print('Loading historic seed zones...')
@@ -150,8 +169,8 @@ class Command(BaseCommand):
                     return '{} (1966/1973) Zone {:03d}'.format(state, zone_id)
 
                 self._add_zones(
-                    os.path.join(HISTORIC_ZONES_DIR, HISTORIC_ZONES), get_historic_name, 'generic',
-                    os.path.join(historic_zones, HISTORIC_ZONES), 'SUBJ_FSZ'
+                    os.path.join(HISTORIC_ZONES_DIR, HISTORIC_ZONES), get_historic_name, 'wa_or_historic_{zone_id}',
+                    'generic', os.path.join(historic_zones, HISTORIC_ZONES), 'SUBJ_FSZ'
                 )
 
         finally:

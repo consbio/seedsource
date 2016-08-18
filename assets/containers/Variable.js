@@ -124,7 +124,7 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
                 let url = '/sst/transfer-limits/?' + urlEncode({
                     point: point.x + ',' + point.y,
                     variable: variable.name,
-                    zone_id: zone,
+                    zone__zone_uid: zone,
                     time_period: year
                 })
 

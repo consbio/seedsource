@@ -36,6 +36,7 @@ class SeedZoneViewset(viewsets.ReadOnlyModelViewSet):
     serializer_class = SeedZoneSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('species',)
+    lookup_field = 'zone_uid'
 
     def get_queryset(self):
         if not self.request.query_params.get('point'):
@@ -58,7 +59,7 @@ class TransferLimitViewset(viewsets.ReadOnlyModelViewSet):
     queryset = TransferLimit.objects.all().select_related('zone').defer('zone__polygon')
     serializer_class = TransferLimitSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('variable', 'time_period', 'zone_id')
+    filter_fields = ('variable', 'time_period', 'zone_id', 'zone__zone_uid')
 
     def get_queryset(self):
         if not self.request.query_params.get('point'):

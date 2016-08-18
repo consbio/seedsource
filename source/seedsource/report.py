@@ -95,10 +95,12 @@ class Report(object):
         climates = self.configuration['climate']
 
         if self.configuration['method'] == 'seedzone':
-            zone_id = self.configuration['zones']['selected']
+            zone_uid = self.configuration['zones']['selected']
 
             try:
-                zone = SeedZone.objects.get(pk=zone_id)
+                zone = SeedZone.objects.get(zone_uid=zone_uid)
+                zone_id = zone.pk
+
                 try:
                     limit = zone.transferlimit_set.filter(low__lt=elevation, high__gte=elevation)[:1].get()
                     band = [0 if limit.low == -1 else limit.low, limit.high]

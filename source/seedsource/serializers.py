@@ -24,7 +24,7 @@ class SeedZoneSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SeedZone
-        fields = ('id', 'name', 'species', 'zone_id', 'elevation_at_point', 'elevation_band')
+        fields = ('id', 'name', 'species', 'zone_id', 'zone_uid', 'elevation_at_point', 'elevation_band')
 
     @property
     def _elevation_at_point(self):
@@ -48,6 +48,9 @@ class SeedZoneSerializer(serializers.ModelSerializer):
         return self._elevation_at_point
 
     def get_elevation_band(self, obj: SeedZone):
+        if self._elevation_at_point is None:
+            return None
+
         elevation = self._elevation_at_point / 0.3048  # Elevation bands are stored in feet, elevation is in meters
 
         try:
