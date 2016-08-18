@@ -1,4 +1,6 @@
-import { SELECT_ZONE, REQUEST_ZONES, RECEIVE_ZONES, REQUEST_GEOMETRY, RECEIVE_GEOMETRY } from '../actions/zones'
+import {
+    SELECT_ZONE, REQUEST_ZONES, RECEIVE_ZONES, FAIL_ZONES, REQUEST_GEOMETRY, RECEIVE_GEOMETRY, FAIL_GEOMETRY
+} from '../actions/zones'
 import { morph } from '../utils'
 
 const defaultState = {
@@ -39,11 +41,17 @@ export default (state = defaultState, action) => {
 
             return newState
 
+        case FAIL_ZONES:
+            return morph(state, {isFetchingZones: false})
+
         case REQUEST_GEOMETRY:
             return morph(state, {isFetchingGeometry: true})
 
         case RECEIVE_GEOMETRY:
             return morph(state, {geometry: action.geometry, isFetchingGeometry: false})
+
+        case FAIL_GEOMETRY:
+            return morph(state, {isFetchingGeometry: false, geometry: null})
 
         default:
             return state

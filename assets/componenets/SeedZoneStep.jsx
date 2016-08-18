@@ -2,6 +2,10 @@ import React, { PropTypes } from 'react'
 import ConfigurationStep from '../containers/ConfigurationStep'
 
 const getZoneLabel = zone => {
+    if (zone === undefined) {
+        return null
+    }
+
     let label = zone.name
 
     if (zone.elevation_band) {

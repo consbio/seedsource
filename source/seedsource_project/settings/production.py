@@ -1,5 +1,3 @@
-import logging
-
 from seedsource_project.settings.base import *
 
 DEBUG = False
@@ -12,8 +10,6 @@ BROKER_URL = 'amqp://{}:{}@localhost:5672'.format(
 CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 
 NC_GEOPROCESSING_JOBS_QUEUE = 'gp'
-
-INSTALLED_APPS += ('socket_logging',)
 
 RAVEN_CONFIG = {
     'dsn': CONFIG.get('raven_dsn')

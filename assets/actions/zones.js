@@ -5,6 +5,8 @@ export const REQUEST_ZONES = 'REQUEST_ZONES'
 export const RECEIVE_ZONES = 'RECEIVE_ZONES'
 export const REQUEST_GEOMETRY = 'REQUEST_GEOMETRY'
 export const RECEIVE_GEOMETRY = 'RECEIVE_GEOMETRY'
+export const FAIL_GEOMETRY = 'FAIL_GEOMETRY'
+export const FAIL_ZONES = 'FAIL_ZONES'
 
 export const selectZone = zone => {
     return {
@@ -26,6 +28,12 @@ export const receiveZones = zones => {
     }
 }
 
+export const failZones = () => {
+    return {
+        type: FAIL_ZONES
+    }
+}
+
 export const fetchZones = () => {
     return (dispatch, getState) => {
         let { runConfiguration } = getState()
@@ -41,7 +49,14 @@ export const fetchZones = () => {
                 species
             })
 
-            return get(url).then(response => response.json()).then(json => dispatch(receiveZones(json.results)))
+            return get(url)
+                .then(response => response.json())
+                .then(json => dispatch(receiveZones(json.results)))
+                .catch(err => {
+                    console.log(err)
+
+                    dispatch(failZones())
+                })
         }
 
         return Promise.resolve()
@@ -61,6 +76,12 @@ export const receiveGeometry = geometry => {
     }
 }
 
+export const failGeometry = () => {
+    return {
+        type: FAIL_GEOMETRY
+    }
+}
+
 export const fetchGeometry = () => {
     return (dispatch, getState) => {
         let { runConfiguration } = getState()
@@ -72,7 +93,14 @@ export const fetchGeometry = () => {
 
             let url = '/sst/seedzones/' + selected + '/geometry/'
 
-            return get(url).then(response => response.json()).then(json => dispatch(receiveGeometry(json)))
+            return get(url)
+                .then(response => response.json())
+                .then(json => dispatch(receiveGeometry(json)))
+                .catch(err => {
+                    console.log(err)
+
+                    dispatch(failGeometry())
+                })
         }
 
         return Promise.resolve()
