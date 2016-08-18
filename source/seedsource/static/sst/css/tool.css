@@ -61,6 +61,12 @@ body {
     opacity: 1;
 }
 
+.sidebar .step.noCollapse {
+    opacity: 1;
+    border-bottom: 0px;
+    margin-bottom: 10px;
+}
+
 .sidebar .step>h4 {
     margin-left: -26px;
 }
@@ -82,7 +88,7 @@ body {
     background-color: #f4f4f4;
 }
 
-.step.active:hover {
+.step.active:hover, .step.noCollapse:hover {
     cursor: default;
     background-color: #FFF;
 }

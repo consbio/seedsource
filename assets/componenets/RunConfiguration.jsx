@@ -8,6 +8,7 @@ import TransferStep from '../containers/TransferStep'
 import SpeciesStep from '../containers/SpeciesStep'
 import SeedZoneStep from '../containers/SeedZoneStep'
 import VariableStep from '../containers/VariableStep'
+import { collapsibleSteps } from '../config'
 
 let getObjectiveLabel = objective => (
     objective == 'seedlots' ? 'Select a planting site' : 'Select a seedlot location'
@@ -79,7 +80,12 @@ class RunConfiguration extends React.Component {
 
                 {steps.filter(item => item.type.shouldRender(state)).map((item, i) => {
                     return (
-                        <item.type number={i + 1} title={item.title} key={item.key} active={activeStep === item.key} />
+                        <item.type
+                            number={i + 1}
+                            title={item.title}
+                            key={item.key}
+                            active={activeStep === item.key || !collapsibleSteps}
+                        />
                     )
                 })}
 

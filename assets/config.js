@@ -1,3 +1,5 @@
+export const collapsibleSteps = false
+
 const celsiusUnits = {
     metric: {
         label: '°C',
