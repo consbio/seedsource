@@ -179,6 +179,11 @@ body {
 .navbar-brand img {
     margin-top: -2px;
     margin-right: 5px;
+    color: #CCC;
+}
+
+.navbar-inverse .navbar-nav>li>a, .navbar-inverse .navbar-nav>li>a:focus {
+    color: #CCC;
 }
 
 #Map {
