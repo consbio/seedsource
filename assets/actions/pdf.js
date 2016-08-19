@@ -1,5 +1,6 @@
 import { post } from '../io'
 import { setError } from './error'
+import { dumpConfiguration } from './saves'
 
 export const REQUEST_PDF = 'REQUEST_PDF'
 export const RECEIVE_PDF = 'RECEIVE_PDF'
@@ -31,7 +32,7 @@ export const createPDF = () => {
         let resultsLayer = '/tiles/' + job.serviceId + '/{z}/{x}/{y}.png'
 
         let data = {
-            configuration: lastRun,
+            configuration: dumpConfiguration(lastRun),
             tile_layers: [basemap, resultsLayer],
             zoom,
             opacity

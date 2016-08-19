@@ -13,7 +13,7 @@ export const REQUEST_SAVES = 'REQUEST_SAVES'
 export const FAIL_SAVES = 'FAIL_SAVES'
 export const REMOVE_SAVE = 'REMOVE_SAVE'
 
-const dumpConfiguration = configuration => {
+export const dumpConfiguration = configuration => {
     let { zones } = configuration
 
     return Object.assign({}, configuration, {zones: Object.assign({}, zones, {geometry: null})})
