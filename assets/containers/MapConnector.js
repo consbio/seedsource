@@ -24,6 +24,7 @@ class MapConnector extends React.Component {
         this.resultsLayer = null
         this.zoneLayer = null
         this.currentZone = null
+        this.opacityControl = null
         this.visibilityButton = null
         this.boundaryData = null
         this.boundaryLayers = null
@@ -81,13 +82,6 @@ class MapConnector extends React.Component {
 
         this.map.on('baselayerchange', layer => {
             this.props.onBasemapChange(layer._url)
-        })
-
-        let opacityControl = L.control.opacity()
-        this.map.addControl(opacityControl)
-
-        opacityControl.on('change', e => {
-            this.props.onOpacityChange(e.value / 100)
         })
 
         this.map.on('click', e => {
@@ -229,7 +223,24 @@ class MapConnector extends React.Component {
         }
     }
 
-    updateOpacity(opacity) {
+    updateOpacity(opacity, serviceId, variable) {
+        if (serviceId !== null || variable !== null) {
+            if (this.opacityControl === null) {
+                this.opacityControl = L.control.opacity()
+                this.map.addControl(this.opacityControl)
+
+                this.opacityControl.on('change', e => {
+                    this.props.onOpacityChange(e.value / 100)
+                })
+            }
+            
+            this.opacityControl.setValue(Math.round(opacity * 100))
+        }
+        else if (this.opacityControl !== null) {
+            this.map.removeControl(this.opacityControl)
+            this.opacityControl = null
+        }
+
         if (this.variableLayer !== null && this.variableLayer.options.opacity !== opacity) {
             this.variableLayer.setOpacity(opacity)
         }
@@ -369,15 +380,16 @@ class MapConnector extends React.Component {
             activeVariable, objective, point, climate, opacity, job, showResults, legends, unit, method, zone,
             geometry
         } = this.props
+        let { serviceId } = job
 
         this.updatePointMarker(point)
         this.updateVariableLayer(activeVariable, objective, climate)
-        this.updateResultsLayer(job.serviceId, showResults)
-        this.updateBoundaryLayer(job.serviceId, showResults)
-        this.updateOpacity(opacity)
-        this.updateVisibilityButton(job.serviceId, showResults)
+        this.updateResultsLayer(serviceId, showResults)
+        this.updateBoundaryLayer(serviceId, showResults)
+        this.updateOpacity(opacity, serviceId, activeVariable)
+        this.updateVisibilityButton(serviceId, showResults)
         this.updateTimeOverlay(activeVariable, objective, climate)
-        this.updateLegends(legends, activeVariable, job.serviceId, unit)
+        this.updateLegends(legends, activeVariable, serviceId, unit)
         this.updateZoneLayer(method, zone, geometry)
 
         return null

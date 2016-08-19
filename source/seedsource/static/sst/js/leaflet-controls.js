@@ -1,6 +1,7 @@
 L.Control.Opacity = L.Control.extend({
     options: {
-        position: 'topright'
+        position: 'topright',
+        value: 100
     },
     
     onAdd: function(map) {
@@ -13,7 +14,7 @@ L.Control.Opacity = L.Control.extend({
         slider.min = 20;
         slider.max = 100;
         slider.step = 1;
-        slider.value = 100;
+        slider.value = this.options.value;
 
         L.DomEvent.on(slider, 'mousedown mouseup click', L.DomEvent.stopPropagation);
 
@@ -37,6 +38,11 @@ L.Control.Opacity = L.Control.extend({
         this._container = container;
 
         return this._container;
+    },
+
+    setValue: function(value) {
+        this.options.value = value
+        this._slider.value = value
     },
 
     includes: L.Mixin.Events
