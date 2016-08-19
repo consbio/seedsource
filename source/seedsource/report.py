@@ -21,7 +21,7 @@ from ncdjango.geoimage import world_to_image, image_to_world
 from pyproj import Proj, transform
 from weasyprint import HTML
 
-from seedsource.models import SeedZone, TransferLimit
+from seedsource.models import SeedZone, TransferLimit, Region
 from seedsource.utils import get_elevation_at_point
 from seedsource.variables import VARIABLE_CONFIG
 
@@ -119,7 +119,8 @@ class Report(object):
         wgs84 = Proj(init='epsg:4326')
 
         map_image, map_bbox = MapImage(
-            IMAGE_SIZE, (point['x'], point['y']), self.zoom, self.tile_layers, zone_id, self.opacity
+            IMAGE_SIZE, (point['x'], point['y']), self.zoom, self.tile_layers, self.configuration.get('region'),
+            zone_id, self.opacity
         ).get_image()
         to_world = image_to_world(map_bbox, map_image.size)
         map_bbox = map_bbox.project(Proj(init='epsg:4326'), edge_points=0)
@@ -184,7 +185,7 @@ class Report(object):
 
 
 class MapImage(object):
-    def __init__(self, size, point, zoom, tile_layers, zone_id, opacity):
+    def __init__(self, size, point, zoom, tile_layers, region, zone_id, opacity):
         self._configure_event_loop()
 
         self.num_tiles = [math.ceil(size[x] / TILE_SIZE[x]) + 1 for x in (0, 1)]
@@ -225,6 +226,7 @@ class MapImage(object):
         self.point = point
         self.zoom = zoom
         self.tile_layers = tile_layers
+        self.region = region
         self.zone_id = zone_id
         self.opacity = opacity
 
@@ -269,16 +271,25 @@ class MapImage(object):
 
         return layer_images
 
+    def draw_geometry(self, im, geometry, color, width):
+        canvas = ImageDraw.Draw(im)
+
+        canvas.line(
+            [tuple(round(x) for x in self.to_image(*mercantile.xy(*p))) for p in geometry], fill=color, width=width
+        )
+
     def draw_zone_geometry(self, im):
         if self.zone_id is not None:
-            geometry = SeedZone.objects.get(pk=self.zone_id).polygon.coords[0]
-            canvas = ImageDraw.Draw(im)
+            self.draw_geometry(im, SeedZone.objects.get(pk=self.zone_id).polygon.coords[0], (0, 255, 0), 3)
 
-            canvas.line(
-                [tuple(round(x) for x in self.to_image(*mercantile.xy(*p))) for p in geometry],
-                fill=(0, 255, 0),
-                width=3
-            )
+    def draw_region_geometry(self, im):
+        try:
+            region = Region.objects.filter(name=self.region).get()
+        except Region.DoesNotExist:
+            return
+
+        for geometry in region.polygons.coords:
+            self.draw_geometry(im, geometry[0], (0, 0, 102), 1)
 
     def get_marker_image(self):
         leaflet_images_dir = os.path.join(BASE_DIR, 'seedsource', 'static', 'leaflet', 'images')
@@ -312,6 +323,7 @@ class MapImage(object):
             im.paste(Image.blend(im, layer_im, 1 if i == 0 else self.opacity), (0, 0), layer_im)
 
         self.draw_zone_geometry(im)
+        self.draw_region_geometry(im)
 
         marker_im = self.get_marker_image()
         im.paste(marker_im, (0, 0), marker_im)
