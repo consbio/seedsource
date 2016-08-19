@@ -109,7 +109,6 @@ class Command(BaseCommand):
 
                         uid_suffix += 1
 
-
     def handle(self, zones_file, *args, **options):
         temp_dir = mkdtemp()
 

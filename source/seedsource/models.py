@@ -34,3 +34,9 @@ class TransferLimit(models.Model):
     transfer = models.FloatField()
     avg_transfer = models.FloatField(default=0)
     center = models.FloatField()
+
+
+class Region(gis_models.Model):
+    name = models.CharField(max_length=20)
+    polygons = gis_models.MultiPolygonField(geography=True)
+
