@@ -138,7 +138,12 @@ class MapConnector extends React.Component {
     }
 
     componentWillUpdate({ activeVariable, job, legends, zone, geometry }) {
-        if (activeVariable !== this.props.activeVariable) {
+        let legendNeedsUpdate = (
+            activeVariable !== this.props.activeVariable ||
+            legends.variable.legend !== this.props.legends.variable.legend
+        )
+
+        if (legendNeedsUpdate) {
             this.props.onFetchVariableLegend()
         }
 
@@ -233,7 +238,7 @@ class MapConnector extends React.Component {
                     this.props.onOpacityChange(e.value / 100)
                 })
             }
-            
+
             this.opacityControl.setValue(Math.round(opacity * 100))
         }
         else if (this.opacityControl !== null) {
