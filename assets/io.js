@@ -8,7 +8,12 @@ export const urlEncode = data => {
 }
 
 export const get = url => {
-    return fetch(url, {credentials: 'same-origin'})
+    return fetch(url, {
+        credentials: 'same-origin',
+        headers: {
+            'Accept': 'application/json, */*'
+        }
+    })
 }
 
 export const post = (url, data, options = {}) => {
@@ -27,6 +32,7 @@ export const post = (url, data, options = {}) => {
         credentials: 'same-origin',
         headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json, */*',
             'X-CSRFToken': getCookies().csrftoken
         },
         body: data
