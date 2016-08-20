@@ -264,7 +264,7 @@ body {
 
 .variablesList table td .visibilityToggle {
     cursor: pointer;
-    color: #999;
+    opacity: .6;
 }
 
 .variablesList.edit table tr:hover td {
@@ -272,7 +272,7 @@ body {
 }
 
 .variablesList table tr.visible td .visibilityToggle, .variablesList table td .visibilityToggle:hover {
-    color: #000;
+    opacity: 1;
 }
 
 .variablesList.edit span.transferNode {
@@ -391,6 +391,7 @@ pre.error-debug-info {
     font-size: 1.3em;
     text-align: center;
     padding-bottom: 5px;
+    padding-top: 5px;
 }
 
 .leaflet-opacity-control input[type=range] {
@@ -423,6 +424,7 @@ pre.error-debug-info {
     background-color: #fff;
     font-size: 1.3em;
     text-align: center;
+    padding-top: 5px;
 }
 
 .leaflet-button:hover {
@@ -447,10 +449,38 @@ pre.error-debug-info {
     vertical-align: bottom;
 }
 
+.leaflet-zoom-box-control.active a {
+    background: #999 url('../images/icon-crop.svg') no-repeat center center;
+    background-size: 16px 16px;
+}
+
 .map-info-popup {
     min-width: 100px;
 }
 
 .leaflet-popup .map-info-popup button {
     width: 100%;
+}
+
+.icon-eye {
+    background: url('../images/icon-eye.svg') no-repeat center center;
+}
+
+.icon-eye-closed {
+    background: url('../images/icon-eye-closed.svg') no-repeat center center;
+}
+
+.icon-crop {
+    background: url('../images/icon-crop.svg') no-repeat center center;
+}
+
+.icon-contrast {
+    background: url('../images/icon-contrast.svg') no-repeat center center;
+}
+
+.icon16 {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    background-size: 16px 16px;
 }

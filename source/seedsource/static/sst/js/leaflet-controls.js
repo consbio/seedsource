@@ -6,7 +6,7 @@ L.Control.Opacity = L.Control.extend({
     
     onAdd: function(map) {
         var container = L.DomUtil.create('div', 'leaflet-opacity-control leaflet-bar');
-        L.DomUtil.create('span', 'glyphicon glyphicon-adjust', container);
+        L.DomUtil.create('span', 'icon16 icon-contrast', container);
 
         var slider = L.DomUtil.create('input', '', container);
         slider.type = 'range';
@@ -60,7 +60,7 @@ L.Control.Button = L.Control.extend({
 
     onAdd: function(map) {
         var container = L.DomUtil.create('div', 'leaflet-button leaflet-bar');
-        var button = L.DomUtil.create('span', 'glyphicon glyphicon-' + this.options.icon, container);
+        var button = L.DomUtil.create('span', 'icon16 icon-' + this.options.icon, container);
 
         L.DomEvent
             .on(button, 'click', function(e) {
@@ -75,7 +75,7 @@ L.Control.Button = L.Control.extend({
 
     setIcon: function(icon) {
         this.options.icon = icon;
-        this._button.setAttribute('class', 'glyphicon glyphicon-' + icon);
+        this._button.setAttribute('class', 'icon16 icon-' + icon);
     },
 
     includes: L.Mixin.Events

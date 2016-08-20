@@ -41,7 +41,10 @@ class MapConnector extends React.Component {
 
         this.map.zoomControl.setPosition('topright')
 
-        this.map.addControl(L.control.zoomBox({position: 'topright'}))
+        this.map.addControl(L.control.zoomBox({
+            position: 'topright',
+            className: 'icon16 icon-crop'
+        }))
 
         let basemapControl = L.control.basemaps({
             basemaps: [
@@ -257,7 +260,7 @@ class MapConnector extends React.Component {
 
     updateVisibilityButton(serviceId, showResults) {
         if (serviceId !== null) {
-            let icon = showResults ? 'eye-close' : 'eye-open';
+            let icon = showResults ? 'eye-closed' : 'eye';
 
             if (this.visibilityButton === null) {
                 this.visibilityButton = L.control.button({'icon': icon})
