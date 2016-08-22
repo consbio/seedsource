@@ -111,7 +111,7 @@ class RunConfiguration extends React.Component {
                                 onSave(isLoggedIn)
                             }}
                         >
-                            <span className="glyphicon glyphicon-save" aria-hidden="true"></span> Save Last Run
+                            <span className="icon12 icon-save" aria-hidden="true"></span> Save Last Run
                         </button>
                         <button
                             className="btn btn-default pull-right"
@@ -120,7 +120,7 @@ class RunConfiguration extends React.Component {
                                 onPDF()
                             }}
                         >
-                            <span className="glyphicon glyphicon-file" aria-hidden="true"></span>
+                            <span className="icon12 icon-file" aria-hidden="true"></span>
                             {pdfIsFetching ? 'Please wait...' : 'Export PDF'}
                         </button>
                     </div>

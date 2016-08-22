@@ -478,9 +478,32 @@ pre.error-debug-info {
     background: url('../images/icon-contrast.svg') no-repeat center center;
 }
 
+.icon-save {
+    background: url('../images/icon-save.svg') no-repeat center center;
+}
+
+.icon-load {
+    background: url('../images/icon-load.svg') no-repeat center center;
+}
+
+.icon-file {
+    background: url('../images/icon-file.svg') no-repeat center center;
+}
+
+.icon-trash {
+    background: url('../images/icon-trash.svg') no-repeat center center;
+}
+
 .icon16 {
     width: 16px;
     height: 16px;
     display: inline-block;
     background-size: 16px 16px;
+}
+
+.icon12 {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    background-size: 12px 12px;
 }

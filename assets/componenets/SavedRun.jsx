@@ -23,7 +23,7 @@ const SavedRun = ({ active, save, onClick, onLoad, onDelete }) => {
                         }
                     }}
                 >
-                    <span className="glyphicon glyphicon-open" aria-hidden="true"></span> Load
+                    <span className="icon12 icon-load" aria-hidden="true"></span> Load
                 </button>
                 <button
                     onClick={() => {
@@ -32,7 +32,7 @@ const SavedRun = ({ active, save, onClick, onLoad, onDelete }) => {
                         }
                     }}
                 >
-                    <span className="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+                    <span className="icon12 icon-trash" aria-hidden="true"></span> Delete
                 </button>
             </div>
             <div className="title">{title}</div>
