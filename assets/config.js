@@ -4,39 +4,77 @@ const celsiusUnits = {
     metric: {
         label: '°C',
         convert: value => (value - 32) / 1.8,  // Convert to celsius
-        convertTransfer: value => value / 1.8  // Convert difference to celsuis
+        convertTransfer: value => value / 1.8,  // Convert difference to celsuis
+        precision: 1,
+        transferPrecision: 2
     },
     imperial: {
         label: '°F',
         convert: value => value * 1.8 + 32,  // Convert to fahrenheit
-        convertTransfer: value => value * 1.8 // Convert difference to fahrenheit
+        convertTransfer: value => value * 1.8, // Convert difference to fahrenheit
+        precision: 1,
+        transferPrecision: 2
     }
 }
 
 const mmUnits = {
     metric: {
         label: 'mm',
-        convert: value => value * 25.4 // Convert to millimeters
+        convert: value => value * 25.4, // Convert to millimeters
+        precision: 0,
+        transferPrecision: 0
     },
     imperial: {
         label: 'in',
-        convert: value => value / 25.4 // Convert to inches
+        convert: value => value / 25.4, // Convert to inches
+        precision: 1,
+        transferPrecision: 1
     }
 }
 
 const daysUnits = {
-    metric: {label: 'days', convert: value => value},
-    imperial: {label: 'days', convert: value => value}
+    metric: {
+        label: 'days',
+        convert: value => value,
+        precision: 0,
+        transferPrecision: 0
+    },
+    imperial: {
+        label: 'days',
+        convert: value => value,
+        precision: 0,
+        transferPrecision: 0
+    }
 }
 
 const degreeDaysUnits = {
-    metric: {label: 'dd', convert: value => value},
-    imperial: {label: 'dd', convert: value => value}
+    metric: {
+        label: 'dd',
+        convert: value => value,
+        precision: 0,
+        transferPrecision: 0
+    },
+    imperial: {
+        label: 'dd',
+        convert: value => value,
+        precision: 0,
+        transferPrecision: 0
+    }
 }
 
-const nullUnits = {
-    metric: {label: '', convert: value => value},
-    imperial: {label: '', convert: value => value}
+const heatMoistureUnits = {
+    metric: {
+        label: '',
+        convert: value => value,
+        precision: 1,
+        transferPrecision: 1
+    },
+    imperial: {
+        label: '',
+        convert: value => value,
+        precision: 1,
+        transferPrecision: 1
+    }
 }
 
 export const variables = [
@@ -45,24 +83,18 @@ export const variables = [
         label: 'Mean annual temperature',
         multiplier: 10,
         units: celsiusUnits,
-        precision: 1,
-        transferPrecision: 2
     },
     {
         name: 'MWMT',
         label: 'Mean warmest month temperature',
         multiplier: 10,
         units: celsiusUnits,
-        precision: 1,
-        transferPrecision: 2
     },
     {
         name: 'MCMT',
         label: 'Mean coldest month temperature',
         multiplier: 10,
         units: celsiusUnits,
-        precision: 1,
-        transferPrecision: 2
     },
     {
         name: 'TD',
@@ -71,111 +103,89 @@ export const variables = [
         units: {
             metric: {
                 label: '°C',
-                convert: value => value / 1.8  // Convert temp difference to C
+                convert: value => value / 1.8,  // Convert temp difference to C
+                precision: 1,
+                transferPrecision: 2
             },
             imperial: {
                 label: '°F',
-                convert: value => value * 1.8 // Convert temp difference to F
+                convert: value => value * 1.8, // Convert temp difference to F
+                precision: 1,
+                transferPrecision: 2
             }
-        },
-        precision: 1,
-        transferPrecision: 2
+        }
     },
     {
         name: 'MAP',
         label: 'Mean annual precipitation',
         multiplier: 1,
-        units: mmUnits,
-        precision: 0,
-        transferPrecision: 0
+        units: mmUnits
     },
     {
         name: 'MSP',
         label: 'Mean summer precipitation, May to September',
         multiplier: 1,
-        units: mmUnits,
-        precision: 0,
-        transferPrecision: 0
+        units: mmUnits
     },
     {
         name: 'AHM',
         label: 'Annual heat-moisture index',
         multiplier: 10,
-        units: nullUnits,
-        precision: 1,
-        transferPrecision: 2
+        units: heatMoistureUnits
     },
     {
         name: 'SHM',
         label: 'Summer heat-moisture index',
         multiplier: 10,
-        units: nullUnits,
-        precision: 1,
-        transferPrecision: 2
+        units: heatMoistureUnits
     },
     {
         name: 'DD_0',
         label: 'Degree-days below 0°C',
         multiplier: 1,
-        units: degreeDaysUnits,
-        precision: 1,
-        transferPrecision: 1
+        units: degreeDaysUnits
     },
     {
         name: 'DD5',
         label: 'Degree-days above 5°C',
         multiplier: 1,
-        units: degreeDaysUnits,
-        precision: 1,
-        transferPrecision: 1
+        units: degreeDaysUnits
     },
     {
         name: 'FFP',
         label: 'Frost-free period',
         multiplier: 1,
-        units: daysUnits,
-        precision: 1,
-        transferPrecision: 1
+        units: daysUnits
     },
     {
         name: 'PAS',
         label: 'Precipitation as snow, August to July',
         multiplier: 1,
-        units: mmUnits,
-        precision: 0,
-        transferPrecision: 0
+        units: mmUnits
     },
     {
         name: 'EMT',
         label: 'Extreme minimum temperature over 30 years',
         multiplier: 10,
-        units: celsiusUnits,
-        precision: 1,
-        transferPrecision: 2
+        units: celsiusUnits
     },
     {
         name: 'EXT',
         label: 'Extreme maximum temperature over 30 years',
         multiplier: 10,
-        units: celsiusUnits,
-        precision: 1,
-        transferPrecision: 2
+        units: celsiusUnits
     },
     {
         name: 'Eref',
         label: 'Hargreaves reference evaporation',
         multiplier: 1,
-        units: mmUnits,
-        precision: 0,
-        transferPrecision: 0
+        units: mmUnits
     },
     {
         name: 'CMD',
         label: 'Hargreaves climatic moisture deficit',
         multiplier: 1,
-        units: mmUnits,
-        precision: 0,
-        transferPrecision: 0
+        units: mmUnits
     }
 ];
 
