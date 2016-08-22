@@ -494,11 +494,8 @@ pre.error-debug-info {
     background: url('../images/icon-trash.svg') no-repeat center center;
 }
 
-.icon16 {
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-    background-size: 16px 16px;
+.icon-clock {
+    background: url('../images/icon-clock.svg') no-repeat center center;
 }
 
 .icon12 {
@@ -506,4 +503,18 @@ pre.error-debug-info {
     height: 12px;
     display: inline-block;
     background-size: 12px 12px;
+}
+
+.icon16 {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    background-size: 16px 16px;
+}
+
+.icon18 {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    background-size: 18px 18px;
 }
