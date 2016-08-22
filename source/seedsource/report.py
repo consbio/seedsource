@@ -79,8 +79,8 @@ class Report(object):
 
             variables.append({
                 'label': '{}: {}'.format(variable['name'], config.label),
-                'value': round(config.value_to_imperial(value) if is_imperial else value, 2),
-                'limit': round(config.transfer_to_imperial(transfer) if is_imperial else transfer, 2),
+                'value': config.format_value(value, is_imperial),
+                'limit': config.format_transfer(transfer, is_imperial),
                 'units': config.imperial_label if is_imperial else config.metric_label,
                 'modified': variable['transfer'] != variable['defaultTransfer']
             })
