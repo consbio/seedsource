@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { PropTypes } from 'react'
 import ReactTooltip from 'react-tooltip'
-import Synchro from '../containers/Synchro'
 
 class Variable extends React.Component {
     constructor(props) {
@@ -111,12 +110,6 @@ class Variable extends React.Component {
 
         return (
             <tr className={active ? "visible" : ""} data-tip data-for={name + "_Tooltip"}>
-                <Synchro
-                    hash={JSON.stringify([method, point, zone, climate.seedlot.time])}
-                    createRequest={() => fetchTransfer(method, point, zone, climate.seedlot.time)}
-                    onSuccess={transfer => receiveTransfer(transfer)}
-                />
-
                 <td>
                     <button
                         type="button"
@@ -170,9 +163,7 @@ Variable.propTypes = {
     onTransferChange: PropTypes.func.isRequired,
     onResetTransfer: PropTypes.func.isRequired,
     onToggle: PropTypes.func.isRequired,
-    onRemove: PropTypes.func.isRequired,
-    fetchTransfer: PropTypes.func.isRequired,
-    receiveTransfer: PropTypes.func.isRequired,
+    onRemove: PropTypes.func.isRequired
 }
 
 export default Variable

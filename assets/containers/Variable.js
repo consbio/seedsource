@@ -119,38 +119,6 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
 
         onRequestValue: () => {
             dispatch(fetchValue(variable.name))
-        },
-
-        fetchTransfer: (method, point, zone, year) => {
-            dispatch(requestTransfer(variable.name))
-
-            let pointIsValid = point !== null && point.x && point.y
-
-            if (method === 'seedzone' && pointIsValid) {
-                let url = '/sst/transfer-limits/?' + urlEncode({
-                    point: point.x + ',' + point.y,
-                    variable: variable.name,
-                    zone__zone_uid: zone,
-                    time_period: year
-                })
-
-                return get(url).then(response => response.json()).then(json => {
-                    if (json.results.length) {
-                        let { transfer, avg_transfer, center } = json.results[0]
-                        return {transfer, center, avgTransfer: avg_transfer}
-                    }
-                    else {
-                        return null
-                    }
-                })
-            }
-
-            return null
-        },
-        
-        receiveTransfer: result => {
-            let { transfer, avgTransfer, center } = result
-            dispatch(receiveTransfer(variable.name, transfer, avgTransfer, center))
         }
     }
 }
