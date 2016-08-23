@@ -8,8 +8,6 @@ import { connect } from 'react-redux'
 import { setMapOpacity, setBasemap, setZoom, toggleVisibility } from '../actions/map'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
-import { fetchVariableLegend, fetchResultsLegend } from '../actions/legends'
-import { fetchGeometry } from '../actions/zones'
 import { variables, timeLabels } from '../config'
 import { get, urlEncode } from '../io'
 
@@ -138,25 +136,6 @@ class MapConnector extends React.Component {
         get('/static/sst/geometry/west1_boundary.json')
             .then(result => result.json())
             .then(json => {this.boundaryData = json})
-    }
-
-    componentWillUpdate({ activeVariable, job, legends, zone, geometry }) {
-        let legendNeedsUpdate = (
-            activeVariable !== this.props.activeVariable ||
-            legends.variable.legend !== this.props.legends.variable.legend
-        )
-
-        if (legendNeedsUpdate) {
-            this.props.onFetchVariableLegend()
-        }
-
-        if (job.serviceId && legends.results.legend === null) {
-            this.props.onFetchResultsLegend()
-        }
-        
-        if (zone !== null && geometry === null) {
-            this.props.onFetchZoneGeometry()
-        }
     }
 
     updatePointMarker(point) {
@@ -409,9 +388,7 @@ MapConnector.propTypes = {
     onZoomChange: PropTypes.func.isRequired,
     onOpacityChange: PropTypes.func.isRequired,
     onMapClick: PropTypes.func.isRequired,
-    onToggleVisibility: PropTypes.func.isRequired,
-    onFetchVariableLegend: PropTypes.func.isRequired,
-    onFetchResultsLegend: PropTypes.func.isRequired
+    onToggleVisibility: PropTypes.func.isRequired
 }
 
 const mapStatetoProps = state => {
@@ -447,18 +424,6 @@ const mapDispatchToProps = dispatch => {
 
         onToggleVisibility: () => {
             dispatch(toggleVisibility())
-        },
-
-        onFetchVariableLegend: () => {
-            dispatch(fetchVariableLegend())
-        },
-
-        onFetchResultsLegend: () => {
-            dispatch(fetchResultsLegend())
-        },
-
-        onFetchZoneGeometry: () => {
-            dispatch(fetchGeometry())
         }
     }
 }

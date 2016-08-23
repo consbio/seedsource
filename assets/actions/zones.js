@@ -1,5 +1,3 @@
-import { get, urlEncode } from '../io'
-
 export const SELECT_ZONE = 'SELECT_ZONE'
 export const REQUEST_ZONES = 'REQUEST_ZONES'
 export const RECEIVE_ZONES = 'RECEIVE_ZONES'
@@ -50,30 +48,5 @@ export const receiveGeometry = geometry => {
 export const failGeometry = () => {
     return {
         type: FAIL_GEOMETRY
-    }
-}
-
-export const fetchGeometry = () => {
-    return (dispatch, getState) => {
-        let { runConfiguration } = getState()
-        let { zones } = runConfiguration
-        let { selected, isFetchingGeometry } = zones
-
-        if (selected !== null && !isFetchingGeometry) {
-            dispatch(requestGeometry())
-
-            let url = '/sst/seedzones/' + selected + '/geometry/'
-
-            return get(url)
-                .then(response => response.json())
-                .then(json => dispatch(receiveGeometry(json)))
-                .catch(err => {
-                    console.log(err)
-
-                    dispatch(failGeometry())
-                })
-        }
-
-        return Promise.resolve()
     }
 }

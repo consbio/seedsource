@@ -8,6 +8,7 @@ import reducers from './reducers'
 import App from './componenets/App'
 import variables from './async/variables'
 import zones from './async/zones'
+import legends from './async/legends'
 
 export const store = createStore(reducers, applyMiddleware(thunkMiddleware));
 
@@ -23,3 +24,4 @@ render(
 // Register resync handlers
 variables(store)
 zones(store)
+legends(store)

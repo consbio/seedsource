@@ -19,12 +19,6 @@ const defaultState = {
 
  export default (state = defaultState, action) => {
     switch(action.type) {
-        case SELECT_OBJECTIVE:
-        case SELECT_CLIMATE_YEAR:
-        case SELECT_CLIMATE_MODEL:
-        case TOGGLE_VARIABLE:
-            return morph(state, {variable: defaultState.variable})
-
         case REQUEST_VARIABLE_LEGEND:
             return morph(state, {variable: morph(state.variable, {isFetching: true})})
 
