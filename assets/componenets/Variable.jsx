@@ -10,8 +10,6 @@ class Variable extends React.Component {
     }
 
     componentDidUpdate({ active, method, value }) {
-        this.props.onRequestValue()
-
         let transferInput = ReactDOM.findDOMNode(this.refs.transferInput)
 
         if (this.state.editTransfer && transferInput !== document.activeElement) {

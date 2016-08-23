@@ -25,7 +25,6 @@ const mapDispatchToProps = dispatch => {
             }
 
             dispatch(addVariable(variable))
-            dispatch(fetchValue(variable))
         }
     }
 }

@@ -95,33 +95,6 @@ export const requestValue = variable => {
     }
 }
 
-export const fetchValue = name => {
-    return (dispatch, getState) => {
-        let {runConfiguration} = getState()
-        let {objective, point, climate, variables} = runConfiguration
-        let variable = variables.find(item => item.name === name)
-        let pointIsValid = point !== null && point.x && point.y
-
-        if (variable !== undefined && variable.value === null && !variable.isFetching && pointIsValid) {
-            dispatch(requestValue(name))
-
-            let url = '/arcgis/rest/services/' + getServiceName(name, objective, climate) +
-                '/MapServer/identify/?' + urlEncode({
-                    f: 'json',
-                    tolerance: 2,
-                    imageDisplay: '1600,1031,96',
-                    geometryType: 'esriGeometryPoint',
-                    mapExtent: '0,0,0,0',
-                    geometry: JSON.stringify(point)
-                })
-
-            return get(url).then(response => response.json()).then(json => dispatch(receiveValue(name, json)))
-        }
-
-        return Promise.resolve()
-    }
-}
-
 export const receiveTransfer = (variable, transfer, avgTransfer, center) => {
     return {
         type: RECEIVE_TRANSFER,

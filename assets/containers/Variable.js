@@ -1,7 +1,5 @@
 import { connect } from 'react-redux'
-import {
-    modifyVariable, resetTransfer, toggleVariable, removeVariable, fetchValue, requestTransfer, receiveTransfer
-} from '../actions/variables'
+import { modifyVariable, resetTransfer, toggleVariable, removeVariable } from '../actions/variables'
 import Variable from '../componenets/Variable'
 import { get, urlEncode } from '../io'
 import { variables } from '../config'
@@ -115,10 +113,6 @@ const mapDispatchToProps = (dispatch, { variable, index }) => {
 
         onRemove: () => {
             dispatch(removeVariable(variable.name, index))
-        },
-
-        onRequestValue: () => {
-            dispatch(fetchValue(variable.name))
         }
     }
 }
