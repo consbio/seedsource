@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { fetchZones, selectZone } from '../actions/zones'
+import { selectZone } from '../actions/zones'
 import SeedZoneStep from '../componenets/SeedZoneStep'
 
 const mapStateToProps = ({ runConfiguration }) => {
@@ -18,9 +18,6 @@ const mapStateToProps = ({ runConfiguration }) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onFetchZones: () => {
-            dispatch(fetchZones())
-        },
         onZoneChange: zone => {
             dispatch(selectZone(zone))
         }

@@ -7,6 +7,7 @@ import thunkMiddleware from 'redux-thunk'
 import reducers from './reducers'
 import App from './componenets/App'
 import variables from './async/variables'
+import zones from './async/zones'
 
 export const store = createStore(reducers, applyMiddleware(thunkMiddleware));
 
@@ -19,4 +20,6 @@ render(
     document.getElementById('Sidebar')
 )
 
+// Register resync handlers
 variables(store)
+zones(store)

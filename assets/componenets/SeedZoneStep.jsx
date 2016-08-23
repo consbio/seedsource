@@ -16,17 +16,6 @@ const getZoneLabel = zone => {
 }
 
 class SeedZoneStep extends React.Component {
-    componentWillUpdate(newProps) {
-        let { method, onFetchZones, point, species } = newProps
-        let pointChanged = JSON.stringify(point) != JSON.stringify(this.props.point)
-        let methodChanged = method !== this.props.method
-        let speciesChanged = species !== this.props.species
-
-        if (method === 'seedzone' && (pointChanged || methodChanged || speciesChanged)) {
-            onFetchZones()
-        }
-    }
-
     render() {
         let { method, selected, zones, number, active, isFetchingZones, onZoneChange } = this.props
 
@@ -88,7 +77,6 @@ SeedZoneStep.propTypes = {
     point: PropTypes.object,
     species: PropTypes.string.isRequired,
     isFetchingZones: PropTypes.bool.isRequired,
-    onFetchZones: PropTypes.func.isRequired,
     onZoneChange: PropTypes.func.isRequired
 }
 

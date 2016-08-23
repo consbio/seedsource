@@ -34,35 +34,6 @@ export const failZones = () => {
     }
 }
 
-export const fetchZones = () => {
-    return (dispatch, getState) => {
-        let { runConfiguration } = getState()
-        let { species, point, zones } = runConfiguration
-        let { isFetchingZones } = zones
-        let pointIsValid = point !== null && point.x && point.y
-
-        if (pointIsValid && !isFetchingZones) {
-            dispatch(requestZones())
-
-            let url = '/sst/seedzones/?' + urlEncode({
-                point: point.x + ',' + point.y,
-                species
-            })
-
-            return get(url)
-                .then(response => response.json())
-                .then(json => dispatch(receiveZones(json.results)))
-                .catch(err => {
-                    console.log(err)
-
-                    dispatch(failZones())
-                })
-        }
-
-        return Promise.resolve()
-    }
-}
-
 export const requestGeometry = () => {
     return {
         type: REQUEST_GEOMETRY
