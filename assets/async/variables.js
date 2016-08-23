@@ -27,21 +27,22 @@ const valueSelect = ({ runConfiguration }) => {
 }
 
 export default store => {
-    // Transfer information
-    resync(store, transferSelect, (state, io, dispatch) => {
-        let { method, point, zone, year, variables } = state
+    // Transfer limit information
+    resync(store, transferSelect, ({ method, point, zone, year}, io, dispatch) => {
         let pointIsValid = point !== null && point.x && point.y
+        let { runConfiguration } = store.getState()
 
         if (!(pointIsValid && method === 'seedzone')) {
             return
         }
 
-        variables.forEach(item => {
+        // Only need to fetch transfer for variables which don't have one
+        runConfiguration.variables.filter(item => item.defaultTransfer === null).forEach(item => {
             dispatch(requestTransfer(item.name))
 
             let url = '/sst/transfer-limits/?' + urlEncode({
                     point: point.x + ',' + point.y,
-                    variable: item,
+                    variable: item.name,
                     zone__zone_uid: zone,
                     time_period: year
                 })
@@ -50,27 +51,29 @@ export default store => {
                 if (json.results.length) {
                     let { transfer, avg_transfer, center } = json.results[0]
 
-                    dispatch(receiveTransfer(item, transfer, avg_transfer, center))
+                    dispatch(receiveTransfer(item.name, transfer, avg_transfer, center))
                 }
                 else {
-                    dispatch(receiveTransfer(item, null, null, null))
+                    dispatch(receiveTransfer(item.name, null, null, null))
                 }
-            }).catch(() => dispatch(receiveTransfer(item, null, null, null)))
+            }).catch(() => dispatch(receiveTransfer(item.name, null, null, null)))
         })
     })
 
     // Value at point
-    resync(store, valueSelect, ({ objective, point, variables }, io, dispatch) => {
+    resync(store, valueSelect, ({ objective, point }, io, dispatch) => {
         let pointIsValid = point !== null && point.x && point.y
+        let { variables, climate } = store.getState().runConfiguration
 
         if (!pointIsValid) {
             return
         }
 
-        variables.forEach(item => {
-            dispatch(requestValue(item))
+        // Only need to fetch value for variables which don't have one
+        variables.filter(item => item.value === null).forEach(item => {
+            dispatch(requestValue(item.name))
 
-            let serviceName = getServiceName(item, objective, store.getState().runConfiguration.climate)
+            let serviceName = getServiceName(item.name, objective, climate)
             let url = '/arcgis/rest/services/' + serviceName + '/MapServer/identify/?' + urlEncode({
                 f: 'json',
                 tolerance: 2,
@@ -80,7 +83,7 @@ export default store => {
                 geometry: JSON.stringify(point)
             })
 
-            return io.get(url).then(response => response.json()).then(json => dispatch(receiveValue(item, json)))
+            return io.get(url).then(response => response.json()).then(json => dispatch(receiveValue(item.name, json)))
         })
     })
 }
