@@ -449,6 +449,10 @@ pre.error-debug-info {
     vertical-align: bottom;
 }
 
+.legend-item.results img {
+    transform: rotate(180deg);
+}
+
 .leaflet-zoom-box-control.active a {
     background: #999 url('../images/icon-crop.svg') no-repeat center center;
     background-size: 16px 16px;

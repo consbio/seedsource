@@ -116,6 +116,10 @@
         h3 {
             margin-bottom: 5px;
         }
+
+        img.legend {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body>
@@ -151,16 +155,16 @@
         <table>
             <thead>
                 <tr>
-                    <th colspan="2">Results</th>
+                    <th colspan="2">Match</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td rowspan="2"><img src="data:image/png;base64,{{ legend_image_data }}" /></td>
-                    <td style="vertical-align: top;">Low</td>
+                    <td rowspan="2"><img class="legend" src="data:image/png;base64,{{ legend_image_data }}" /></td>
+                    <td style="vertical-align: top;">High</td>
                 </tr>
                 <tr>
-                    <td style="vertical-align: bottom;">High</td>
+                    <td style="vertical-align: bottom;">Low</td>
                 </tr>
             </tbody>
         </table>

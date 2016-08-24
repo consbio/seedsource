@@ -293,8 +293,9 @@ class MapConnector extends React.Component {
 
         if (serviceId !== null && legends.results.legend !== null) {
             mapLegends.push({
-                label: 'Results',
-                elements: legends.results.legend
+                label: 'Match',
+                className: 'results',
+                elements: legends.results.legend.reverse()
             })
         }
 

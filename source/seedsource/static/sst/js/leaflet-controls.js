@@ -107,7 +107,13 @@ L.Control.Legend = L.Control.extend({
         L.DomUtil.empty(this._container);
 
         this.options.legends.forEach(function(legend) {
-            var container = L.DomUtil.create('div', 'legend-item', this._container);
+            var className = 'legend-item'
+
+            if (legend.className) {
+                className += ' ' + legend.className
+            }
+
+            var container = L.DomUtil.create('div', className, this._container);
             var label = L.DomUtil.create('h4', null, container);
             label.innerHTML = legend.label;
 
