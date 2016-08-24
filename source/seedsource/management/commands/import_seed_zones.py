@@ -1,10 +1,10 @@
 import os
+import shutil
 from tempfile import mkdtemp
 from zipfile import ZipFile
 
-import shutil
-
 import fiona
+import itertools
 from django.contrib.gis.geos import LinearRing
 from django.contrib.gis.geos import Polygon
 from django.core.management import BaseCommand
@@ -17,6 +17,7 @@ from seedsource.models import SeedZone
 WASHINGTON_ZONES_DIR = 'WA_NEW_ZONES'
 OREGON_ZONES_DIR = 'Oregon_Seed_Zones'
 HISTORIC_ZONES_DIR = 'historic_seed_zones'
+CALIFORNIA_ZONES_DIR = 'updatedCAgeneric'
 
 WASHINGTON_ZONES = {
     'psme': ('PSME.shp', 'Washington (2002) Douglas-fir Zone {zone_id}'),
@@ -34,6 +35,9 @@ OREGON_ZONES = {
     'pimo': ('Western_White_Pine.shp', 'Oregon (1996) western white pine Zone {zone_id}')
 }
 
+HISTORIC_ZONES = 'historic_seed_zones.shp'
+CALIFORNIA_ZONES = 'updatedCAgeneric.shp'
+
 SPECIES_NAMES = {
     'psme': 'Douglas-fir',
     'pico': 'Lodgepole pine',
@@ -41,8 +45,6 @@ SPECIES_NAMES = {
     'thpl': 'Western redcedar',
     'pimo': 'Wester white pine'
 }
-
-HISTORIC_ZONES = 'historic_seed_zones.shp'
 
 WA_HISTORIC = {
     11, 12, 30, 201, 202, 211, 212, 221, 222, 231, 222, 231, 232, 240, 401, 402, 403, 411, 412, 421, 422, 430, 440,
@@ -87,6 +89,10 @@ class Command(BaseCommand):
                     zone_name = name.format(zone_id=zone_id, species=SPECIES_NAMES.get(species))
 
                 geometry = transform_geom(shp.crs, {'init': 'EPSG:4326'}, feature['geometry'])
+
+                if feature['geometry']['type'] == 'MultiPolygon':
+                    geometry['coordinates'] = itertools.chain(*geometry['coordinates'])
+
                 polygon = Polygon(*[LinearRing(x) for x in geometry['coordinates']])
                 uid_suffix = 0
 
@@ -104,7 +110,7 @@ class Command(BaseCommand):
                             )
                         break
                     except IntegrityError:
-                        if uid_suffix > 3:
+                        if uid_suffix > 10:
                             raise
 
                         uid_suffix += 1
@@ -119,6 +125,7 @@ class Command(BaseCommand):
             wa_zones = os.path.join(temp_dir, WASHINGTON_ZONES_DIR)
             or_zones = os.path.join(temp_dir, OREGON_ZONES_DIR)
             historic_zones = os.path.join(temp_dir, HISTORIC_ZONES_DIR)
+            california_zones = os.path.join(temp_dir, CALIFORNIA_ZONES_DIR)
 
             message = (
                 'WARNING: This will replace all your seed zone records and remove associated transfer limits. '
@@ -170,6 +177,13 @@ class Command(BaseCommand):
                 self._add_zones(
                     os.path.join(HISTORIC_ZONES_DIR, HISTORIC_ZONES), get_historic_name, 'wa_or_historic_{zone_id}',
                     'generic', os.path.join(historic_zones, HISTORIC_ZONES), 'SUBJ_FSZ'
+                )
+
+                print('Loading California seed zones...')
+
+                self._add_zones(
+                    os.path.join(CALIFORNIA_ZONES_DIR, CALIFORNIA_ZONES), 'California Zone {zone_id:03d}',
+                    'ca_{zone_id}', 'generic', os.path.join(california_zones, CALIFORNIA_ZONES), 'SEEDZNO'
                 )
 
         finally:

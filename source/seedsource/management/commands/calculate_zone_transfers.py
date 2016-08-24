@@ -125,7 +125,8 @@ class Command(BaseCommand):
             'Oregon_Seed_Zones/Western_Red_Cedar.shp': or_thpl,
             'WA_NEW_ZONES/THPL.shp': wa_thpl,
             'Oregon_Seed_Zones/Western_White_Pine.shp': or_pimo,
-            'WA_NEW_ZONES/PIMO.shp': wa_pimo
+            'WA_NEW_ZONES/PIMO.shp': wa_pimo,
+            'updatedCAgeneric/updatedCAgeneric.shp': historical
         }[source]
 
     def _get_subsets(self, elevation, data, coords: SpatialCoordinateVariables, bbox):
@@ -192,7 +193,7 @@ class Command(BaseCommand):
                         )
 
                         masked_dem = numpy.ma.masked_where(zone_mask == 0, clipped_elevation)
-                        min_elevation = math.floor(numpy.nanmin(masked_dem) / 0.3048)
+                        min_elevation = max(math.floor(numpy.nanmin(masked_dem) / 0.3048), 0)
                         max_elevation = math.ceil(numpy.nanmax(masked_dem) / 0.3048)
                         bands = list(self._get_bands_fn(zone.source)(zone.zone_id, min_elevation, max_elevation))
 
