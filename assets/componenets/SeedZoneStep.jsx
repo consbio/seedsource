@@ -15,58 +15,54 @@ const getZoneLabel = zone => {
     return label
 }
 
-class SeedZoneStep extends React.Component {
-    render() {
-        let { method, selected, zones, number, active, isFetchingZones, onZoneChange } = this.props
+const SeedZoneStep = ({ method, selected, zones, number, active, isFetchingZones, onZoneChange }) => {
+    if (method !== 'seedzone') {
+        return null
+    }
 
-        if (method !== 'seedzone') {
-            return null
-        }
+    if (!active) {
+        let label = 'Select a location...'
 
-        if (!active) {
-            let label = 'Select a location...'
-
-            if (selected) {
-                label = getZoneLabel(zones.find(item => item.id === selected))
-            }
-
-            return (
-                <ConfigurationStep title="Select a seed zone" number={number} name="seedzone" active={false}>
-                    <div>{label}</div>
-                </ConfigurationStep>
-            )
-        }
-
-        let content = (
-            <select className="form-control" disabled>
-                <option>Select a location...</option>
-            </select>
-        )
-
-        if (zones.length) {
-            content = (
-                <select
-                    className="form-control"
-                    value={selected}
-                    disabled={isFetchingZones}
-                    onChange={e => {
-                        e.preventDefault()
-                        onZoneChange(e.target.value)
-                    }}
-                >
-                    {zones.map(item => (
-                        <option value={item.zone_uid} key={item.id}>{getZoneLabel(item)}</option>
-                    ))}
-                </select>
-            )
+        if (selected) {
+            label = getZoneLabel(zones.find(item => item.id === selected))
         }
 
         return (
-            <ConfigurationStep title="Select a seed zone" number={number} name="seedzone" active={true}>
-                {content}
+            <ConfigurationStep title="Select a seed zone" number={number} name="seedzone" active={false}>
+                <div>{label}</div>
             </ConfigurationStep>
         )
     }
+
+    let content = (
+        <select className="form-control" disabled>
+            <option>Select a location...</option>
+        </select>
+    )
+
+    if (zones.length) {
+        content = (
+            <select
+                className="form-control"
+                value={selected}
+                disabled={isFetchingZones}
+                onChange={e => {
+                    e.preventDefault()
+                    onZoneChange(e.target.value)
+                }}
+            >
+                {zones.map(item => (
+                    <option value={item.zone_uid} key={item.id}>{getZoneLabel(item)}</option>
+                ))}
+            </select>
+        )
+    }
+
+    return (
+        <ConfigurationStep title="Select a seed zone" number={number} name="seedzone" active={true}>
+            {content}
+        </ConfigurationStep>
+    )
 }
 
 SeedZoneStep.propTypes = {

@@ -1,13 +1,12 @@
 import { connect } from 'react-redux'
 import { modifyVariable, resetTransfer, toggleVariable, removeVariable } from '../actions/variables'
 import Variable from '../componenets/Variable'
-import { get, urlEncode } from '../io'
 import { variables } from '../config'
 
-const mapStateToProps = (state, { variable, index }) => {
+const mapStateToProps = (state, { variable }) => {
     let { activeVariable, runConfiguration } = state
     let active = activeVariable === variable.name
-    let { unit, method, center, point, zones, climate } = runConfiguration
+    let { unit, method, center } = runConfiguration
     let variableConfig = variables.find(item => item.name === variable.name)
     let { name, value, zoneCenter, transfer, avgTransfer, transferIsModified } = variable
     let { label, multiplier, units } = variableConfig
@@ -63,9 +62,7 @@ const mapStateToProps = (state, { variable, index }) => {
     let centerValue = method === 'seedzone' && center === 'zone' ? zoneCenter : value
 
     return {
-        zone: zones.selected,
         active,
-        index,
         name,
         label,
         value,
@@ -76,8 +73,6 @@ const mapStateToProps = (state, { variable, index }) => {
         unit,
         units,
         method,
-        point,
-        climate,
         centerValue
     }
 }

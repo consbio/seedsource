@@ -1,4 +1,4 @@
-import point from './point'
+    import point from './point'
 import variables from './variables'
 import zones from './zones'
 import climate from './climate'

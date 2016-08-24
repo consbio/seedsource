@@ -394,12 +394,12 @@ MapConnector.propTypes = {
 const mapStatetoProps = state => {
     let { runConfiguration, activeVariable, map, job, legends } = state
     let { opacity, showResults } = map
-    let { objective, point, region, climate, unit, method, zones } = runConfiguration
+    let { objective, point, climate, unit, method, zones } = runConfiguration
     let { geometry } = zones
     let zone = zones.selected
 
     return {
-        activeVariable, objective, point, region, climate, opacity, job, showResults, legends, unit, method, geometry,
+        activeVariable, objective, point, climate, opacity, job, showResults, legends, unit, method, geometry,
         zone
     }
 }

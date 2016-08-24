@@ -10,10 +10,6 @@ import SeedZoneStep from '../containers/SeedZoneStep'
 import VariableStep from '../containers/VariableStep'
 import { collapsibleSteps } from '../config'
 
-let getObjectiveLabel = objective => (
-    objective == 'seedlots' ? 'Select a planting site' : 'Select a seedlot location'
-)
-
 class RunConfiguration extends React.Component {
     componentDidUpdate({ job }) {
         let newJob = this.props.job

@@ -20,8 +20,7 @@ class Variable extends React.Component {
     render() {
         let {
             active, name, label, value, zoneCenter, transfer, avgTransfer, transferIsModified, unit, units, method,
-            point, zone, climate, centerValue, onTransferChange, onResetTransfer, onToggle, onRemove, fetchTransfer,
-            receiveTransfer
+            centerValue, onTransferChange, onResetTransfer, onToggle, onRemove
         } = this.props
         let { transferValue, editTransfer } = this.state
         let className = 'variableConfig'
@@ -154,9 +153,6 @@ Variable.propTypes = {
     unit: PropTypes.string.isRequired,
     units: PropTypes.object,
     method: PropTypes.string.isRequired,
-    point: PropTypes.object,
-    zone: PropTypes.string,
-    climate: PropTypes.object.isRequired,
     centerValue: PropTypes.number,
     onTransferChange: PropTypes.func.isRequired,
     onResetTransfer: PropTypes.func.isRequired,

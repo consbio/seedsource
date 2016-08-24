@@ -1,6 +1,3 @@
-import { getServiceName } from '../utils'
-import { get, urlEncode } from '../io'
-
 export const SELECT_UNIT = 'SELECT_UNIT'
 export const SELECT_METHOD = 'SELECT_METHOD'
 export const SELECT_CENTER = 'SELECT_CENTER'
