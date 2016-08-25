@@ -4,6 +4,9 @@ const TabContent = ({ active, children }) => {
     return (
         <div className={"tab-content" + (active ? "" : " hidden")}>
             {children}
+
+            {/* Hack to get bottom of scrollable area to display correctly */}
+            <div style={{height: '50px'}}></div>
         </div>
     )
 }
