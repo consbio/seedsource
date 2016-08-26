@@ -42,6 +42,10 @@
         "limits": {
           "source": "input",
           "input": "limits"
+        },
+        "generator": {
+          "source": "literal",
+          "input": true
         }
       }
     },
@@ -56,6 +60,10 @@
         "expression": {
           "source": "literal",
           "input": "int((x * factors[i]['factor'] - factors[i]['mid_factor']) ** 2)"
+        },
+        "generator": {
+          "source": "literal",
+          "input": true
         },
         "factors": {
           "source": "dependency",
@@ -87,7 +95,7 @@
         },
         "expression": {
           "source": "literal",
-          "input": "int((float(x) + 0.4) ** 0.5)"
+          "input": "int8((float(x) + 0.4) ** 0.5)"
         }
       }
     },

@@ -152,3 +152,5 @@ NC_INSTALLED_INTERFACES = (
     'ncdjango.interfaces.arcgis',
     'interfaces.tiles'
 )
+
+NC_ENABLE_STRIDING = True
