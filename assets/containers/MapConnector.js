@@ -295,7 +295,7 @@ class MapConnector extends React.Component {
             mapLegends.push({
                 label: 'Match',
                 className: 'results',
-                elements: legends.results.legend.reverse()
+                elements: [...legends.results.legend].reverse()
             })
         }
 

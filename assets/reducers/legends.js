@@ -1,6 +1,3 @@
-import { SELECT_OBJECTIVE } from '../actions/objectives'
-import { SELECT_CLIMATE_YEAR, SELECT_CLIMATE_MODEL } from '../actions/climate'
-import { TOGGLE_VARIABLE } from '../actions/variables'
 import {
     REQUEST_VARIABLE_LEGEND, RECEIVE_VARIABLE_LEGEND, REQUEST_RESULTS_LEGEND, RECEIVE_RESULTS_LEGEND
 } from '../actions/legends'
