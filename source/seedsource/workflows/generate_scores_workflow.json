@@ -95,13 +95,13 @@
         },
         "expression": {
           "source": "literal",
-          "input": "int8((float(x) + 0.4) ** 0.5)"
+          "input": "int((float(x) + 0.4) ** 0.5)"
         }
       }
     },
     {
       "id": "mask_result",
-      "task": "raster:mask_by_expression",
+      "task": "raster:apply_expression",
       "inputs": {
         "array_in": {
           "source": "dependency",
@@ -109,7 +109,7 @@
         },
         "expression": {
           "source": "literal",
-          "input": "x > 100"
+          "input": "int8(mask(x, x > 100))"
         }
       }
     }
