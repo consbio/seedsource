@@ -12,7 +12,6 @@ from ncdjango.models import Service
 from numpy.ma import is_masked
 
 SERVICE_DATA_ROOT = getattr(settings, 'NC_SERVICE_DATA_ROOT', '/var/ncdjango/services/')
-DTYPES = ('int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32', 'int64', 'uint64')
 
 class Command(BaseCommand):
     help = 'Converts all existing services to their smallest possible data type'
@@ -45,12 +44,20 @@ class Command(BaseCommand):
                     print("Ignoring service '{}' with non-int type".format(service.name))
                     continue
 
-                min_value = data.min()
+                # The fill value will be the minimum value of the chosen type, so we want to make sure it's not
+                # included in the actual data range
+                min_value = data.min() - 1
                 max_value = data.max()
 
-                dtype = DTYPES[max(
-                    DTYPES.index(numpy.min_scalar_type(min_value)), DTYPES.index(numpy.min_scalar_type(max_value))
-                )]
+                # Determine the most suitable data type by finding the minimum type for the min/max values and then
+                # using the type that will accurately represent both
+                min_type = str(numpy.min_scalar_type(min_value))
+                max_type = str(numpy.min_scalar_type(max_value))
+
+                min_unsigned, min_size = min_type.split('int')
+                max_unsigned, max_size = max_type.split('int')
+
+                dtype = '{}int{}'.format(min_unsigned and max_unsigned, max(int(min_size), int(max_size)))
 
                 if data.dtype == dtype:
                     print("Service '{}' already has the smallest possible type: {}".format(service.name, dtype))
@@ -62,7 +69,9 @@ class Command(BaseCommand):
                     coords.add_to_dataset(ds, variable.x_dimension, variable.y_dimension)
 
                     data = data.astype(dtype)
-                    fill_value = data.fill_value if is_masked(data) else None
+                    fill_value = numpy.ma.maximum_fill_value(numpy.dtype(dtype))
+                    numpy.ma.set_fill_value(data, fill_value)
+
                     data_var = ds.createVariable(
                         variable.variable, dtype, dimensions=(variable.y_dimension, variable.x_dimension),
                         fill_value=fill_value
