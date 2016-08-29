@@ -5,6 +5,7 @@ import { morph } from '../utils'
 const defaultState = {
     isRunning: false,
     isFetching: false,
+    queued: false,
     jobId: null,
     serviceId: null,
     configuration: null
@@ -27,13 +28,16 @@ export default (state = defaultState, action) => {
 
         case RECEIVE_JOB_STATUS:
             if (action.status === 'success') {
-                return morph(state, {isRunning: false, isFetching: false, serviceId: action.serviceId})
+                return morph(state, {isRunning: false, isFetching: false, queued: false, serviceId: action.serviceId})
             }
             else if (action.status === 'failure') {
                 return defaultState
             }
+            else if (action.status === 'pending') {
+                return morph(state, {queued: true, isFetching: false})
+            }
 
-            return morph(state, {isFetching: false})
+            return morph(state, {queued: false, isFetching: false})
 
         case FAIL_JOB:
             return defaultState

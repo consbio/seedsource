@@ -32,10 +32,24 @@ class RunConfiguration extends React.Component {
         let overlay = null
 
         if (job.isRunning) {
+            let label = <h4>Calculating scores...</h4>
+
+            if (job.queued) {
+                label = (
+                    <div>
+                        <h4>Waiting for other jobs to finish...</h4>
+                        <div>
+                            Another job is currently running. Your job is queued and will run as soon as other jobs
+                            are finished.
+                        </div>
+                    </div>
+                )
+            }
+
             overlay = (
                 <div className="overlay">
                     <div className="progressContainer">
-                        <h4>Calculating scores...</h4>
+                        {label}
                         <div className="progress">
                             <div
                                 className="progress-bar progress-bar-info progress-bar-striped active"
