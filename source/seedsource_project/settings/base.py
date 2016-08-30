@@ -135,8 +135,8 @@ CELERYBEAT_SCHEDULE = {
 
 NC_REGISTERED_JOBS = {
     'generate_scores': {
-        'type': 'workflow',
-        'path': os.path.join(BASE_DIR, 'seedsource', 'workflows', 'generate_scores_workflow.json'),
+        'type': 'task',
+        'task': 'seedsource.tasks.generate_scores.GenerateScores',
         'publish_raster_results': True,
         'results_renderer': StretchedRenderer([
             (0, Color(240, 59, 32)),
