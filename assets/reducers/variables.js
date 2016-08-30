@@ -79,7 +79,7 @@ export default (state = [], action) => {
         case SELECT_OBJECTIVE:
         case SELECT_CLIMATE_YEAR:
         case SELECT_CLIMATE_MODEL:
-            return state.map(item => morph(item, {isFetching: false, value: null}))
+            return state.map(item => morph(item, {isFetching: false, defaultTransfer: null, value: null}))
         
         case SELECT_ZONE:
         case SELECT_METHOD:

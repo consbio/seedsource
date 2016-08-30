@@ -21,14 +21,14 @@ const valueSelect = ({ runConfiguration }) => {
     return {
         objective,
         point,
-        climate: objective === 'seedlots' ? climate.site : climate.seedlot,
+        climate,
         variables: variables.map(item => item.name)
     }
 }
 
 export default store => {
     // Transfer limit information
-    resync(store, transferSelect, ({ method, point, zone, year}, io, dispatch) => {
+    resync(store, transferSelect, ({ method, point, zone, year }, io, dispatch) => {
         let pointIsValid = point !== null && point.x && point.y
         let { runConfiguration } = store.getState()
 
