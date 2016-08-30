@@ -40,8 +40,7 @@ class MapConnector extends React.Component {
         this.map.zoomControl.setPosition('topright')
 
         this.map.addControl(L.control.zoomBox({
-            position: 'topright',
-            className: 'icon16 icon-crop'
+            position: 'topright'
         }))
 
         let basemapControl = L.control.basemaps({
