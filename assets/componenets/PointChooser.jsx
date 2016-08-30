@@ -22,7 +22,10 @@ class PointChooser extends React.Component {
                     }}
                     onBlur={e => {
                         this.setState({latValue: null})
-                        onBlur('lat', e.target.value)
+
+                        if (e.target.value !== lat) {
+                            onBlur('lat', e.target.value)
+                        }
                     }}
                     onKeyPress={e => {
                         if (e.key === 'Enter') {
@@ -40,7 +43,10 @@ class PointChooser extends React.Component {
                     }}
                     onBlur={e => {
                         this.setState({lonValue: null})
-                        onBlur('lon', e.target.value)
+
+                        if (e.target.value !== lon) {
+                            onBlur('lon', e.target.value)
+                        }
                     }}
                     onKeyPress={e => {
                         if (e.key === 'Enter') {
