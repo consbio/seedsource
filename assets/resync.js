@@ -44,9 +44,12 @@ export default (store, select, fetchData) => {
         let nextState = select(store.getState())
 
         if (JSON.stringify(nextState) !== JSON.stringify(currentState)) {
+            let previousState = currentState
+
             currentState = nextState
             io.promiseUUID = uuid.v4()
-            fetchData(currentState, io, store.dispatch)
+
+            fetchData(currentState, io, store.dispatch, previousState)
         }
     })
 }
