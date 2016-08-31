@@ -43,6 +43,19 @@ class MapConnector extends React.Component {
             position: 'topright'
         }))
 
+        let geonamesControl = L.control.geonames({
+            position: 'topright',
+            username: 'seedsource',
+            showMarker: false,
+            showPopup: false
+        })
+        geonamesControl.on('select', ({ geoname }) => {
+            let latlng = {lat: parseFloat(geoname.lat), lng: parseFloat(geoname.lng)}
+            this.map.setView(latlng);
+            this.map.fire('click', {latlng})
+        })
+        this.map.addControl(geonamesControl)
+
         let basemapControl = L.control.basemaps({
             basemaps: [
                 L.tileLayer('//{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
@@ -85,6 +98,10 @@ class MapConnector extends React.Component {
         })
 
         this.map.on('click', e => {
+            if (!e.latlng) {
+                return
+            }
+
             let container = L.DomUtil.create('div', 'map-info-popup')
             let info = L.DomUtil.create('p', '', container)
             let elevation = '--'

@@ -42,7 +42,7 @@ export default store => {
         let variablesOnly = (
             JSON.stringify(morph(state, {variables: null})) === JSON.stringify(morph(previousState, {variables: null}))
         )
-        console.log(variablesOnly)
+
         if (variablesOnly) {
             variables = variables.filter(item => item.defaultTransfer === null)
         }
