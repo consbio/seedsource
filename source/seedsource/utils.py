@@ -6,7 +6,7 @@ from netCDF4 import Dataset
 
 
 def get_elevation_at_point(point):
-    service = Service.objects.get(name='west1_dem')
+    service = Service.objects.get(name='west2_dem')
     variable = service.variable_set.all().get()
 
     with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, service.data_path)) as ds:

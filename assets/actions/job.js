@@ -44,7 +44,7 @@ export const createJob = configuration => {
                     year = selectedClimate.model + '_' + selectedClimate.time
                 }
 
-                return 'service://west1_' + year + 'Y_' + item.name + ':' + item.name
+                return 'service://west2_' + year + 'Y_' + item.name + ':' + item.name
             }),
             limits: variables.map(item => {
                 return {min: item.value - item.transfer, max: item.value + item.transfer}

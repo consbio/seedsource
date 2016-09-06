@@ -116,7 +116,7 @@ class MapConnector extends React.Component {
 
             updateInfo()
 
-            let url = '/arcgis/rest/services/west1_dem/MapServer/identify/?' + urlEncode({
+            let url = '/arcgis/rest/services/west2_dem/MapServer/identify/?' + urlEncode({
                     f: 'json',
                     tolerance: '2',
                     imageDisplay: '1600,1031,96',
@@ -149,7 +149,7 @@ class MapConnector extends React.Component {
         })
 
         // Load boundary data
-        get('/static/sst/geometry/west1_boundary.json')
+        get('/static/sst/geometry/west2_boundary.json')
             .then(result => result.json())
             .then(json => {this.boundaryData = json})
     }

@@ -66,7 +66,7 @@ class LocationStep extends React.Component {
                 <div className="hidden">
                     <label className="control-label">Region</label>
                     <select className="form-control">
-                        <option value="west1">West</option>
+                        <option value="west2">West</option>
                     </select>
                 </div>
             </ConfigurationStep>

@@ -16,7 +16,7 @@ const defaultConfiguration = {
     objective: 'seedlots',
     species: 'generic',
     point: null,
-    region: 'west1',
+    region: 'west2',
     climate: null,
     method: 'seedzone',
     center: 'point',

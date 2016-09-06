@@ -1,5 +1,5 @@
 export const getServiceName = (variable, objective, climate) => {
-    let serviceName = 'west1_'
+    let serviceName = 'west2_'
 
     // Show site climate when looking for seedlots, and seedlot climate when looking for sites
     let selectedClimate = objective === 'seedlots' ? climate.site : climate.seedlot

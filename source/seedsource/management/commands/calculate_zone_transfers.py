@@ -158,7 +158,7 @@ class Command(BaseCommand):
         self.transfers_by_source[zone.source] = transfers_by_variable
 
     def handle(self, *args, **options):
-        elevation_service = Service.objects.get(name='west1_dem')
+        elevation_service = Service.objects.get(name='west2_dem')
         with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, elevation_service.data_path)) as ds:
             coords = SpatialCoordinateVariables.from_dataset(
                 ds, x_name='lon', y_name='lat', projection=Proj(elevation_service.projection)
@@ -178,7 +178,7 @@ class Command(BaseCommand):
                 for variable in VARIABLES:
                     print('Processing {} for {}...'.format(variable, time_period))
 
-                    variable_service = Service.objects.get(name='west1_{}Y_{}'.format(time_period, variable))
+                    variable_service = Service.objects.get(name='west2_{}Y_{}'.format(time_period, variable))
                     with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, variable_service.data_path)) as ds:
                         data = ds.variables[variable][:]
 
