@@ -163,7 +163,7 @@ class Command(BaseCommand):
             coords = SpatialCoordinateVariables.from_dataset(
                 ds, x_name='lon', y_name='lat', projection=Proj(elevation_service.projection)
             )
-            elevation = ds.variables['Band1'][:]
+            elevation = ds.variables['elevation'][:]
 
         message = 'WARNING: This will replace all your transfer limits. Do you want to continue? [y/n]'
         if input(message).lower() not in {'y', 'yes'}:
