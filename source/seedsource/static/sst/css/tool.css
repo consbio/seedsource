@@ -383,6 +383,7 @@ body {
     box-shadow: 5px 5px 10px rgba(153, 153, 153, .6);
     font-size: 1.1em !important;
     max-width: 350px;
+    white-space: normal;
 }
 
 .variable-tooltip .tooltip-label {
