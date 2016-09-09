@@ -6,12 +6,14 @@ const mapStateToProps = ({ runConfiguration }) => {
     let { method, species, point, zones } = runConfiguration
     let { selected, matched, isFetchingZones } = zones
 
+    let pointIsValid = point !== null && point.x !== null && point.y !== null
+
     return {
         zones: matched,
         species,
         selected,
         method,
-        point,
+        pointIsValid,
         isFetchingZones
     }
 }

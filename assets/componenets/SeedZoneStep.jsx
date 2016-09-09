@@ -15,13 +15,15 @@ const getZoneLabel = zone => {
     return label
 }
 
-const SeedZoneStep = ({ method, selected, zones, number, active, isFetchingZones, onZoneChange }) => {
+const SeedZoneStep = ({ method, pointIsValid, selected, zones, number, active, isFetchingZones, onZoneChange }) => {
     if (method !== 'seedzone') {
         return null
     }
 
+    let noZoneLabel = pointIsValid ? 'No zones at this location...' : 'Select a location...'
+
     if (!active) {
-        let label = 'Select a location...'
+        let label = noZoneLabel
 
         if (selected) {
             label = getZoneLabel(zones.find(item => item.id === selected))
@@ -36,7 +38,7 @@ const SeedZoneStep = ({ method, selected, zones, number, active, isFetchingZones
 
     let content = (
         <select className="form-control" disabled>
-            <option>Select a location...</option>
+            <option>{noZoneLabel}</option>
         </select>
     )
 
@@ -70,7 +72,7 @@ SeedZoneStep.propTypes = {
     selected: PropTypes.string,
     method: PropTypes.string.isRequired,
     zones: PropTypes.array.isRequired,
-    point: PropTypes.object,
+    pointIsValid: PropTypes.bool.isRequired,
     species: PropTypes.string.isRequired,
     isFetchingZones: PropTypes.bool.isRequired,
     onZoneChange: PropTypes.func.isRequired
