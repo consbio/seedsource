@@ -24,7 +24,7 @@ const mapStateToProps = (state, { variable }) => {
                 number = units.imperial.convert(number)
             }
 
-            return parseFloat(number.toFixed(precision))
+            return number.toFixed(precision)
         }
 
         return number
@@ -44,14 +44,14 @@ const mapStateToProps = (state, { variable }) => {
             transferPrecision = units.imperial.transferPrecision
 
             if (convertTransfer) {
-                return parseFloat(convertTransfer(number).toFixed(transferPrecision))
+                return convertTransfer(number).toFixed(transferPrecision)
             }
             else if (convert !== null) {
-                return parseFloat(convert(number).toFixed(transferPrecision))
+                return convert(number).toFixed(transferPrecision)
             }
         }
 
-        return parseFloat(number.toFixed(transferPrecision))
+        return number.toFixed(transferPrecision)
     }
 
     transfer = convertTransfer(transfer)

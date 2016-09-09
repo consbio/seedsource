@@ -19,19 +19,19 @@ def convert_to_in(value):
 
 
 def format_temperature_value(value, is_imperial):
-    return round(convert_to_f(value) if is_imperial else value, 1)
+    return '{:.1f}'.format(round(convert_to_f(value) if is_imperial else value, 1))
 
 
 def format_relative_temperature_value(value, is_imperial):
-    return round(convert_relative_to_f(value) if is_imperial else value, 1)
+    return '{:.1f}'.format(round(convert_relative_to_f(value) if is_imperial else value, 1))
 
 
 def format_temperature_transfer(value, is_imperial):
-    return round(convert_relative_to_f(value) if is_imperial else value, 2)
+    return '{:.2f}'.format(round(convert_relative_to_f(value) if is_imperial else value, 2))
 
 
 def format_precip_value(value, is_imperial):
-    return round(convert_to_in(value), 1) if is_imperial else round(value)
+    return '{:.1f}'.format(round(convert_to_in(value), 1) if is_imperial else round(value))
 
 
 def format_whole_value(value, is_imperial):

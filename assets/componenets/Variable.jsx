@@ -50,7 +50,7 @@ class Variable extends React.Component {
                             this.setState({transferValue: e.target.value})
                         }}
                         onBlur={e => {
-                            if (parseFloat(e.target.value) !== transfer) {
+                            if (parseFloat(e.target.value) !== parseFloat(transfer)) {
                                 onTransferChange(e.target.value, unit, units)
                             }
 
