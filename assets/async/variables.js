@@ -1,5 +1,6 @@
 import resync from '../resync'
 import { requestTransfer, receiveTransfer, requestValue, receiveValue } from '../actions/variables'
+import { requestPopupValue, receivePopupValue } from '../actions/popup'
 import { urlEncode } from '../io'
 import { getServiceName, morph } from '../utils'
 
@@ -24,6 +25,52 @@ const valueSelect = ({ runConfiguration }) => {
         climate,
         variables: variables.map(item => item.name)
     }
+}
+
+const popupSelect = ({ runConfiguration, popup }) => {
+    let { objective, climate, variables } = runConfiguration
+    let { point } = popup
+
+    return {
+        objective,
+        point,
+        climate,
+        variables: variables.map(item => item.name)
+    }
+}
+
+const fetchValues = (store, state, io, dispatch, previousState) => {
+    let { objective, point } = state
+    let pointIsValid = point !== null && point.x && point.y
+    let { variables, climate } = store.getState().runConfiguration
+
+    if (!pointIsValid) {
+        return
+    }
+
+    // If only variables have changed, then not all variables need to be refreshed
+    let variablesOnly = (
+        JSON.stringify(morph(state, {variables: null})) === JSON.stringify(morph(previousState, {variables: null}))
+    )
+    if (variablesOnly) {
+        variables = variables.filter(item => item.defaultTransfer === null)
+    }
+
+    let requests = variables.map(item => {
+        let serviceName = getServiceName(item.name, objective, climate)
+        let url = '/arcgis/rest/services/' + serviceName + '/MapServer/identify/?' + urlEncode({
+            f: 'json',
+            tolerance: 2,
+            imageDisplay: '1600,1031,96',
+            geometryType: 'esriGeometryPoint',
+            mapExtent: '0,0,0,0',
+            geometry: JSON.stringify(point)
+        })
+
+        return {item, promise: io.get(url).then(response => response.json())}
+    })
+
+    return requests
 }
 
 export default store => {
@@ -71,39 +118,27 @@ export default store => {
         })
     })
 
-    // Value at point
+    // Values at point (for variables list)
     resync(store, valueSelect, (state, io, dispatch, previousState) => {
-        let { objective, point } = state
-        let pointIsValid = point !== null && point.x && point.y
-        let { variables, climate } = store.getState().runConfiguration
+        let requests = fetchValues(store, state, io, dispatch, previousState)
 
-        if (!pointIsValid) {
-            return
-        }
-
-        // If only variables have changed, then not all variables need to be refreshed
-        let variablesOnly = (
-            JSON.stringify(morph(state, {variables: null})) === JSON.stringify(morph(previousState, {variables: null}))
-        )
-        if (variablesOnly) {
-            variables = variables.filter(item => item.defaultTransfer === null)
-        }
-
-        // Only need to fetch value for variables which don't have one
-        variables.forEach(item => {
-            dispatch(requestValue(item.name))
-
-            let serviceName = getServiceName(item.name, objective, climate)
-            let url = '/arcgis/rest/services/' + serviceName + '/MapServer/identify/?' + urlEncode({
-                f: 'json',
-                tolerance: 2,
-                imageDisplay: '1600,1031,96',
-                geometryType: 'esriGeometryPoint',
-                mapExtent: '0,0,0,0',
-                geometry: JSON.stringify(point)
+        if (requests) {
+            requests.forEach(request => {
+                dispatch(requestValue(request.item.name))
+                request.promise.then(json => dispatch(receiveValue(request.item.name, json)))
             })
+        }
+    })
 
-            return io.get(url).then(response => response.json()).then(json => dispatch(receiveValue(item.name, json)))
-        })
+    // Values at point (for popup)
+    resync(store, popupSelect, (state, io, dispatch, previousState) => {
+        let requests = fetchValues(store, state, io, dispatch, previousState)
+
+        if (requests) {
+            requests.forEach(request => {
+                dispatch(requestPopupValue(request.item.name))
+                request.promise.then(json => dispatch(receivePopupValue(request.item.name, json)))
+            })
+        }
     })
 }

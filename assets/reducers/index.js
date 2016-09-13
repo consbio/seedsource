@@ -8,6 +8,7 @@ import job from './job'
 import saves from './saves'
 import legends from './legends'
 import error from './error'
+import popup from './popup'
 
 export default combineReducers({
     isLoggedIn: auth,
@@ -21,5 +22,6 @@ export default combineReducers({
     saves,
     legends,
     pdfIsFetching,
-    error
+    error,
+    popup
 })

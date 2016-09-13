@@ -6,6 +6,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { setMapOpacity, setBasemap, setZoom, toggleVisibility } from '../actions/map'
+import { setPopupLocation, resetPopupLocation } from '../actions/popup'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
 import { variables, timeLabels } from '../config'
@@ -26,6 +27,7 @@ class MapConnector extends React.Component {
         this.visibilityButton = null
         this.boundaryData = null
         this.boundaryLayers = null
+        this.popup = null
     }
 
     // Initial map setup
@@ -97,51 +99,14 @@ class MapConnector extends React.Component {
             this.props.onBasemapChange(layer._url)
         })
 
+        this.map.on('popupclose', () => { this.props.onPopupClose() })
+
         this.map.on('click', e => {
             if (!e.latlng) {
                 return
             }
 
-            let container = L.DomUtil.create('div', 'map-info-popup')
-            let info = L.DomUtil.create('p', '', container)
-            let elevation = '--'
-
-            let updateInfo = () => {
-                info.innerHTML = (
-                    '<strong>Location:</strong> ' + e.latlng.lat.toFixed(2) + ', ' + e.latlng.lng.toFixed(2) +
-                    '<br />' +
-                    '<strong>Elevation:</strong> ' + elevation
-                )
-            }
-
-            updateInfo()
-
-            let url = '/arcgis/rest/services/west2_dem/MapServer/identify/?' + urlEncode({
-                    f: 'json',
-                    tolerance: '2',
-                    imageDisplay: '1600,1031,96',
-                    geometryType: 'esriGeometryPoint',
-                    mapExtent: '0,0,0,0',
-                    geometry: JSON.stringify({x: e.latlng.lng, y: e.latlng.lat})
-                })
-
-            get(url).then(response => response.json()).then(json => {
-                elevation = Math.round(json.results[0].attributes['Pixel value'] / 0.3048) + 'ft'
-                updateInfo()
-            })
-
-            let button = L.DomUtil.create('button', 'btn btn-sm btn-primary', container)
-            button.innerHTML = 'Set Point'
-
-            let popup = L.popup()
-                .setLatLng(e.latlng)
-                .setContent(container)
-                .openOn(this.map);
-
-            L.DomEvent.on(button, 'click', () => {
-                this.map.closePopup(popup)
-                this.props.onMapClick(e.latlng.lat, e.latlng.lng)
-            })
+            this.props.onPopupLocation(e.latlng.lat, e.latlng.lng)
         })
 
         this.map.on('zoomend', () => {
@@ -379,9 +344,106 @@ class MapConnector extends React.Component {
         }
     }
 
+    updatePopup(popup, unit) {
+        let { point, elevation } = popup
+
+        if (point !== null) {
+            if (this.popup === null) {
+                let container = L.DomUtil.create('div', 'map-info-popup')
+
+                let location = L.DomUtil.create('div', '', container)
+                let locationTitle = L.DomUtil.create('strong', '', location)
+                locationTitle.innerHTML = 'Location: '
+                let locationLabel = L.DomUtil.create('span', '', location)
+
+                let elevation = L.DomUtil.create('div', '', container)
+                let elevationTitle = L.DomUtil.create('strong', '', elevation)
+                elevationTitle.innerHTML = 'Elevation: '
+                let elevationLabel = L.DomUtil.create('span', '', elevation)
+
+                let values = L.DomUtil.create('div', '', container)
+
+                L.DomUtil.create('div', '', container).innerHTML = '&nbsp;'
+
+                let button = L.DomUtil.create('button', 'btn btn-sm btn-primary', container)
+                button.innerHTML = 'Set Point'
+
+                let popup = L.popup({
+                    closeOnClick: false
+                }).setLatLng([point.y, point.x]).setContent(container).openOn(this.map)
+
+                L.DomEvent.on(button, 'click', () => {
+                    let { point } = this.popup
+                    this.map.closePopup(popup)
+                    this.props.onMapClick(point.y, point.x)
+                })
+
+                this.popup = {
+                    popup,
+                    locationLabel,
+                    elevationLabel,
+                    values,
+                    point
+                }
+            }
+
+            if (JSON.stringify(point) !== JSON.stringify(this.popup.point)) {
+                this.popup.point = point
+            }
+
+            let latlng = this.popup.popup.getLatLng()
+            if (latlng.lat !== point.y || latlng.lng !== point.x) {
+                this.popup.popup.setLatLng([point.y, point.x])
+            }
+
+            let locationLabel = point.y.toFixed(2) + ', ' + point.x.toFixed(2)
+            if (locationLabel !== this.popup.locationLabel.innerHTML) {
+                this.popup.locationLabel.innerHTML = locationLabel
+            }
+
+            let elevationLabel = elevation === null ? '--' : Math.round(elevation / 0.3048) + 'ft'
+            if (elevationLabel !== this.popup.elevationLabel.innerHTML) {
+                this.popup.elevationLabel.innerHTML = elevationLabel
+            }
+
+            let valueRows = popup.values.map(item => {
+                let variableConfig = variables.find(variable => variable.name === item.name)
+                let { multiplier, units } = variableConfig
+                let value = '--'
+                let unitLabel = units.metric.label
+
+                if (item.value !== null) {
+                    value = item.value / multiplier
+
+                    let { precision } = units.metric
+
+                    if (unit === 'imperial') {
+                        precision = units.imperial.precision
+                        unitLabel = units.imperial.label
+                        value = units.imperial.convert(value)
+                    }
+
+                    value = value.toFixed(precision)
+                }
+
+                return '<div><strong>' + item.name + ': </strong> ' + value + ' ' + unitLabel + '</div>'
+            })
+
+            let values = valueRows.join('')
+
+            if (values !== this.popup.values.innerHTML) {
+                this.popup.values.innerHTML = values
+            }
+        }
+        else if (this.popup) {
+            this.map.closePopup(this.popup.popup)
+            this.popup = null
+        }
+    }
+
     render() {
         let {
-            activeVariable, objective, point, climate, opacity, job, showResults, legends, unit, method, zone,
+            activeVariable, objective, point, climate, opacity, job, showResults, legends, popup, unit, method, zone,
             geometry
         } = this.props
         let { serviceId } = job
@@ -395,6 +457,7 @@ class MapConnector extends React.Component {
         this.updateTimeOverlay(activeVariable, objective, climate)
         this.updateLegends(legends, activeVariable, serviceId, unit)
         this.updateZoneLayer(method, zone, geometry)
+        this.updatePopup(popup, unit)
 
         return null
     }
@@ -405,18 +468,20 @@ MapConnector.propTypes = {
     onZoomChange: PropTypes.func.isRequired,
     onOpacityChange: PropTypes.func.isRequired,
     onMapClick: PropTypes.func.isRequired,
+    onPopupLocation: PropTypes.func.isRequired,
+    onPopupClose: PropTypes.func.isRequired,
     onToggleVisibility: PropTypes.func.isRequired
 }
 
 const mapStatetoProps = state => {
-    let { runConfiguration, activeVariable, map, job, legends } = state
+    let { runConfiguration, activeVariable, map, job, legends, popup } = state
     let { opacity, showResults } = map
     let { objective, point, climate, unit, method, zones } = runConfiguration
     let { geometry } = zones
     let zone = zones.selected
 
     return {
-        activeVariable, objective, point, climate, opacity, job, showResults, legends, unit, method, geometry,
+        activeVariable, objective, point, climate, opacity, job, showResults, legends, popup, unit, method, geometry,
         zone
     }
 }
@@ -437,6 +502,15 @@ const mapDispatchToProps = dispatch => {
 
         onMapClick: (lat, lon) => {
             dispatch(setPoint(lat, lon))
+        },
+
+        onPopupLocation: (lat, lon) => {
+            dispatch(setPopupLocation(lat, lon))
+        },
+
+        onPopupClose: () => {
+            // Dispatching this event immediately causes state warnings
+            setTimeout(() => dispatch(resetPopupLocation()), 1)
         },
 
         onToggleVisibility: () => {
