@@ -352,9 +352,6 @@ class MapConnector extends React.Component {
                 let container = L.DomUtil.create('div', 'map-info-popup')
 
                 let location = L.DomUtil.create('div', '', container)
-                let locationTitle = L.DomUtil.create('span', '', location)
-                locationTitle.innerHTML = 'Location: '
-                let locationLabel = L.DomUtil.create('strong', '', location)
 
                 let elevation = L.DomUtil.create('div', '', container)
                 let elevationTitle = L.DomUtil.create('span', '', elevation)
@@ -380,7 +377,7 @@ class MapConnector extends React.Component {
 
                 this.popup = {
                     popup,
-                    locationLabel,
+                    location,
                     elevationLabel,
                     values,
                     point
@@ -396,12 +393,13 @@ class MapConnector extends React.Component {
                 this.popup.popup.setLatLng([point.y, point.x])
             }
 
-            let locationLabel = point.y.toFixed(2) + ', ' + point.x.toFixed(2)
-            if (locationLabel !== this.popup.locationLabel.innerHTML) {
-                this.popup.locationLabel.innerHTML = locationLabel
+            let locationLabel = 'Lat: <strong>' + point.y.toFixed(2) +
+                '</strong> Lon: <strong>' + point.x.toFixed(2) + '</strong>'
+            if (locationLabel !== this.popup.location.innerHTML) {
+                this.popup.location.innerHTML = locationLabel
             }
 
-            let elevationLabel = elevation === null ? '--' : Math.round(elevation / 0.3048) + 'ft'
+            let elevationLabel = elevation === null ? '--' : Math.round(elevation / 0.3048) + ' ft'
             if (elevationLabel !== this.popup.elevationLabel.innerHTML) {
                 this.popup.elevationLabel.innerHTML = elevationLabel
             }
