@@ -352,14 +352,14 @@ class MapConnector extends React.Component {
                 let container = L.DomUtil.create('div', 'map-info-popup')
 
                 let location = L.DomUtil.create('div', '', container)
-                let locationTitle = L.DomUtil.create('strong', '', location)
+                let locationTitle = L.DomUtil.create('span', '', location)
                 locationTitle.innerHTML = 'Location: '
-                let locationLabel = L.DomUtil.create('span', '', location)
+                let locationLabel = L.DomUtil.create('strong', '', location)
 
                 let elevation = L.DomUtil.create('div', '', container)
-                let elevationTitle = L.DomUtil.create('strong', '', elevation)
+                let elevationTitle = L.DomUtil.create('span', '', elevation)
                 elevationTitle.innerHTML = 'Elevation: '
-                let elevationLabel = L.DomUtil.create('span', '', elevation)
+                let elevationLabel = L.DomUtil.create('strong', '', elevation)
 
                 let values = L.DomUtil.create('div', '', container)
 
@@ -426,7 +426,7 @@ class MapConnector extends React.Component {
                     value = value.toFixed(precision)
                 }
 
-                return '<div><strong>' + item.name + ': </strong> ' + value + ' ' + unitLabel + '</div>'
+                return '<div><span>' + item.name + ': </span><strong>' + value + ' ' + unitLabel + '</strong></div>'
             })
 
             let values = valueRows.join('')
