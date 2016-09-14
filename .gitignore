@@ -7,3 +7,4 @@ source/seedsource_project/settings/custom.py
 node_modules/
 webpack-stats.json
 build/
+docs/_*/
