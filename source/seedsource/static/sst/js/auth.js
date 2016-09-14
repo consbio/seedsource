@@ -114,6 +114,26 @@ function changePassword() {
     });
 }
 
+function resetPassword() {
+    $('#ForgotPasswordModal .alert').addClass('hidden');
+
+    var email = $('#ResetEmail').val();
+    var data = {
+        email: email
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: '/accounts/lost-password/',
+        data: data
+    }).success(function() {
+        $('#ForgotPasswordModal .alert-success').removeClass('hidden');
+        $('#ForgotPasswordModal form').addClass('hidden');
+    }).error(function() {
+        $('#ForgotPasswordModal .alert-danger').removeClass('hidden');
+    });
+}
+
 $('.modal').on('shown.bs.modal', function() {
     $('.modal .alert').addClass('hidden');
     $(this).find('input').val('');
@@ -125,7 +145,12 @@ $('#InfoModal').on('show.bs.modal', function(event) {
     $('#InfoModal .modal-title').html(button.data('title'));
     $('#InfoModal .modal-body').addClass('hidden');
     $(button.data('content')).removeClass('hidden');
-}); 
+});
+
+$('#ForgotPasswordModal').on('hide.bs.modal', function() {
+    $('#ForgotPasswordModal .alert').addClass('hidden');
+    $('#ForgotPasswordModal form').removeClass('hidden');
+});
 
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {

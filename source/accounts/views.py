@@ -1,17 +1,26 @@
+import uuid
+
 from django.conf import settings
-from django.contrib.auth import login, authenticate, update_session_auth_hash, logout
+from django.contrib.auth import login, authenticate, update_session_auth_hash, logout, get_user_model
+from django.core.mail import send_mail
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.db import transaction
+from django.template.context import Context
+from django.template.loader import get_template
+from django.views.generic.edit import FormView
 from rest_framework.generics import CreateAPIView, UpdateAPIView, GenericAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from accounts.serializers import CreateAccountSerializer, ChangePasswordSerializer, ChangeEmailSerializer
-from accounts.serializers import LoginSerializer, UserSerializer
+from accounts.forms import PasswordResetForm
+from accounts.models import PasswordResetToken
+from . import serializers
 
 PREVIEW_MODE = getattr(settings, "PREVIEW_MODE", False)
 
 
 class CreateAccountView(CreateAPIView):
-    serializer_class = CreateAccountSerializer
+    serializer_class = serializers.CreateAccountSerializer
 
     def perform_create(self, serializer):
         user = serializer.save()
@@ -20,7 +29,7 @@ class CreateAccountView(CreateAPIView):
 
 
 class UpdateEmailView(UpdateAPIView):
-    serializer_class = ChangeEmailSerializer
+    serializer_class = serializers.ChangeEmailSerializer
     permission_classes = (IsAuthenticated,)
 
     def put(self, request, *args, **kwargs):
@@ -31,7 +40,7 @@ class UpdateEmailView(UpdateAPIView):
 
 
 class UpdatePasswordView(GenericAPIView):
-    serializer_class = ChangePasswordSerializer
+    serializer_class = serializers.ChangePasswordSerializer
     permission_classes = (IsAuthenticated,)
 
     def put(self, request, *args, **kwargs):
@@ -45,7 +54,7 @@ class UpdatePasswordView(GenericAPIView):
 
 
 class LoginView(GenericAPIView):
-    serializer_class = LoginSerializer
+    serializer_class = serializers.LoginSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -71,8 +80,58 @@ class LogoutView(GenericAPIView):
 
 
 class UserInfoView(RetrieveAPIView):
-    serializer_class = UserSerializer
+    serializer_class = serializers.UserSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_object(self):
         return self.request.user
+
+
+class LostPasswordView(GenericAPIView):
+    serializer_class = serializers.LostPasswordSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data['email']
+        user = get_user_model().objects.get(username=email)
+        token = PasswordResetToken.objects.create(
+            user=user,
+            token=str(uuid.uuid4())
+        )
+
+        body = get_template('emails/password_reset.txt').render(Context({
+            'username': email,
+            'url': request.build_absolute_uri(reverse('reset_password', args=(token.token,)))
+        }))
+
+        send_mail('Seedlot Selection Tool: Reset Password', body, 'donotreply@seedlotselectiontool.org', [email])
+
+        return Response()
+
+
+class PasswordResetView(FormView):
+    template_name = 'password_reset_form.html'
+    form_class = PasswordResetForm
+    success_url = reverse_lazy('reset_password_success')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['token'] = self.kwargs.get('token')
+        return context
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+
+        with transaction.atomic():
+            token = PasswordResetToken.objects.get(token=data['token'])
+            user = token.user
+
+            user.set_password(data['password'])
+            user.save()
+
+            token.used = True
+            token.save()
+
+        return super().form_valid(form)

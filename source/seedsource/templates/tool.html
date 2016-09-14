@@ -131,9 +131,31 @@
                 <div class="modal-body">
                     <div class="alert alert-danger hidden" role="alert">Invalid username or password.</div>
                     <form onsubmit="login(); return false;">
-                        <input type="email" id="LoginEmail" class="form-control" placeholder="Email address" required autofocus />
-                        <input type="password" id="LoginPassword" class="form-control" placeholder="Password" required />
+                        <input type="email" name="username" id="LoginEmail" class="form-control" placeholder="Email address" required autofocus />
+                        <input type="password" name="password" id="LoginPassword" class="form-control" placeholder="Password" required />
+                        <div class="pull-right"><a href="#" data-toggle="modal" data-dismiss="modal" data-target="#ForgotPasswordModal">Forgot your password?</a></div>
+                        <div style="clear: both;">&nbsp;</div>
                         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ForgotPasswordModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Reset Password</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger hidden" role="alert">No account with this email address exists. Please create a new account.</div>
+                    <div class="alert alert-success hidden" role="alert">An email has been sent with a link to reset your password. If you don't receive this email, please check your Spam folder.</div>
+                    <form onsubmit="resetPassword(); return false;">
+                        <input type="email" name="username" id="ResetEmail" class="form-control" placeholder="Email address" required autofocus />
+                        <div>&nbsp;</div>
+                        <button class="btn btn-primary btn-block" type="submit">Send reset link</button>
                     </form>
                 </div>
             </div>

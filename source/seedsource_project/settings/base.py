@@ -105,6 +105,8 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 GOOGLE_ANALYTICS_ID = CONFIG.get('ga_id')
 ENABLE_GOOGLE_ANALYTICS = bool(GOOGLE_ANALYTICS_ID)
 

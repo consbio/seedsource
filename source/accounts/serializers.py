@@ -50,3 +50,14 @@ class LoginSerializer(serializers.Serializer):
 
 class UserSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
+
+class LostPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        if not get_user_model().objects.filter(username__iexact=value).exists():
+            raise serializers.ValidationError(
+                'No account with this email address exists. Please create a new account.'
+            )
+        return value.lower()

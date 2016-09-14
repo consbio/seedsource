@@ -55,6 +55,12 @@ LOGGING = {
 
 STATIC_ROOT = '/var/www/static/'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = CONFIG.get('email_host')
+EMAIL_HOST_USER = CONFIG.get('email_user')
+EMAIL_HOST_PASSWORD = CONFIG.get('email_password')
+EMAIL_USE_TLS = True
+
 NC_SERVICE_DATA_ROOT = '/ncdjango/services/'
 NC_TEMPORARY_FILE_LOCATION = '/ncdjango/tmp/'
 
