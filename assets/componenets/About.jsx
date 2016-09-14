@@ -10,61 +10,78 @@ export default () => (
             represent current climates, or future climates based on selected climate change scenarios.
         </p>
         <div>&nbsp;</div>
-        <div className="aboutStep">
-            <img src="/static/sst/images/about_objective.gif" />
-            <h4>1. Select Objective</h4>
-            <p>
-                You can find seedlots for your planting site or planting sites for your seedlot
-            </p>
+        <div>
+            <div className="aboutStep">
+                <img src="/static/sst/images/about_objective.gif" />
+                <h4>1. Select Objective</h4>
+                <p>
+                    You can find seedlots for your planting site or planting sites for your seedlot
+                </p>
+            </div>
+            <div className="aboutStep">
+                <img src="/static/sst/images/about_location.gif" />
+                <h4>2. Select Location</h4>
+                <p>
+                    You can click on the map or enter coordinates to locate your seedlot or planting site
+                </p>
+            </div>
+            <div className="aboutStep">
+                <img src="/static/sst/images/about_climate.gif" />
+                <h4>3. Select Climate Scenarios</h4>
+                <p>
+                    You can select historical, current, or future climates for your seedlots of planting sites
+                </p>
+            </div>
+            <div className="aboutStep">
+                <img src="/static/sst/images/about_method.gif" />
+                <h4>4. Select Transfer Limit Method</h4>
+                <p>
+                    You can use an existing zone to calculate a transfer limit or enter your own custom limit
+                </p>
+            </div>
+            <div className="aboutStep">
+                <img src="/static/sst/images/about_species.gif" />
+                <h4>5. Select Species</h4>
+                <p>
+                    You can use species-specific or generic zones and transfer limits
+                </p>
+            </div>
+            <div className="aboutStep">
+                <img src="/static/sst/images/about_zone.gif" />
+                <h4>6. Select Zone</h4>
+                <p>
+                    If you use the zone method, you can select among the available zones for your location
+                </p>
+            </div>
+            <div className="aboutStep">
+                <img src="/static/sst/images/about_variables.gif" />
+                <h4>7. Select Climate Variables</h4>
+                <p>
+                    You can use a variety of climate variables to match your seedlot and planting site
+                </p>
+            </div>
+            <div className="aboutStep">
+                <img src="/static/sst/images/about_map.gif" />
+                <h4>8. Map your Results</h4>
+                <p>
+                    The map shows where to find appropritate seedlots of planting sites
+                </p>
+            </div>
         </div>
-        <div className="aboutStep">
-            <img src="/static/sst/images/about_location.gif" />
-            <h4>2. Select Location</h4>
-            <p>
-                You can click on the map or enter coordinates to locate your seedlot or planting site
-            </p>
+
+        <div>&nbsp;</div>
+
+        <h4>Acknowledgements</h4>
+        <p>
+            The Seedlot Selection Tool is funded by the <a href="http://www.fs.fed.us/" target="_blank">
+            U.S. Forest Service</a> and the <a href="http://www.climatehubs.oce.usda.gov/northwest" target="_blank">
+            USDA Northwest Climate Hub</a>. It is developed by <a href="http://consbio.org" target="_blank">
+            Conservation Biology Institute</a> in collaboration with the U.S. Forest Service
+            and <a href="http://oregonstate.edu" target="_blank">Oregon State University</a>.
+        </p>
+        <div style={{marginTop: "10px"}}>
+            <img src="/static/sst/images/nw_climate_hub_logo.png" align="left"  />
         </div>
-        <div className="aboutStep">
-            <img src="/static/sst/images/about_climate.gif" />
-            <h4>3. Select Climate Scenarios</h4>
-            <p>
-                You can select historical, current, or future climates for your seedlots of planting sites
-            </p>
-        </div>
-        <div className="aboutStep">
-            <img src="/static/sst/images/about_method.gif" />
-            <h4>4. Select Transfer Limit Method</h4>
-            <p>
-                You can use an existing zone to calculate a transfer limit or enter your own custom limit
-            </p>
-        </div>
-        <div className="aboutStep">
-            <img src="/static/sst/images/about_species.gif" />
-            <h4>5. Select Species</h4>
-            <p>
-                You can use species-specific or generic zones and transfer limits
-            </p>
-        </div>
-        <div className="aboutStep">
-            <img src="/static/sst/images/about_zone.gif" />
-            <h4>6. Select Zone</h4>
-            <p>
-                If you use the zone method, you can select among the available zones for your location
-            </p>
-        </div>
-        <div className="aboutStep">
-            <img src="/static/sst/images/about_variables.gif" />
-            <h4>7. Select Climate Variables</h4>
-            <p>
-                You can use a variety of climate variables to match your seedlot and planting site
-            </p>
-        </div>
-        <div className="aboutStep">
-            <img src="/static/sst/images/about_map.gif" />
-            <h4>8. Map your Results</h4>
-            <p>
-                The map shows where to find appropritate seedlots of planting sites
-            </p>
-        </div>
+        <div>&nbsp;</div>
     </div>
 )
