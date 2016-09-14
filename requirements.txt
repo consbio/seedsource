@@ -16,7 +16,7 @@ Jinja2==2.8
 kombu==3.0.35
 MarkupSafe==0.23
 mercantile
-git+https://github.com/consbio/ncdjango.git@geoprocessing
+git+https://github.com/consbio/ncdjango.git
 netCDF4
 numpy
 palettable==2.1.1
@@ -28,8 +28,8 @@ pytest-django==2.9.1
 python-dateutil==2.5.1
 python-mimeparse==1.5.1
 pytz==2016.3
-rasterio==0.32.0
-Shapely==1.5.13
+rasterio==0.36.0
+Shapely==1.5.17
 django-filter==0.13.0
 aiohttp==0.22.3
 geopy==1.11.0
