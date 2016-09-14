@@ -177,8 +177,9 @@ body {
     border-left: 2px solid #888;
 }
 
-.navbar-brand {
+.navbar-inverse .navbar-brand {
     font-size: 1.8em;
+    color: #FAFAFA;
 }
 
 .navbar-brand img {
@@ -223,7 +224,11 @@ body {
 
 .aboutStep img {
     float: left;
-    margin-right: 20px;
+    margin-right: 10px;
+}
+
+.aboutStep p {
+    margin-left: 64px;
 }
 
 .variableConfig {

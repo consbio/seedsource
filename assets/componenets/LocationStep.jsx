@@ -3,7 +3,7 @@ import ConfigurationStep from '../containers/ConfigurationStep'
 import PointChooser from '../containers/PointChooser'
 
 let getObjectiveLabel = objective => (
-    objective === 'seedlots' ? 'Select a planting site' : 'Select a seedlot location'
+    objective === 'seedlots' ? 'Select planting site location' : 'Select seedlot location'
 )
 
 class LocationStep extends React.Component {
