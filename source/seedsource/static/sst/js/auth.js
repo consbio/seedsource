@@ -122,6 +122,8 @@ function resetPassword() {
         email: email
     };
 
+    $('#ForgotPasswordModal button[type=submit]').prop('disabled', true);
+
     $.ajax({
         type: 'POST',
         url: '/accounts/lost-password/',
@@ -129,8 +131,16 @@ function resetPassword() {
     }).success(function() {
         $('#ForgotPasswordModal .alert-success').removeClass('hidden');
         $('#ForgotPasswordModal form').addClass('hidden');
-    }).error(function() {
+    }).error(function(err) {
+        if (err.responseJSON && err.responseJSON.email) {
+            $('#ForgotPasswordModal .alert-danger').html(err.responseJSON.email.join("<br />"));
+        }
+        else {
+            $('#ForgotPasswordModal .alert-danger').html('Sorry, there was an error.');
+        }
+
         $('#ForgotPasswordModal .alert-danger').removeClass('hidden');
+        $('#ForgotPasswordModal button').prop('disabled', false);
     });
 }
 
@@ -150,6 +160,7 @@ $('#InfoModal').on('show.bs.modal', function(event) {
 $('#ForgotPasswordModal').on('hide.bs.modal', function() {
     $('#ForgotPasswordModal .alert').addClass('hidden');
     $('#ForgotPasswordModal form').removeClass('hidden');
+    $('#ForgotPasswordModal button').prop('disabled', false);
 });
 
 $.ajaxSetup({

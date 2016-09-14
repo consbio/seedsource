@@ -137,6 +137,13 @@ CELERYBEAT_SCHEDULE = {
         'options': {
             'expires': 7200  # 2 hrs
         }
+    },
+    'cleanup_password_reset_tokens': {
+        'task': 'accounts.tasks.cleanup_password_reset_tokens',
+        'schedule': timedelta(hours=1),
+        'options': {
+            'expires': 7200  # 2 hrs
+        }
     }
 }
 
