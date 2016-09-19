@@ -3,7 +3,6 @@ import os
 import numpy
 from clover.geometry.bbox import BBox
 from ncdjango.geoprocessing.data import Raster
-from ncdjango.geoprocessing.workflow import Workflow
 
 from seedsource.tasks.generate_scores import GenerateScores
 

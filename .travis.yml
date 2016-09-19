@@ -1,23 +1,57 @@
+sudo: required
+
+dist: trusty
+
+services:
+  - postgresql
+
 language: python
 
-env:
-  - CPLUS_INCLUDE_PATH=/usr/include/gdal C_INCLUDE_PATH=/usr/include/gdal
-
-addons:
-  apt:
-    packages:
-      - libgdal1h
-      - gdal-bin
-      - libgdal-dev
-      - python-gdal
-      - libhdf5-serial-dev
-      - netcdf-bin
-      - libnetcdf-dev
 python:
   - "3.5"
 
-install:
-  - pip install -r other/requirements.txt
-  - pip install pytest-django
+env:
+  global:
+    - DJANGO_SETTINGS_MODULE=test.settings
+    - PYTHONPATH=$PYTHONPATH:$TRAVIS_BUILD_DIR:$TRAVIS_BUILD_DIR/source
+    - CPLUS_INCLUDE_PATH=/usr/include/gdal
+    - C_INCLUDE_PATH=/usr/include/gdal
 
-script: "py.test ."
+cache:
+  directories:
+    - $GDALINST
+    - ~/.cache/pip
+
+addons:
+  postgresql: "9.4"
+  apt:
+    packages:
+      - gdal-bin
+      - libproj-dev
+      - libhdf5-serial-dev
+      - libpng-dev
+      - libgdal-dev
+      - libatlas-dev
+      - libatlas-base-dev
+      - gfortran
+      - netcdf-bin
+      - libnetcdf-dev
+      - postgresql-9.4-postgis-2.1
+
+before_install:
+  - "pip install GDAL==1.10"
+  - "pip install rasterio"
+  - "pip install git+https://github.com/consbio/clover.git"
+  - "pip install --upgrade setuptools"
+
+install:
+  - "pip install -r requirements.txt"
+  - "pip install pytest-django"
+  - "pip install django-webpack-loader"
+
+before_script:
+  - psql -U postgres -c "create extension postgis"
+
+script:
+  - "echo $PYTHONPATH"
+  - "py.test ."
