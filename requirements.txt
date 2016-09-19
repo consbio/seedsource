@@ -18,7 +18,7 @@ pytest-django
 rasterio
 Shapely
 django-filter
-aiohttp
+aiohttp==1.0.1
 geopy
 raven
 WeasyPrint
