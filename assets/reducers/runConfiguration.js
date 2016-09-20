@@ -18,7 +18,7 @@ const defaultConfiguration = {
     point: null,
     region: 'west2',
     climate: null,
-    method: 'seedzone',
+    method: 'custom',
     center: 'point',
     unit: 'metric',
     zones: null,
