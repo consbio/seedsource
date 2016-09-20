@@ -16,16 +16,3 @@ interested in mapping present or future climates defined by temperature and prec
 
     setup/index
     code/index
-
-Acknowledgements
-----------------
-
-The Seedlot Selection Tool is funded by the `U.S. Forest Service <http://www.fs.fed.us/>`_ and the
-`USDA Northwest Climate Hub <http://www.climatehubs.oce.usda.gov/northwest>`_. It is developed by
-`Conservation Biology Institute <http://consbio.org>`_ in collaboration with the U.S. Forest Service and
-`Oregon State University <http://oregonstate.edu>`_.
-
-.. image:: images/cbi_logo.png
-    :target: http://consbio.org
-.. image:: images/nw_climate_hub_logo.png
-    :target: http://www.climatehubs.oce.usda.gov/northwest

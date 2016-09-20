@@ -70,18 +70,5 @@ export default () => (
         </div>
 
         <div>&nbsp;</div>
-
-        <h4>Acknowledgements</h4>
-        <p>
-            The Seedlot Selection Tool is funded by the <a href="http://www.fs.fed.us/" target="_blank">
-            U.S. Forest Service</a> and the <a href="http://www.climatehubs.oce.usda.gov/northwest" target="_blank">
-            USDA Northwest Climate Hub</a>. It is developed by <a href="http://consbio.org" target="_blank">
-            Conservation Biology Institute</a> in collaboration with the U.S. Forest Service
-            and <a href="http://oregonstate.edu" target="_blank">Oregon State University</a>.
-        </p>
-        <div style={{marginTop: "10px"}}>
-            <img src="/static/sst/images/nw_climate_hub_logo.png" align="left"  />
-        </div>
-        <div>&nbsp;</div>
     </div>
 )
