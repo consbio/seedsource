@@ -102,7 +102,7 @@ class Report(object):
         objective = self.configuration['objective']
         climates = self.configuration['climate']
 
-        if self.configuration['method'] == 'seedzone':
+        if self.configuration['method'] == 'seedzone' and elevation is not None:
             zone_uid = self.configuration['zones']['selected']
 
             try:

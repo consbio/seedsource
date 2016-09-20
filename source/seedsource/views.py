@@ -3,6 +3,7 @@ import json
 from django.contrib.gis.geos import Point
 from django.db.models import Q
 from django.http import HttpResponse
+from numpy.ma.core import is_masked
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.exceptions import ParseError
@@ -71,6 +72,9 @@ class TransferLimitViewset(viewsets.ReadOnlyModelViewSet):
                 raise ParseError()
 
             elevation = get_elevation_at_point(Point(x, y))
+
+            if elevation is None or is_masked(elevation):
+                return self.queryset.none()
 
             # Elevation bands are stored in feet
             return self.queryset.filter(

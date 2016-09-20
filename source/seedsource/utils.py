@@ -27,4 +27,7 @@ def get_elevation_at_point(point):
         if not y_increasing:
             cell_index[1] = data.shape[0] - cell_index[1] - 1
 
-        return data[cell_index[1]][cell_index[0]]
+        try:
+            return data[cell_index[1]][cell_index[0]]
+        except IndexError:
+            return None
