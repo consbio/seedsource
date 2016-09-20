@@ -26,9 +26,14 @@ export const requestPopupValue = variable => {
 }
 
 export const receivePopupValue = (variable, json) => {
+    let value = null
+    if (json.results.length) {
+        value = json.results[0].attributes['Pixel value']
+    }
+
     return {
         type: RECEIVE_POPUP_VALUE,
-        value: json.results[0].attributes['Pixel value'],
+        value: value,
         variable
     }
 }

@@ -22,7 +22,18 @@ export default store => resync(store, popupSelect, (state, io, dispatch) => {
         })
 
         io.get(url).then(response => response.json()).then(json => {
-            dispatch(receivePopupElevation(json.results[0].attributes['Pixel value']))
+            let results = json.results
+            let value = null
+
+            if (results.length) {
+                value = results[0].attributes['Pixel value']
+            }
+
+            if (isNaN(value)) {
+                value = null
+            }
+
+            dispatch(receivePopupElevation(value))
         })
     }
 })

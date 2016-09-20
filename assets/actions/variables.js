@@ -78,9 +78,14 @@ export const toggleVariable = variable => {
 }
 
 export const receiveValue = (variable, json) => {
+    let value = null
+    if (json.results.length) {
+        value = json.results[0].attributes['Pixel value']
+    }
+
     return {
         type: RECEIVE_VALUE,
-        value: json.results[0].attributes['Pixel value'],
+        value: value,
         variable,
     }
 }
