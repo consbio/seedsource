@@ -41,6 +41,14 @@ SPECIES_LABELS = {
     'pimo': 'Wester white pine'
 }
 
+YEAR_LABELS = {
+    '1961_1990': '1961-1990',
+    '1981_2010': '1981-2010',
+    '2025': '2011-2040',
+    '2055': '2041-2070',
+    '2085': '2071-2100'
+}
+
 RESULTS_RENDERER = StretchedRenderer([
     (0, Color(240, 59, 32)),
     (50, Color(254, 178, 76)),
@@ -56,15 +64,15 @@ class Report(object):
         self.opacity = opacity
 
     def get_year(self, climate):
-        return climate['time'].replace('_', '-')
+        return YEAR_LABELS[climate['time']]
 
     def get_model(self, climate):
         if climate['time'] in {'1961_1990', '1981_2010'}:
             return None
         else:
             return {
-                'rcp45': 'RCP 4.5',
-                'rcp85': 'RCP 8.5'
+                'rcp45': 'RCP4.5',
+                'rcp85': 'RCP8.5'
             }[climate['model']]
 
     def get_context_variables(self):
