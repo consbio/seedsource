@@ -9,4 +9,4 @@ https://seedlotselectiontool.org/sst/
 
 # Developer Documentation
 
-Documentation is availalbe [here](http://seedsource.readthedocs.io).
+Documentation is available [here](http://seedsource.readthedocs.io).
