@@ -1,3 +1,7 @@
+import datetime
+
+import pytz
+
 from seedsource_project.settings.base import *
 
 DEBUG = False
@@ -71,3 +75,4 @@ MIDDLEWARE_CLASSES += ('preview.middleware.PreviewAccessMiddleware',)
 
 PREVIEW_MODE = True
 PREVIEW_PASSWORD = 'sstearlyaccess'
+PREVIEW_EXPIRES = datetime.datetime(2016, 9, 23, tzinfo=pytz.timezone('US/Pacific'))

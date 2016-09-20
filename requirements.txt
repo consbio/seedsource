@@ -15,6 +15,7 @@ psycopg2
 pyproj
 pytest
 pytest-django
+pytz
 rasterio
 Shapely
 django-filter
