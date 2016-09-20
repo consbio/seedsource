@@ -4,7 +4,7 @@ import MethodButton from '../containers/MethodButton'
 import SpeciesChooser from '../containers/SpeciesChooser'
 import SeedZoneChooser from '../containers/SeedZoneChooser'
 
-const TransferStep = ({ number, active, method, center, onCenterChange }) => {
+const TransferStep = ({ number, active, objective, method, center, onCenterChange }) => {
     if (!active) {
         let label
 
@@ -28,7 +28,7 @@ const TransferStep = ({ number, active, method, center, onCenterChange }) => {
 
     let centerNode = null
 
-    if (method === 'seedzone') {
+    if (method === 'seedzone' && objective === 'sites') {
         centerNode = (
             <div>
                 <div>&nbsp;</div>
@@ -58,8 +58,8 @@ const TransferStep = ({ number, active, method, center, onCenterChange }) => {
     return (
         <ConfigurationStep title="Select transfer limit method" number={number} name="transfer" active={true}>
             <div className="btn-group" style={{display: 'inline-block'}}>
-                <MethodButton name="seedzone">Seed Zone</MethodButton>
                 <MethodButton name="custom">Custom</MethodButton>
+                <MethodButton name="seedzone">Zone</MethodButton>
             </div>
             {centerNode}
             <SpeciesChooser />
@@ -72,6 +72,7 @@ TransferStep.shouldRender = () => true
 
 TransferStep.propTypes = {
     active: PropTypes.bool.isRequired,
+    objective: PropTypes.string.isRequired,
     method: PropTypes.string.isRequired,
     center: PropTypes.string.isRequired,
     onCenterChange: PropTypes.func.isRequired

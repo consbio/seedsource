@@ -8,14 +8,14 @@ class ObjectiveStep extends React.Component {
 
         if (!active) {
             return (
-                <ConfigurationStep title="Choose an objective" number={number} name="objective" active={false}>
+                <ConfigurationStep title="Select objective" number={number} name="objective" active={false}>
                     <div>{objective === 'seedlots' ? 'Find seedlots' : 'Find planting sites'}</div>
                 </ConfigurationStep>
             )
         }
 
         return (
-            <ConfigurationStep title="Choose an objective" number={number} name="objective" active={true}>
+            <ConfigurationStep title="Select objective" number={number} name="objective" active={true}>
                 <div className="btn-group">
                     <ObjectiveButton name="seedlots">Find seedlots</ObjectiveButton>
                     <ObjectiveButton name="sites">Find planting sites</ObjectiveButton>

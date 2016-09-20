@@ -3,9 +3,9 @@ import TransferStep from '../componenets/TransferStep'
 import { selectCenter } from '../actions/variables'
 
 const mapStateToProps = ({ runConfiguration }) => {
-    let { method, center } = runConfiguration
+    let { objective, method, center } = runConfiguration
 
-    return {method, center}
+    return {objective, method, center}
 }
 
 const mapDispatchToProps = dispatch => {

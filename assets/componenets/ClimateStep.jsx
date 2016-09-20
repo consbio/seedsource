@@ -30,8 +30,8 @@ const ClimateStep = ({ climate, number, active, onChange }) => {
                     onChange('model', e.target.value, 'site')
                 }}
             >
-                <option value="rcp45">RCP 4.5</option>
-                <option value="rcp85">RCP 8.5</option>
+                <option value="rcp45">RCP4.5</option>
+                <option value="rcp85">RCP8.5</option>
             </select>
         )
     }
@@ -73,9 +73,9 @@ const ClimateStep = ({ climate, number, active, onChange }) => {
                 >
                     <option value="1961_1990">1961 - 1990</option>
                     <option value="1981_2010">1981 - 2010</option>
-                    <option value="2025">2025</option>
-                    <option value="2055">2055</option>
-                    <option value="2085">2085</option>
+                    <option value="2025">2011-2040</option>
+                    <option value="2055">2041-2070</option>
+                    <option value="2085">2071-2100</option>
                 </select>
                 { " " }
                 {modelSelect}

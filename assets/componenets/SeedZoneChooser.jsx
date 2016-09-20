@@ -47,7 +47,7 @@ const SeedZoneChooser = ({ method, pointIsValid, selected, zones, isFetchingZone
 
     return (
         <div>
-            <h4>Select a seed zone</h4>
+            <h4>Select zone</h4>
             {content}
         </div>
     )

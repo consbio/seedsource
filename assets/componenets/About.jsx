@@ -39,30 +39,30 @@ export default () => (
                     You can use an existing zone to calculate a transfer limit or enter your own custom limit
                 </p>
             </div>
-            <div className="aboutStep">
+            <div className="aboutStep subStep">
                 <img src="/static/sst/images/about_species.gif" />
-                <h4>5. Select Species</h4>
+                <h4>Select Species</h4>
                 <p>
                     You can use species-specific or generic zones and transfer limits
                 </p>
             </div>
-            <div className="aboutStep">
+            <div className="aboutStep subStep">
                 <img src="/static/sst/images/about_zone.gif" />
-                <h4>6. Select Zone</h4>
+                <h4>Select Zone</h4>
                 <p>
                     If you use the zone method, you can select among the available zones for your location
                 </p>
             </div>
             <div className="aboutStep">
                 <img src="/static/sst/images/about_variables.gif" />
-                <h4>7. Select Climate Variables</h4>
+                <h4>5. Select Climate Variables</h4>
                 <p>
                     You can use a variety of climate variables to match your seedlot and planting site
                 </p>
             </div>
             <div className="aboutStep">
                 <img src="/static/sst/images/about_map.gif" />
-                <h4>8. Map your Results</h4>
+                <h4>6. Map your Results</h4>
                 <p>
                     The map shows where to find appropritate seedlots of planting sites
                 </p>

@@ -6,7 +6,7 @@ import { variables } from '../config'
 const mapStateToProps = (state, { variable }) => {
     let { activeVariable, runConfiguration } = state
     let active = activeVariable === variable.name
-    let { unit, method, center } = runConfiguration
+    let { objective, unit, method, center } = runConfiguration
     let variableConfig = variables.find(item => item.name === variable.name)
     let { name, value, zoneCenter, transfer, avgTransfer, transferIsModified } = variable
     let { label, multiplier, units } = variableConfig
@@ -59,7 +59,7 @@ const mapStateToProps = (state, { variable }) => {
     value = convert(value)
     zoneCenter = convert(zoneCenter)
 
-    let centerValue = method === 'seedzone' && center === 'zone' ? zoneCenter : value
+    let centerValue = method === 'seedzone' && center === 'zone' && objective === 'sites' ? zoneCenter : value
 
     return {
         active,
