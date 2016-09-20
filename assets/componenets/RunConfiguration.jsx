@@ -5,8 +5,6 @@ import ObjectiveStep from '../containers/ObjectiveStep'
 import LocationStep from '../containers/LocationStep'
 import ClimateStep from '../containers/ClimateStep'
 import TransferStep from '../containers/TransferStep'
-import SpeciesStep from '../containers/SpeciesStep'
-import SeedZoneStep from '../containers/SeedZoneStep'
 import VariableStep from '../containers/VariableStep'
 import { collapsibleSteps } from '../config'
 
@@ -79,8 +77,6 @@ class RunConfiguration extends React.Component {
             {type: LocationStep, key: 'location'},
             {type: ClimateStep, key: 'climate'},
             {type: TransferStep, key: 'transfer'},
-            {type: SpeciesStep, key: 'species'},
-            {type: SeedZoneStep, key: 'seedzone'},
             {type: VariableStep, key: 'variables'}
         ]
 

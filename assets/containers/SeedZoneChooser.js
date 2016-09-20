@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { selectZone } from '../actions/zones'
-import SeedZoneStep from '../componenets/SeedZoneStep'
+import SeedZoneChooser from '../componenets/SeedZoneChooser'
 
 const mapStateToProps = ({ runConfiguration }) => {
     let { method, species, point, zones } = runConfiguration
@@ -26,8 +26,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-let container = connect(mapStateToProps, mapDispatchToProps)(SeedZoneStep)
-
-container.shouldRender = state => state.runConfiguration.method === 'seedzone'
-
-export default container
+export default connect(mapStateToProps, mapDispatchToProps)(SeedZoneChooser)

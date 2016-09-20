@@ -1,29 +1,14 @@
 import React, { PropTypes } from 'react'
-import ConfigurationStep from '../containers/ConfigurationStep'
 import { species as speciesList } from '../config'
 
-const SpeciesStep = ({ method, species, number, active, onSpeciesChange }) => {
+const SpeciesChooser = ({ method, species, onSpeciesChange }) => {
     if (method !== 'seedzone') {
         return null
     }
 
-    if (!active) {
-        let label = 'Generic'
-        let selected = speciesList.find(item => item.name === species)
-
-        if (selected !== undefined) {
-            label = selected.label
-        }
-
-        return (
-            <ConfigurationStep title="Select a species" number={number} name="species" active={false}>
-                <div>{label}</div>
-            </ConfigurationStep>
-        )
-    }
-
     return (
-        <ConfigurationStep title="Select a species" number={number} name="species" active={true}>
+        <div>
+            <h4>Select a species</h4>
             <select
                 className="form-control"
                 value={species}
@@ -38,15 +23,14 @@ const SpeciesStep = ({ method, species, number, active, onSpeciesChange }) => {
                     <option value={item.name} key={item.name}>{item.label}</option>
                 ))}
             </select>
-        </ConfigurationStep>
+        </div>
     )
 }
 
-SpeciesStep.propTypes = {
-    active: PropTypes.bool.isRequired,
+SpeciesChooser.propTypes = {
     method: PropTypes.string.isRequired,
     species: PropTypes.string.isRequired,
     onSpeciesChange: PropTypes.func.isRequired
 }
     
-export default SpeciesStep
+export default SpeciesChooser

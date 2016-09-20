@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react'
-import ConfigurationStep from '../containers/ConfigurationStep'
 
 const getZoneLabel = zone => {
     if (zone === undefined) {
@@ -15,26 +14,12 @@ const getZoneLabel = zone => {
     return label
 }
 
-const SeedZoneStep = ({ method, pointIsValid, selected, zones, number, active, isFetchingZones, onZoneChange }) => {
+const SeedZoneChooser = ({ method, pointIsValid, selected, zones, isFetchingZones, onZoneChange }) => {
     if (method !== 'seedzone') {
         return null
     }
 
     let noZoneLabel = pointIsValid ? 'No zones at this location...' : 'Select a location...'
-
-    if (!active) {
-        let label = noZoneLabel
-
-        if (selected) {
-            label = getZoneLabel(zones.find(item => item.id === selected))
-        }
-
-        return (
-            <ConfigurationStep title="Select a seed zone" number={number} name="seedzone" active={false}>
-                <div>{label}</div>
-            </ConfigurationStep>
-        )
-    }
 
     let content = (
         <select className="form-control" disabled>
@@ -61,14 +46,14 @@ const SeedZoneStep = ({ method, pointIsValid, selected, zones, number, active, i
     }
 
     return (
-        <ConfigurationStep title="Select a seed zone" number={number} name="seedzone" active={true}>
+        <div>
+            <h4>Select a seed zone</h4>
             {content}
-        </ConfigurationStep>
+        </div>
     )
 }
 
-SeedZoneStep.propTypes = {
-    active: PropTypes.bool.isRequired,
+SeedZoneChooser.propTypes = {
     selected: PropTypes.string,
     method: PropTypes.string.isRequired,
     zones: PropTypes.array.isRequired,
@@ -78,4 +63,4 @@ SeedZoneStep.propTypes = {
     onZoneChange: PropTypes.func.isRequired
 }
 
-export default SeedZoneStep
+export default SeedZoneChooser

@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react'
 import ConfigurationStep from '../containers/ConfigurationStep'
 import MethodButton from '../containers/MethodButton'
+import SpeciesChooser from '../containers/SpeciesChooser'
+import SeedZoneChooser from '../containers/SeedZoneChooser'
 
 const TransferStep = ({ number, active, method, center, onCenterChange }) => {
     if (!active) {
@@ -60,6 +62,8 @@ const TransferStep = ({ number, active, method, center, onCenterChange }) => {
                 <MethodButton name="custom">Custom</MethodButton>
             </div>
             {centerNode}
+            <SpeciesChooser />
+            <SeedZoneChooser />
         </ConfigurationStep>
     )
 }
