@@ -1,11 +1,10 @@
 import React, { PropTypes } from 'react'
-import SaveModal from '../containers/SaveModal'
-import SeedzoneButton from '../containers/SeedzoneButton'
 import ObjectiveStep from '../containers/ObjectiveStep'
 import LocationStep from '../containers/LocationStep'
 import ClimateStep from '../containers/ClimateStep'
 import TransferStep from '../containers/TransferStep'
 import VariableStep from '../containers/VariableStep'
+import RunStep from '../containers/RunStep'
 import { collapsibleSteps } from '../config'
 
 class RunConfiguration extends React.Component {
@@ -23,10 +22,7 @@ class RunConfiguration extends React.Component {
     }
 
     render() {
-        let {
-            state, objective, species, method, canRun, canSave, configuration, job, isLoggedIn, activeStep,
-            pdfIsFetching, onRun, onSave, onPDF
-        } = this.props
+        let { state, objective, method, job, activeStep } = this.props
         let overlay = null
 
         if (job.isRunning) {
@@ -59,25 +55,13 @@ class RunConfiguration extends React.Component {
             )
         }
 
-        let seedzoneButtonGroup = null
-        if (method === 'seedzone') {
-            seedzoneButtonGroup = (
-                <div>
-                    <strong>Seed zones: </strong>
-                    <div className="btn-group btn-group-sm" style={{display: 'inline-block'}}>
-                        <SeedzoneButton name="historic">Historic</SeedzoneButton>
-                        <SeedzoneButton name="new">New</SeedzoneButton>
-                    </div>
-                </div>
-            )
-        }
-
         let steps = [
             {type: ObjectiveStep, key: 'objective'},
             {type: LocationStep, key: 'location'},
             {type: ClimateStep, key: 'climate'},
             {type: TransferStep, key: 'transfer'},
-            {type: VariableStep, key: 'variables'}
+            {type: VariableStep, key: 'variables'},
+            {type: RunStep, key: 'run'}
         ]
 
         return (
@@ -94,46 +78,6 @@ class RunConfiguration extends React.Component {
                         />
                     )
                 })}
-
-                <div>
-                    <h4></h4>
-                    <button
-                        className="btn btn-lg btn-primary btn-block"
-                        disabled={!canRun}
-                        onClick={e => {
-                            onRun(configuration)
-                        }}
-                    >
-                        Run Tool
-                    </button>
-                </div>
-                <div>
-                    <h4></h4>
-                    <div>
-                        <button
-                            className="btn btn-default pull-left"
-                            disabled={!canSave}
-                            onClick={() => {
-                                onSave(isLoggedIn)
-                            }}
-                        >
-                            <span className="icon12 icon-save" aria-hidden="true"></span> Save Last Run
-                        </button>
-                        <button
-                            className="btn btn-default pull-right"
-                            disabled={!canSave || pdfIsFetching}
-                            onClick={e => {
-                                onPDF()
-                            }}
-                        >
-                            <span className="icon12 icon-file" aria-hidden="true"></span>
-                            {pdfIsFetching ? 'Please wait...' : 'Export PDF'}
-                        </button>
-                    </div>
-                    <div style={{clear: 'both'}}></div>
-                </div>
-
-                <SaveModal />
             </div>
         )
     }
@@ -143,19 +87,10 @@ RunConfiguration.propTypes = {
     activeStep: PropTypes.string.isRequired,
     state: PropTypes.object.isRequired,
     objective: PropTypes.string.isRequired,
-    species: PropTypes.string.isRequired,
     method: PropTypes.string.isRequired,
-    canRun: PropTypes.bool.isRequired,
-    canSave: PropTypes.bool.isRequired,
-    configuration: PropTypes.object.isRequired,
     job: PropTypes.object.isRequired,
-    isLoggedIn: PropTypes.bool.isRequired,
-    pdfIsFetching: PropTypes.bool.isRequired,
-    onRun: PropTypes.func.isRequired,
     onPoll: PropTypes.func.isRequired,
     onDone: PropTypes.func.isRequired,
-    onSave: PropTypes.func.isRequired,
-    onPDF: PropTypes.func.isRequired
 }
 
 export default RunConfiguration
