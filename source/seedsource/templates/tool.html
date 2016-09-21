@@ -61,26 +61,28 @@
                             Purpose
                         </a>
                     </li>
-                    <li>
-                        <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="Get Started" data-content="#GetStartedContent">
-                            Get Started
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="People" data-content="#PeopleContent">People</a>
-                    </li>
-                    <li>
-                        <a href="http://eepurl.com/cc1p1z" target="_blank">Newsletter</a>
-                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            Details
+                            Get Started
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="Instructions" data-content="#InstructionsContent">
+                                <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="Get Started" data-content="#GetStartedContent">
                                     Instructions
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            More Information
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="Background" data-content="#BackgroundContent">
+                                    Background
                                 </a>
                             </li>
                             <li>
@@ -93,14 +95,17 @@
                                     ClimateNA
                                 </a>
                             </li>
-                            <li>
-                                <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="Forest genetics and climate change" data-content="#ForestGeneticsContent">
-                                    Forest genetics and climate change
-                                </a>
-                            </li>
                             <li><a href="https://github.com/consbio/seedsource" target="_blank">Source Code</a></li>
-                            <li><a href="https://github.com/consbio/seedsource/issues" target="_blank">Report an Issue</a></li>
                         </ul>
+                    </li>
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="People" data-content="#PeopleContent">People</a>
+                    </li>
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="News & Updates" data-content="#NewsContent">News & Updates</a>
+                    </li>
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#InfoModal" data-title="Report an Issue" data-content="#ReportContent">Report an Issue</a>
                     </li>
                 </ul>
             </div>
@@ -257,36 +262,141 @@
                 </div>
                 <div class="modal-body" id="PurposeContent">
                     <p>
-                        The seedlot selection tool (SST) is a GIS mapping program designed to help forest managers
-                        match seedlots with planting sites based on climatic information. The tool can be used to map
-                        current climates, or future climates based on selected climate change scenarios. Although it
-                        is tailored for matching seedlots and planting sites, it can be used by anyone interested in
-                        mapping present or future climates defined by temperature and precipitation.
-                    </p>
-                    <p>
-                        Forest managers can use this tool to help choose seedlots that are appropriate for planting on
-                        a particular site, or planting sites that are appropriate for a particular seedlot. This can
-                        be done using current climate models (i.e., ignoring potential climate change) or by choosing
-                        a climate change model, emissions scenario, and future target year. Because of the uncertainty
-                        in climate change projections, the tool is really a planning and educational tool. It can be
-                        used to explore alternative future conditions, assess risk, and plan potential responses, but
-                        cannot tell the user exactly which seedlots will be optimally adapted to a particular planting
-                        site in the future. The tool allows the user to control many input parameters so the results
-                        are appropriate for the management practices, climate change assumptions, and risk tolerance of
-                        the user.
+                        The Seedlot Selection Tool (SST) is a GIS mapping program designed to help forest and
+                        restoration managers match seedlots with planting sites based on climatic information. The tool
+                        can be used to map current climates, or future climates based on selected climate change
+                        scenarios. Although it is tailored for matching seedlots and planting sites, it can be used by
+                        anyone interested in mapping recent-past, present, or future climates defined by variables
+                        related to temperature and water availability. Forest managers can use this tool to help choose
+                        seedlots that are appropriate for planting on a particular site, or planting sites that are
+                        appropriate for a particular seedlot. This can be done using recent-past climate information
+                        (i.e., ignoring observed or potential climate change) or by choosing a current or future time
+                        period and an emissions scenario. Because of the uncertainty in climate change projections,
+                        the tool is really a planning and educational tool. It can be used to explore alternative
+                        future conditions, assess risk, and plan potential responses, but cannot tell the user exactly
+                        which seedlots will be optimally adapted to a particular planting site in the future. The tool
+                        allows the user to control many input parameters so the results are appropriate for the
+                        management practices, climate change assumptions, and risk tolerance of the user.
                     </p>
                 </div>
                 <div class="modal-body" id="GetStartedContent">
                     Todo... <em>Just enough information needed to get started…and some tips.</em>
                 </div>
                 <div class="modal-body" id="PeopleContent">
-                    Todo... <em>People and their contact information, including sources of funding.</em>
+                    <p>
+                        The Seedlot Selection Tool is a collaboration between the US Forest Service, Oregon State
+                        University, and the Conservation Biology Institute.  Initial conceptualization and development
+                        was done by Glenn Howe at Oregon State University College of Forestry and Brad St.Clair at the
+                        USFS Pacific Northwest Research Station, with considerable input from Ron Beloin while he was
+                        working at Oregon State University. The Conservation Biology Institute was brought onboard to
+                        bring the project to fruition through their expertise in web site design and programming for
+                        spatial applications.  Personnel at the Conservation Biology Institute include Dominique
+                        Bachelet (project co-PI), Nikolas Stevenson-Molnar (tool developer), and Brendan Ward
+                        (project manager).
+                    </p>
+                    <p>
+                        Initial funding for the Seedlot Selection Tool came from the US Forest Service Washington
+                        Office.  Subsequent funding came from the USFS Pacific Northwest Research Station, Oregon State
+                        University, and the USDA Northwest Climate Hub.
+                    </p>
+                    <h4>Contact Information</h4>
+                    <p>
+                        Dr. Glenn Howe – Co-Prinicipal Investigator<br />
+                        Associate Professor, Department of Forest Ecosystems and Society<br />
+                        Oregon State University, Corvallis, Oregon, USA<br />
+                        <a href="mailto:glenn.howe@oregonstate.edu">glenn.howe@oregonstate.edu</a>
+                    </p>
+                    <p>
+                        Dr. Brad St.Clair – Co-Prinicipal Investigator<br />
+                        Research Geneticist, Pacific Northwest Research Station<br />
+                        USDA Forest Service, Corvallis, Oregon, USA<br />
+                        <a href="mailto:bstclair@fs.fed.us">bstclair@fs.fed.us</a>
+                    </p>
+                    <p>
+                        Dr. Dominique Bachelet – Co-Prinicipal Investigator<br />
+                        Senior Climate Change Scientist<br />
+                        Conservation Biology Institute, Corvallis, Oregon, USA<br />
+                        <a href="mailto:dominique@consbio.org">dominique@consbio.org</a>
+                    </p>
+                    <p>
+                        Nikolas Stevenson-Molnar – Tool Developer<br />
+                        Software Engineer<br />
+                        Conservation Biology Institute, Corvallis, Oregon, USA<br />
+                        <a href="mailto:nik.molnar@consbio.org">nik.molnar@consbio.org</a>
+                    </p>
+                    <p>
+                        Brendan Ward – Project Manager<br />
+                        Conservation Biologist/GIS Analyst/Software Engineer<br />
+                        Conservation Biology Institute, Corvallis, Oregon, USA<br />
+                        <a href="mailto:bcward@consbio.org">bcward@consbio.org</a>
+                    </p>
                 </div>
                 <div class="modal-body" id="InstructionsContent">
                     Todo... <em>Detailed instructions and a link to the instruction manual (PDF).</em>
                 </div>
+                <div class="modal-body" id="BackgroundContent">
+                    <p>
+                        Populations of forest trees and other native plants are genetically different from each other,
+                        and are adapted to different climatic conditions. Therefore, forest and restoration managers
+                        must match the climatic adaptability of their plant materials to the climatic conditions of
+                        their planting sites. Generally, local populations are optimally adapted to their local
+                        climates, or nearly so. As a result, it has generally been recommended that local seed sources
+                        be used for reforestation and restoration. Typically, this has been done using geographically
+                        defined zones (e.g., seed zones or breeding zones) or seed transfer rules that specify a
+                        geographic or climatic distance from which one may obtain seed for a planting location. These
+                        recommendations assume, however, that climates are stable over the long-term, an assumption
+                        that is unlikely given the evidence for climate change. Because populations are genetically
+                        adapted to their local climates, the health and productivity of both planted and native forests
+                        and other ecosystems will likely decline as climates change. Climate models are now available
+                        that can be used to define zones based on climate rather than geography, and to calculate
+                        climatically based seed transfer distances for specific planting sites. Once acceptable
+                        climatic transfer limits have been defined (i.e., using seed zones, breeding zones, or some
+                        other approach), forest and restoration managers can explore options for responding to concerns
+                        about climate change through the selection of alternative seed sources.
+                    </p>
+                </div>
                 <div class="modal-body" id="ApproachContent">
-                    Todo... <em>Detailed information on the methods used and caveats.</em>
+                    <p>
+                        The Seedlot Selection Tool maps the degree to which the climate across the landscape matches
+                        the climate centered at a location plus or minus a specified transfer limit for each climate
+                        variable.  The climate center at a location is defined by the recent historical, current, or
+                        future climates, as chosen by the user. The transfer limits are also set by the user. The user
+                        may set the transfer limit based on best available knowledge, or they may set the initial
+                        transfer limit based on characterization of the transfer limits corresponding to the seed zone
+                        or other zone in which the location falls (if zones are available for that location). Transfer
+                        limits may be adjusted to reflect the management practices and risk tolerance of the user.
+                        Agencies or organizations that are able to adjust management practices quickly (e.g., with
+                        early rotation ages) or are more willing to accept risk may choose a wider transfer limit than
+                        those that are risk-averse. The climate that is mapped shows the degree to which locations
+                        match the climate center with the degree of match indicated by dark orange for a higher match
+                        to light yellow for a lower match but still within the transfer limit.  Assuming that
+                        populations are locally adapted to the recent past or current climates, as chosen by the user,
+                        the match indicates the suitability of seedlots for the recent past, current, or future
+                        climates at the chosen planting site, or the suitability of past, current, or future planting
+                        sites for a seedlot from the chosen location.
+                    </p>
+                    <p>
+                        The choice of climate variables is up to the user. In general, genetic studies indicate that
+                        temperate plants are adapted to temperature, especially cold temperatures during the winter,
+                        and climate variables related to aridity, for example, precipitation or heat:moisture index.
+                        These studies, called genecology studies, relate trait variation among populations grown in a
+                        common garden to environmental variation at the source locations where the parents have been
+                        subject to natural selection. Additional information may be obtained from differences in growth
+                        and survival in long-term field tests (provenance and reciprocal-transplant studies) that move
+                        populations across large climatic gradients, although well-designed studies are rare for many
+                        plant species. Often the user must rely on generalizations from other species and practical
+                        experience. The reason for the option of using seed zones and breeding zones to set initial
+                        transfer limits in the SST is because managers have been using them for several decades now for
+                        many tree species, and are comfortable that they have prevented earlier problems with
+                        maladaptation that were evident before their use.
+                    </p>
+                    <p>
+                        Each climatic transfer limit restricts the area that is mapped as suitable.  When more than one
+                        climate variable is specified, the transfer limits are simply overlaid on one another resulting
+                        in increasingly restricted areas. We caution users from selecting too many climate variables,
+                        and to avoid selecting climate variables that may be highly correlated in the area of interest
+                        or climate variables that may be unimportant for adaptation of the species of interest.
+                    </p>
                 </div>
                 <div class="modal-body" id="ClimateNAContent">
                     <p>
@@ -497,8 +607,20 @@
                         Climatology, 34. pp. 623-642.
                     </p>
                 </div>
-                <div class="modal-body" id="ForestGeneticsContent">
-                    Todo... <em>Overview of genetic variation in forest trees, potential effects of climate change, and links to key papers.</em>
+                <div class="modal-body" id="NewsContent">
+                    <p>
+                        <a href="http://eepurl.com/cc1p1z" target="_blank">Sign up for our newsletter</a>
+                    </p>
+                </div>
+                <div class="modal-body" id="ReportContent">
+                    <p>
+                        Issues are used to track to-dos, bugs, feature requests, and more. As issues are created,
+                        they’ll appear here in a searchable and filterable list.  To get started, you should create an
+                        issue.
+                    </p>
+                    <p>
+                        <a href="https://github.com/consbio/seedsource/issues" target="_blank">Report an Issue</a>
+                    </p>
                 </div>
             </div>
         </div>

@@ -22,7 +22,7 @@ class SavedRuns extends React.Component {
         let { activeSave } = this.state
 
         if (!isLoggedIn) {
-            return <div>Please login to save and load runs.</div>
+            return <div>You may create an account to save and retrieve your runs. Click on the “Account” tab in the upper right.</div>
         }
 
         return (

@@ -5,7 +5,7 @@ export default () => (
         <h4>Planting Healthy Forests</h4>
         <img src="/static/sst/images/hands.jpg" className="aboutImage" />
         <p>
-            The seedlot selection tool (SST) is a GIS mapping program designed to help forest managers match seedlots
+            The Seedlot Selection Tool (SST) is a GIS mapping program designed to help forest managers match seedlots
             with planting sites based on climatic information. The climates of the planting sites can be chosen to
             represent current climates, or future climates based on selected climate change scenarios.
         </p>
@@ -36,7 +36,7 @@ export default () => (
                 <img src="/static/sst/images/about_method.gif" />
                 <h4>4. Select Transfer Limit Method</h4>
                 <p>
-                    You can use an existing zone to calculate a transfer limit or enter your own custom limit
+                    You can enter your own custom limit or use an existing zone to calculate a transfer limit
                 </p>
             </div>
             <div className="aboutStep subStep">
@@ -64,7 +64,7 @@ export default () => (
                 <img src="/static/sst/images/about_map.gif" />
                 <h4>6. Map your Results</h4>
                 <p>
-                    The map shows where to find appropritate seedlots of planting sites
+                    The map shows where to find appropriate seedlots or planting sites
                 </p>
             </div>
         </div>
