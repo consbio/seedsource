@@ -73,9 +73,9 @@ const ClimateStep = ({ climate, number, active, onChange }) => {
                 >
                     <option value="1961_1990">1961 - 1990</option>
                     <option value="1981_2010">1981 - 2010</option>
-                    <option value="2025">2011-2040</option>
-                    <option value="2055">2041-2070</option>
-                    <option value="2085">2071-2100</option>
+                    <option value="2025">2011 - 2040</option>
+                    <option value="2055">2041 - 2070</option>
+                    <option value="2085">2071 - 2100</option>
                 </select>
                 { " " }
                 {modelSelect}

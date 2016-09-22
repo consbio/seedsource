@@ -39,20 +39,6 @@ export default () => (
                     You can enter your own custom limit or use an existing zone to calculate a transfer limit
                 </p>
             </div>
-            <div className="aboutStep subStep">
-                <img src="/static/sst/images/about_species.gif" />
-                <h4>Select Species</h4>
-                <p>
-                    You can use species-specific or generic zones and transfer limits
-                </p>
-            </div>
-            <div className="aboutStep subStep">
-                <img src="/static/sst/images/about_zone.gif" />
-                <h4>Select Zone</h4>
-                <p>
-                    If you use the zone method, you can select among the available zones for your location
-                </p>
-            </div>
             <div className="aboutStep">
                 <img src="/static/sst/images/about_variables.gif" />
                 <h4>5. Select Climate Variables</h4>
