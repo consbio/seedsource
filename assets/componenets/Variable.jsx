@@ -35,7 +35,7 @@ class Variable extends React.Component {
         )
 
         if (zoneCenter === null) {
-            zoneCenter = '--'
+            zoneCenter = 'N/A'
         }
 
         if (editTransfer) {
