@@ -71,7 +71,7 @@ should be install fairly easily, though you may need to install a few developmen
 
 .. note::
 
-    It's recommended tthat you not use the root account to run your application or web server. Instead, use one account
+    It's recommended that you not use the root account to run your application or web server. Instead, use one account
     for nginx (if you install nginx through a package managet, this should be done automatically) and another account
     for the application itself (e.g., ``seedsource``). It's also recommended to create a Python `virtual environment
     <https://virtualenv.pypa.io/en/stable/>`_ as the application user and use it to install all Python dependencies and
