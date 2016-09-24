@@ -15,7 +15,12 @@ function loggedIn(userEmail) {
     SST.email = userEmail;
     SST.reduxStore.dispatch({'type': 'LOGIN'});
 
-    $('#EmailDisplay').html(userEmail);
+    var emailLabel = userEmail;
+    if (emailLabel.length > 16) {
+        emailLabel = emailLabel.substr(0, 13) + '...';
+    }
+
+    $('#EmailDisplay').html(emailLabel);
     $('#SignedInNav').removeClass('hidden');
     $('#SignedOutNav').addClass('hidden');
 }
