@@ -15,6 +15,20 @@ body {
     margin-bottom: 10px;
 }
 
+.modal-image {
+    border: 2px solid #000;
+}
+
+.modal-image.left {
+    float: left;
+    margin-right: 5px;
+}
+
+.modal-image.right {
+    float: right;
+    margin-left: 5px;
+}
+
 .form-inline {
     display: inline;
     width: auto;
