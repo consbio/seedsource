@@ -256,7 +256,7 @@ class MapImage(object):
                 if ALLOWED_HOSTS:
                     headers['Host'] = ALLOWED_HOSTS[0]
 
-            async with client.get(layer_url) as r:
+            async with client.get(layer_url, headers=headers) as r:
                 tile_im = Image.open(BytesIO(await r.read()))
                 im.paste(tile_im, ((tile.x - self.ul_tile.x) * 256, (tile.y - self.ul_tile.y) * 256))
 
