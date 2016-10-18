@@ -7,6 +7,10 @@ import { getServiceName, morph } from '../utils'
 const transferSelect = ({ runConfiguration }) => {
     let { method, point, zones, climate, variables } = runConfiguration
 
+    if (point) {
+        point = {x: point.x, y: point.y}
+    }
+
     return {
         method,
         point,
@@ -19,6 +23,11 @@ const transferSelect = ({ runConfiguration }) => {
 const valueSelect = ({ runConfiguration }) => {
     let { objective, point, climate, variables } = runConfiguration
 
+    if (point) {
+        point = {x: point.x, y: point.y}
+    }
+
+
     return {
         objective,
         point,
@@ -30,6 +39,10 @@ const valueSelect = ({ runConfiguration }) => {
 const popupSelect = ({ runConfiguration, popup }) => {
     let { objective, climate, variables } = runConfiguration
     let { point } = popup
+
+    if (point) {
+        point = {x: point.x, y: point.y}
+    }
 
     return {
         objective,

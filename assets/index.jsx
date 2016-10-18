@@ -9,6 +9,7 @@ import App from './componenets/App'
 import variables from './async/variables'
 import zones from './async/zones'
 import legends from './async/legends'
+import point from './async/point'
 import popup from './async/popup'
 
 export const store = createStore(reducers, applyMiddleware(thunkMiddleware));
@@ -26,4 +27,5 @@ render(
 variables(store)
 zones(store)
 legends(store)
+point(store)
 popup(store)

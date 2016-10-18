@@ -7,6 +7,10 @@ import { urlEncode } from '../io'
 const zoneSelect = ({ runConfiguration }) => {
     let { point, method, species } = runConfiguration
 
+    if (point) {
+        point = {x: point.x, y: point.y}
+    }
+
     return {point, method, species}
 }
 

@@ -8,13 +8,12 @@ let getObjectiveLabel = objective => (
 
 class LocationStep extends React.Component {
     render() {
-        let { objective, number, point, elevationAtPoint, active } = this.props
-        let elevation = null
+        let { objective, number, point, elevation, active } = this.props
 
-        if (elevationAtPoint !== null) {
+        if (elevation !== null) {
             elevation = (
                 <div>
-                    <div><strong>Elevation:</strong> {Math.round(elevationAtPoint)} ft</div>
+                    <div><strong>Elevation:</strong> {Math.round(elevation)} ft</div>
                 </div>
             )
         }
@@ -80,7 +79,7 @@ LocationStep.propTypes = {
     active: PropTypes.bool.isRequired,
     point: PropTypes.object,
     objective: PropTypes.string.isRequired,
-    elevationAtPoint: PropTypes.number,
+    elevation: PropTypes.number,
     number: PropTypes.number.isRequired
 }
 
