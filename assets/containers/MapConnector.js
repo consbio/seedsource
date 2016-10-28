@@ -399,7 +399,10 @@ class MapConnector extends React.Component {
                 this.popup.location.innerHTML = locationLabel
             }
 
-            let elevationLabel = elevation === null ? 'N/A' : Math.round(elevation / 0.3048) + ' ft'
+            let elevationLabel = 'N/A'
+            if (elevation !== null) {
+                elevationLabel = Math.round(elevation / 0.3048) + ' ft (' + Math.round(elevation) + ' m)'
+            }
             if (elevationLabel !== this.popup.elevationLabel.innerHTML) {
                 this.popup.elevationLabel.innerHTML = elevationLabel
             }
