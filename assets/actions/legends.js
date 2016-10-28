@@ -22,11 +22,11 @@ export const receiveResultsLegend = json => {
         legend: json.layers[0].legend.map(element => {
             switch (element.label) {
                 case '0':
-                    element.label = 'High'
+                    element.label = 'Low'
                     break
 
                 case '100':
-                    element.label = 'Low'
+                    element.label = 'High'
                     break
             }
 
