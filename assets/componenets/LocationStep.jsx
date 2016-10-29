@@ -79,7 +79,7 @@ LocationStep.propTypes = {
     active: PropTypes.bool.isRequired,
     point: PropTypes.object,
     objective: PropTypes.string.isRequired,
-    elevation: PropTypes.number,
+    elevation: PropTypes.object,
     number: PropTypes.number.isRequired
 }
 

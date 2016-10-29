@@ -32,7 +32,7 @@ const mapStateToProps = (state, { variable }) => {
 
     let convertTransfer = number => {
         if (number === null) {
-            number = 0
+            return '--'
         }
 
         number /= multiplier
