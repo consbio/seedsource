@@ -40,6 +40,30 @@ export const createPDF = () => {
 
         dispatch(requestPDF())
 
+        // Safari workaround
+        let supportsDownloadAttr = "download" in document.createElement("a")
+        if (!supportsDownloadAttr) {
+            let form = document.createElement('form')
+            form.method = 'POST'
+            form.action = '/sst/create-pdf/'
+
+            for (let key in data) {
+                let input = document.createElement('input')
+                input.type = 'hidden'
+                input.name = key
+                input.value = JSON.stringify(data[key])
+
+                form.appendChild(input)
+            }
+
+            form.submit()
+
+            // We don't know when the report is complete in this so wait a few seconds and dispatch the receive event
+            setTimeout(() => dispatch(receivePDF()), 5000)
+
+            return
+        }
+
         return post('/sst/create-pdf/', data).then(response => {
             let { status } = response
 

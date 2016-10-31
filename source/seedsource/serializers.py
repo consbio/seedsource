@@ -70,7 +70,7 @@ class TransferLimitSerializer(serializers.ModelSerializer):
 
 
 class GeneratePDFSerializer(serializers.Serializer):
-    configuration = serializers.DictField()
-    tile_layers = serializers.ListField(child=serializers.CharField())
+    configuration = serializers.JSONField()
+    tile_layers = serializers.JSONField()
     zoom = serializers.IntegerField()
     opacity = serializers.FloatField()
