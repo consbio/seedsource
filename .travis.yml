@@ -36,7 +36,7 @@ addons:
       - gfortran
       - netcdf-bin
       - libnetcdf-dev
-      - postgresql-9.4-postgis-2.1
+      - postgresql-9.4-postgis-2.2
 
 before_install:
   - "pip install GDAL==1.10"
