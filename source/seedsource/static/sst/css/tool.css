@@ -16,17 +16,18 @@ body {
 }
 
 .modal-image {
-    border: 2px solid #000;
+    border: 2px solid #AAA;
+    border-radius: 3px;
 }
 
 .modal-image.left {
     float: left;
-    margin-right: 5px;
+    margin-right: 10px;
 }
 
 .modal-image.right {
     float: right;
-    margin-left: 5px;
+    margin-left: 10px;
 }
 
 .form-inline {
@@ -209,6 +210,15 @@ body {
 .navbar-inverse .navbar-nav>li>a, .navbar-inverse .navbar-nav>li>a:focus {
     font-size: 1.1em;
     color: #CCC;
+}
+
+.logos {
+    text-align: center;
+    margin-left: -20px;
+}
+
+.logos img {
+    margin-left: 20px;
 }
 
 #Map {
