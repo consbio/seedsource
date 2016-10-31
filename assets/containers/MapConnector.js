@@ -5,7 +5,7 @@
 
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { setMapOpacity, setBasemap, setZoom, toggleVisibility } from '../actions/map'
+import { setMapOpacity, setBasemap, setZoom, toggleVisibility, setMapCenter } from '../actions/map'
 import { setPopupLocation, resetPopupLocation } from '../actions/popup'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
@@ -37,6 +37,13 @@ class MapConnector extends React.Component {
             center: [44.68, -109.36],
             minZoom: 3,
             maxZoom: 13
+        })
+
+        this.map.on('moveend', event => {
+            setTimeout(function() {
+                this.props.onMapMove(this.map.getCenter())
+            }.bind(this), 1)
+
         })
 
         this.map.zoomControl.setPosition('topright')
@@ -442,10 +449,18 @@ class MapConnector extends React.Component {
         }
     }
 
+    updateMapCenter(center) {
+        let mapCenter = this.map.getCenter()
+
+        if (center[0] != mapCenter.lat || center[1] != mapCenter.lng) {
+            this.map.setView(center)
+        }
+    }
+
     render() {
         let {
             activeVariable, objective, point, climate, opacity, job, showResults, legends, popup, unit, method, zone,
-            geometry
+            geometry, center
         } = this.props
         let { serviceId } = job
 
@@ -459,6 +474,7 @@ class MapConnector extends React.Component {
         this.updateLegends(legends, activeVariable, serviceId, unit)
         this.updateZoneLayer(method, zone, geometry)
         this.updatePopup(popup, unit)
+        this.updateMapCenter(center)
 
         return null
     }
@@ -471,19 +487,20 @@ MapConnector.propTypes = {
     onMapClick: PropTypes.func.isRequired,
     onPopupLocation: PropTypes.func.isRequired,
     onPopupClose: PropTypes.func.isRequired,
-    onToggleVisibility: PropTypes.func.isRequired
+    onToggleVisibility: PropTypes.func.isRequired,
+    onMapMove: PropTypes.func.isRequired
 }
 
 const mapStatetoProps = state => {
     let { runConfiguration, activeVariable, map, job, legends, popup } = state
-    let { opacity, showResults } = map
+    let { opacity, showResults, center } = map
     let { objective, point, climate, unit, method, zones } = runConfiguration
     let { geometry } = zones
     let zone = zones.selected
 
     return {
         activeVariable, objective, point, climate, opacity, job, showResults, legends, popup, unit, method, geometry,
-        zone
+        zone, center
     }
 }
 
@@ -516,6 +533,10 @@ const mapDispatchToProps = dispatch => {
 
         onToggleVisibility: () => {
             dispatch(toggleVisibility())
+        },
+
+        onMapMove: center => {
+            dispatch(setMapCenter([center.lat, center.lng]))
         }
     }
 }

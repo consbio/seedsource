@@ -2,6 +2,7 @@ import {
     SET_POPUP_LOCATION, RESET_POPUP_LOCATION, REQUEST_POPUP_VALUE, RECEIVE_POPUP_VALUE, RECEIVE_POPUP_ELEVATION
 } from '../actions/popup'
 import { REMOVE_VARIABLE, ADD_VARIABLE } from '../actions/variables'
+import { LOAD_CONFIGURATION } from '../actions/saves'
 import { morph } from '../utils'
 
 const defaultState = {
@@ -56,6 +57,9 @@ export default (state = defaultState, action) => {
 
         case RECEIVE_POPUP_ELEVATION:
             return morph(state, {elevation: action.elevation})
+
+        case LOAD_CONFIGURATION:
+            return defaultState
 
         default:
             return state
