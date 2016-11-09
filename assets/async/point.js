@@ -1,6 +1,7 @@
 import resync from '../resync'
 import { setElevation } from '../actions/point'
 import { urlEncode } from '../io'
+import { findClosestRegion } from '../utils'
 
 const pointSelect = ({ runConfiguration }) => {
     let { point } = runConfiguration
@@ -19,7 +20,9 @@ export default store => {
         dispatch(setElevation(null))
 
         if (pointIsValid) {
-            let url = '/arcgis/rest/services/west2_dem/MapServer/identify/?' + urlEncode({
+            let region = findClosestRegion(point.x, point.y)
+
+            let url = '/arcgis/rest/services/' + region.name + '_dem/MapServer/identify/?' + urlEncode({
                 f: 'json',
                 tolerance: '2',
                 imageDisplay: '1600,1031,96',

@@ -1,6 +1,7 @@
 import resync from '../resync'
 import { urlEncode } from '../io'
 import { receivePopupElevation } from '../actions/popup'
+import { findClosestRegion } from '../utils'
 
 const popupSelect = ({ popup }) => {
     let { point } = popup
@@ -12,7 +13,9 @@ export default store => resync(store, popupSelect, (state, io, dispatch) => {
     let { point } = state
 
     if (point !== null) {
-        let url = '/arcgis/rest/services/west2_dem/MapServer/identify/?' + urlEncode({
+        let region = findClosestRegion(point.x, point.y)
+
+        let url = '/arcgis/rest/services/' + region.name + '_dem/MapServer/identify/?' + urlEncode({
             f: 'json',
             tolerance: '2',
             imageDisplay: '1600,1031,96',

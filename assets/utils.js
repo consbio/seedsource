@@ -1,3 +1,8 @@
+import { regions } from './config'
+
+/* A shortcut for Object.assign({}, obj, props) */
+export const morph = (obj, props = {}) => Object.assign({}, obj, props)
+
 export const getServiceName = (variable, objective, climate) => {
     let serviceName = 'west2_'
 
@@ -26,5 +31,17 @@ export const getCookies = () => {
     return cookies
 }
 
-/* A shortcut for Object.assign({}, obj, props) */
-export const morph = (obj, props = {}) => Object.assign({}, obj, props)
+export const findClosestRegion = (lon, lat) => {
+    let distance = (point) => {
+        return Math.sqrt(Math.pow(lon - point[0], 2) + Math.pow(lat - point[1], 2))
+    }
+
+    let sortedRegions = regions.sort((a, b) => distance(a.center) - distance(b.center))
+    let match = sortedRegions.find(region => {
+        let bounds = region.bounds
+
+        return lon > bounds[0] && lon < bounds[2] && lat > bounds[1] && lat < bounds[3]
+    })
+
+    return match !== undefined ? match : sortedRegions[0]
+}
