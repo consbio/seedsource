@@ -22,7 +22,6 @@ INSTALLED_APPS = (
     'ncdjango',
     'rest_framework',
     'tastypie',
-    'djcelery',
     'webpack_loader',
 
     'seedsource',

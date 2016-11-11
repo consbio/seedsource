@@ -11,7 +11,7 @@ ALLOWED_HOSTS = ['seedlotselectiontool.org']
 BROKER_URL = 'amqp://{}:{}@localhost:5672'.format(
         CONFIG.get('amqp_username', ''), CONFIG.get('amqp_password', '')
 )
-CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+CELERY_RESULT_BACKEND = 'django-db'
 
 NC_GEOPROCESSING_JOBS_QUEUE = 'gp'
 

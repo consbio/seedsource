@@ -1,11 +1,11 @@
-amqp==1.4.9
-celery
+amqp==2.1.1
+celery==4.0.0
 git+https://github.com/consbio/clover.git
 Django==1.8.16
 django-celery
-djangorestframework==3.5.2
+djangorestframework==3.5.3
 Fiona
-kombu==3.0.37  # Not ready for kombu 4 yet... breaks celery
+kombu==4.0.0
 mercantile
 ncdjango==0.4.2
 netCDF4
@@ -19,7 +19,8 @@ pytz
 rasterio
 Shapely
 django-filter==0.15.3
-aiohttp==1.0.5
+aiohttp==1.1.2
 geopy
 raven==5.31.0
 WeasyPrint
+django-celery-results==1.0.1
