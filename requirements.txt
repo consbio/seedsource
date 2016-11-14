@@ -13,13 +13,13 @@ numpy==1.11.2
 Pillow==3.4.2
 psycopg2
 pyproj
-pytest
+pytest==3.0.4
 pytest-django
 pytz
 rasterio
 Shapely
 django-filter==0.15.3
-aiohttp==1.1.2
+aiohttp==1.1.4
 geopy
 raven==5.31.0
 WeasyPrint
