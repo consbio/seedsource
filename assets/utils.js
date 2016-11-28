@@ -32,11 +32,25 @@ export const getCookies = () => {
 }
 
 export const findClosestRegion = (lon, lat) => {
-    let distance = (point) => {
-        return Math.sqrt(Math.pow(lon - point[0], 2) + Math.pow(lat - point[1], 2))
+    if (lon === null || lat === null) {
+        return regions[0]
     }
 
-    let sortedRegions = regions.sort((a, b) => distance(a.center) - distance(b.center))
+    let toMercator = point => {
+        let r = 6378137.0  // Earth radius
+        let x =  r * (point[0] * (Math.PI / 180))
+        let y = r * Math.log(Math.tan((Math.PI * 0.25) + (0.5 * (point[1] * (Math.PI / 180)))))
+
+        return [x, y]
+    }
+
+    let point = toMercator([lon, lat])
+
+    let distance = p => {
+        return Math.sqrt(Math.pow(point[0] - p[0], 2) + Math.pow(point[1] - p[1], 2))
+    }
+
+    let sortedRegions = regions.sort((a, b) => distance(toMercator(a.center)) - distance(toMercator(b.center)))
     let match = sortedRegions.find(region => {
         let bounds = region.bounds
 
