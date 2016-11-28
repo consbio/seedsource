@@ -4,7 +4,7 @@ git+https://github.com/consbio/clover.git
 Django==1.8.16
 django-celery
 djangorestframework==3.5.3
-Fiona
+Fiona==1.7.1
 kombu==4.0.0
 mercantile
 ncdjango==0.4.2
@@ -14,13 +14,13 @@ Pillow==3.4.2
 psycopg2
 pyproj
 pytest==3.0.4
-pytest-django
+pytest-django==3.1.2
 pytz
 rasterio
 Shapely
-django-filter==0.15.3
-aiohttp==1.1.4
+django-filter==1.0.1
+aiohttp==1.1.6
 geopy
-raven==5.31.0
-WeasyPrint
+raven==5.32.0
+WeasyPrint==0.32  # WeasyPrint 0.33 causes font issue on OS X
 django-celery-results==1.0.1
