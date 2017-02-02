@@ -12,7 +12,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from seedsource.models import TransferLimit, SeedZone, RunConfiguration
+from seedsource.models import TransferLimit, SeedZone, RunConfiguration, Region
 from seedsource.report import Report
 from seedsource.serializers import RunConfigurationSerializer, SeedZoneSerializer, GeneratePDFSerializer
 from seedsource.serializers import TransferLimitSerializer
@@ -96,3 +96,23 @@ class GeneratePDFView(GenericAPIView):
         response['Content-disposition'] = 'attachment; filename=report.pdf'
 
         return response
+
+
+class RegionFromPoint(GenericAPIView):
+    queryset = Region.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        result = {'name': None}
+        if not self.request.query_params.get('point'):
+            return Response(result)
+        else:
+            try:
+                x, y = [float(x) for x in self.request.query_params['point'].split(',')]
+            except ValueError:
+                raise ParseError()
+
+            point = Point(x, y)
+            regions = self.queryset.filter(polygons__intersects=point)
+            distances = [point.distance(r.polygons.centroid) for r in regions]
+            result['name'] = regions[distances.index(min(distances))].name
+            return Response(result)
