@@ -113,6 +113,7 @@ class RegionFromPoint(GenericAPIView):
 
             point = Point(x, y)
             regions = self.queryset.filter(polygons__intersects=point)
-            distances = [point.distance(r.polygons.centroid) for r in regions]
-            result['name'] = regions[distances.index(min(distances))].name
+            if len(regions):
+                distances = [point.distance(r.polygons.centroid) for r in regions]
+                result['name'] = regions[distances.index(min(distances))].name
             return Response(result)
