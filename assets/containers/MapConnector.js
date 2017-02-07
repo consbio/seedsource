@@ -143,9 +143,9 @@ class MapConnector extends React.Component {
         }
     }
 
-    updateVariableLayer(variable, objective, climate) {
+    updateVariableLayer(variable, objective, climate, region) {
         if (variable !== null) {
-            let layerUrl = '/tiles/' + getServiceName(variable, objective, climate) + '/{z}/{x}/{y}.png'
+            let layerUrl = '/tiles/' + getServiceName(variable, objective, climate, region) + '/{z}/{x}/{y}.png'
 
             if (this.variableLayer === null) {
                 this.variableLayer = L.tileLayer(layerUrl, {zIndex: 1, opacity: 1}).addTo(this.map)
@@ -460,12 +460,12 @@ class MapConnector extends React.Component {
     render() {
         let {
             activeVariable, objective, point, climate, opacity, job, showResults, legends, popup, unit, method, zone,
-            geometry, center
+            geometry, center, region
         } = this.props
         let { serviceId } = job
 
         this.updatePointMarker(point)
-        this.updateVariableLayer(activeVariable, objective, climate)
+        this.updateVariableLayer(activeVariable, objective, climate, region)
         this.updateResultsLayer(serviceId, showResults)
         this.updateBoundaryLayer(serviceId, showResults)
         this.updateOpacity(opacity, serviceId, activeVariable)
@@ -494,13 +494,13 @@ MapConnector.propTypes = {
 const mapStatetoProps = state => {
     let { runConfiguration, activeVariable, map, job, legends, popup } = state
     let { opacity, showResults, center } = map
-    let { objective, point, climate, unit, method, zones } = runConfiguration
+    let { objective, point, climate, unit, method, zones, region } = runConfiguration
     let { geometry } = zones
     let zone = zones.selected
 
     return {
         activeVariable, objective, point, climate, opacity, job, showResults, legends, popup, unit, method, geometry,
-        zone, center
+        zone, center, region
     }
 }
 

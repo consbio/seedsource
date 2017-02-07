@@ -26,8 +26,9 @@ export default store => {
     resync(store, variableLegendSelect, ({ activeVariable, objective }, io, dispatch) => {
         if (activeVariable !== null) {
             dispatch(requestVariableLegend())
+            let {climate, region} = store.getState().runConfiguration
+            let serviceName = getServiceName(activeVariable, objective, climate, region)
 
-            let serviceName = getServiceName(activeVariable, objective, store.getState().runConfiguration.climate)
             let url = '/arcgis/rest/services/' + serviceName + '/MapServer/legend'
 
             return io.get(url).then(response => response.json()).then(json => dispatch(receiveVariableLegend(json)))

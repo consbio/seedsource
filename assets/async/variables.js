@@ -55,7 +55,7 @@ const popupSelect = ({ runConfiguration, popup }) => {
 const fetchValues = (store, state, io, dispatch, previousState) => {
     let { objective, point } = state
     let pointIsValid = point !== null && point.x && point.y
-    let { variables, climate } = store.getState().runConfiguration
+    let { variables, climate, region } = store.getState().runConfiguration
 
     if (!pointIsValid) {
         return
@@ -70,7 +70,7 @@ const fetchValues = (store, state, io, dispatch, previousState) => {
     }
 
     let requests = variables.map(item => {
-        let serviceName = getServiceName(item.name, objective, climate)
+        let serviceName = getServiceName(item.name, objective, climate, region)
         let url = '/arcgis/rest/services/' + serviceName + '/MapServer/identify/?' + urlEncode({
             f: 'json',
             tolerance: 2,
