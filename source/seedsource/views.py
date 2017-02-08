@@ -8,14 +8,14 @@ from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.exceptions import ParseError
 from rest_framework.filters import DjangoFilterBackend
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from seedsource.models import TransferLimit, SeedZone, RunConfiguration, Region
 from seedsource.report import Report
 from seedsource.serializers import RunConfigurationSerializer, SeedZoneSerializer, GeneratePDFSerializer
-from seedsource.serializers import TransferLimitSerializer
+from seedsource.serializers import TransferLimitSerializer, RegionSerializer
 from seedsource.utils import get_elevation_at_point
 
 
@@ -98,13 +98,13 @@ class GeneratePDFView(GenericAPIView):
         return response
 
 
-class RegionFromPoint(GenericAPIView):
+class RegionsFromPoint(ListAPIView):
     queryset = Region.objects.all()
+    serializer_class = RegionSerializer
 
-    def get(self, request, *args, **kwargs):
-        result = {'name': None}
+    def get_queryset(self):
         if not self.request.query_params.get('point'):
-            return Response(result)
+            return self.queryset
         else:
             try:
                 x, y = [float(x) for x in self.request.query_params['point'].split(',')]
@@ -113,7 +113,4 @@ class RegionFromPoint(GenericAPIView):
 
             point = Point(x, y)
             regions = self.queryset.filter(polygons__intersects=point)
-            if len(regions):
-                distances = [point.distance(r.polygons.centroid) for r in regions]
-                result['name'] = regions[distances.index(min(distances))].name
-            return Response(result)
+            return sorted(list(regions), key=lambda r: point.distance(r.polygons.centroid))
