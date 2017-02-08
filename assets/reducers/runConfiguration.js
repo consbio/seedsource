@@ -10,7 +10,7 @@ import { LOAD_CONFIGURATION, RESET_CONFIGURATION } from '../actions/saves'
 import { FINISH_JOB } from '../actions/job'
 import { SELECT_STEP } from '../actions/step'
 import { REQUEST_PDF, RECEIVE_PDF, FAIL_PDF } from '../actions/pdf'
-import { SELECT_REGION_METHOD, SELECT_REGION } from '../actions/region'
+import { SELECT_REGION_METHOD, SELECT_REGION, SELECT_NO_REGION, RECEIVE_REGIONS } from '../actions/region'
 import { morph } from '../utils'
 
 const defaultConfiguration = {
@@ -18,6 +18,7 @@ const defaultConfiguration = {
     species: 'generic',
     point: defaultPoint,
     region: 'west2',
+    validRegions: [],
     climate: null,
     method: 'custom',
     center: 'point',
@@ -61,13 +62,19 @@ export default (state = defaultConfiguration, action) => {
                 state = morph(state, {regionMethod: action.method})
 
                 if (action.method === 'auto') {
-                //    state.region = findClosestRegion(state.point.x, state.point.y).name
+                    state.region = state.validRegions[0]
                 }
 
                 return state
 
             case SELECT_REGION:
                 return morph(state, {region: action.region})
+
+            case SELECT_NO_REGION:
+                return morph(state, {validRegions: [], region: ''})
+
+            case RECEIVE_REGIONS:
+                return morph(state, {validRegions: action.regions})
 
             case RESET_CONFIGURATION:
                 return defaultConfiguration

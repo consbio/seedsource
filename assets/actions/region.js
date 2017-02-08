@@ -1,8 +1,9 @@
 export const SELECT_REGION_METHOD = 'SELECT_REGION_METHOD'
 export const SELECT_REGION = 'SELECT_REGION'
-export const REQUEST_REGION = 'REQUEST_REGION'
-export const RECEIVE_REGION = 'RECEIVE_REGION'
-export const FAIL_REGION = 'FAIL_REGION'
+export const SELECT_NO_REGION = 'SELECT_NO_REGION'
+export const REQUEST_REGIONS = 'REQUEST_REGIONS'
+export const RECEIVE_REGIONS = 'RECEIVE_REGIONS'
+export const FAIL_REGIONS = 'FAIL_REGIONS'
 
 export const selectRegionMethod = method => {
     return {
@@ -18,21 +19,27 @@ export const selectRegion = region => {
     }
 }
 
-export const requestRegion = () => {
+export const selectNoRegion = () => {
     return {
-        type: REQUEST_REGION
+        type: SELECT_NO_REGION
     }
 }
 
-export const receiveRegion = region => {
+export const requestRegions = () => {
     return {
-        type: RECEIVE_REGION,
-        region
+        type: REQUEST_REGIONS
     }
 }
 
-export const failRegion = () => {
+export const receiveRegions = regions => {
     return {
-        type: FAIL_REGION
+        type: RECEIVE_REGIONS,
+        regions
+    }
+}
+
+export const failRegions = () => {
+    return {
+        type: FAIL_REGIONS
     }
 }
