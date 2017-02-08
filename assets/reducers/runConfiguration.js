@@ -11,7 +11,7 @@ import { FINISH_JOB } from '../actions/job'
 import { SELECT_STEP } from '../actions/step'
 import { REQUEST_PDF, RECEIVE_PDF, FAIL_PDF } from '../actions/pdf'
 import { SELECT_REGION_METHOD, SELECT_REGION } from '../actions/region'
-import { morph, findClosestRegion } from '../utils'
+import { morph } from '../utils'
 
 const defaultConfiguration = {
     objective: 'seedlots',
@@ -40,7 +40,7 @@ export default (state = defaultConfiguration, action) => {
                 state = morph(state, {point: point(state.point, action)})
 
                 if (action.type !== SET_ELEVATION && state.regionMethod === 'auto') {
-                    state.region = findClosestRegion(state.point.x, state.point.y).name
+                    //state.region = findClosestRegion(state.point.x, state.point.y).name
                 }
 
                 return state
@@ -61,7 +61,7 @@ export default (state = defaultConfiguration, action) => {
                 state = morph(state, {regionMethod: action.method})
 
                 if (action.method === 'auto') {
-                    state.region = findClosestRegion(state.point.x, state.point.y).name
+                //    state.region = findClosestRegion(state.point.x, state.point.y).name
                 }
 
                 return state

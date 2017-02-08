@@ -1,28 +1,18 @@
 import resync from '../resync'
 import { setElevation } from '../actions/point'
 import { urlEncode } from '../io'
-import { findClosestRegion } from '../utils'
-
-const pointSelect = ({ runConfiguration }) => {
-    let { point } = runConfiguration
-
-    if (point) {
-        point = {x: point.x, y: point.y}
-    }
-
-    return {point}
-}
+import { pointSelect } from '../utils'
 
 export default store => {
     resync(store, pointSelect, ({ point }, io, dispatch) => {
         let pointIsValid = point !== null && point.x && point.y
+        let { region } = store.getState().runConfiguration
 
         dispatch(setElevation(null))
 
-        if (pointIsValid) {
-            let region = findClosestRegion(point.x, point.y)
+        if (pointIsValid && region !== null) {
 
-            let url = '/arcgis/rest/services/' + region.name + '_dem/MapServer/identify/?' + urlEncode({
+            let url = '/arcgis/rest/services/' + region + '_dem/MapServer/identify/?' + urlEncode({
                 f: 'json',
                 tolerance: '2',
                 imageDisplay: '1600,1031,96',
