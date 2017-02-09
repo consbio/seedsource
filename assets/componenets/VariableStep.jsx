@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react'
 import ConfigurationStep from '../containers/ConfigurationStep'
 import UnitButton from '../containers/UnitButton'
 import Variables from '../containers/Variables'
-import RegionChooser from '../containers/RegionChooser'
 
 const VariableStep = ({ number, active, variables }) => {
     if (!active) {
@@ -30,10 +29,6 @@ const VariableStep = ({ number, active, variables }) => {
             </div>
 
             <Variables edit={true} />
-
-            <div>&nbsp;</div>
-
-            <RegionChooser />
         </ConfigurationStep>
     )
 }

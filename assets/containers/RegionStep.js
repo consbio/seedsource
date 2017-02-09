@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import RegionChooser from '../componenets/RegionChooser'
+import RegionStep from '../componenets/RegionStep'
 import { selectRegion } from '../actions/region'
 
 const mapStateToProps = state => {
@@ -16,4 +16,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegionChooser)
+export default connect(mapStateToProps, mapDispatchToProps)(RegionStep)

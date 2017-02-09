@@ -557,3 +557,18 @@ pre.error-debug-info {
     display: inline-block;
     background-size: 18px 18px;
 }
+
+.thumbnail {
+    margin-bottom: 0;
+    padding: 0;
+    border: 5px solid #ddd;
+}
+
+.thumbnail-label {
+    text-align: center;
+}
+
+.thumbnail-disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+}

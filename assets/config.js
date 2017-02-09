@@ -292,12 +292,14 @@ export const regions = [
     {
         name: 'ak2',
         label: 'Alaska',
+        //img: ''
         //bounds: [-179.13348, 48.30819, -101.35847, 71.34986],
         //center: [-140.245975, 59.829025]
     },
     {
         name: 'west2',
-        label: 'Western US',
+        label: 'West US',
+        //img: ''
         //bounds: [-139.867, 20.6207, -95.1751, 60.0874],
         //center: [-115.4106, 41.8457]
     }
