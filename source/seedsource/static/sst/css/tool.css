@@ -564,11 +564,23 @@ pre.error-debug-info {
     border: 5px solid #ddd;
 }
 
+.thumbnail.img {
+    cursor: inherit;
+}
+
 .thumbnail-label {
     text-align: center;
+    margin: 0;
 }
 
 .thumbnail-disabled {
     cursor: not-allowed;
-    pointer-events: none;
+}
+
+a.thumbnail-disabled:hover, a.thumbnail-disabled:focus {
+    border-color: #ddd;
+}
+
+a.thumbnail-disabled.active:hover, a.thumbnail-disabled.active:focus {
+    border-color: #337ab7;
 }
