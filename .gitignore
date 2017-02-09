@@ -1,3 +1,4 @@
+.idea/
 .vagrant/
 source/seedsource_project/settings.py
 source/db.sqlite3
@@ -8,3 +9,4 @@ node_modules/
 webpack-stats.json
 build/
 docs/_*/
+materials/
