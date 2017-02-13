@@ -25,18 +25,20 @@ const RegionStep = ({ number, active, region, regionMethod, onChange }) => {
     } else {
         return (
             <ConfigurationStep title="Select region" number={number} name="region" active={true}>
-                <strong>Region:</strong>
-                <select
-                    className="form-control form-inline"
-                    value={region}
-                    onChange={e => {
-                    e.preventDefault()
-                    onChange(e.target.value)
-                }}>
-                    {regions.map(r => (
-                        <option value={r.name} key={r.name} >{r.label}</option>
-                    ))}
-                </select>
+                <div style={{marginBottom:'3px'}}>
+                    <strong>Region:</strong>
+                    <select
+                        className="form-control form-inline"
+                        value={region}
+                        onChange={e => {
+                        e.preventDefault()
+                        onChange(e.target.value)
+                    }}>
+                        {regions.map(r => (
+                            <option value={r.name} key={r.name} >{r.label}</option>
+                        ))}
+                    </select>
+                </div>
                 {buttons}
             </ConfigurationStep>
         )
