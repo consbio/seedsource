@@ -1,5 +1,5 @@
 import resync from '../resync'
-import { selectRegion, selectNoRegion, requestRegions, receiveRegions } from '../actions/region'
+import { selectRegion, requestRegions, receiveRegions } from '../actions/region'
 import { urlEncode } from '../io'
 import { pointSelect } from '../utils'
 
@@ -27,8 +27,6 @@ export default store => {
                     if (regionMethod === 'auto') {
                         dispatch(selectRegion(region))
                     }
-                } else {
-                    dispatch(selectNoRegion())
                 }
             })
         }

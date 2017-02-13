@@ -3,43 +3,44 @@ import ConfigurationStep from '../containers/ConfigurationStep'
 import RegionButton from '../containers/RegionButton'
 import { regions } from '../config'
 
-const RegionStep = ({ number, active, region, regionMethod, validRegions, onThumb }) => {
+const RegionStep = ({ number, active, region, regionMethod, onChange }) => {
 
-    let canClick = regionMethod !== 'auto'
-
-    let thumbnailButtons = regions.map(r => (
-        <div className="col-xs-3 col-md-3" key={r.name}>
-            <a href="#"
-               className={
-                   "thumbnail "
-                   + (!canClick ? "thumbnail-disabled " : "")
-                   + (r.name === region ? "active" : "")
-               }
-               onClick={e => {
-                   e.preventDefault()
-                   if (canClick) {
-                       onThumb(r.name)
-                   }}}>
-                <img src={r.img} />
-            </a>
-            <p className="thumbnail-label">{r.label}</p>
+    let buttons = (
+        <div>
+            <div className="btn-group-sm btn-group">
+                <RegionButton name="auto">Automatic</RegionButton>
+                <RegionButton name="custom">Custom</RegionButton>
+            </div>
         </div>
-    ))
-
-    return (
-        <ConfigurationStep title="Select region" number={number} name="region" active={true}>
-            <div>
-                <strong>Select Mode: </strong>
-                <div className="btn-group-sm btn-group" style={{display: 'inline-block'}}>
-                    <RegionButton name="auto">Automatic</RegionButton>
-                    <RegionButton name="custom">Custom</RegionButton>
-                </div>
-            </div>
-            <div className="row">
-                {thumbnailButtons}
-            </div>
-        </ConfigurationStep>
     )
+
+    if (regionMethod === 'auto') {
+        let regionLabel = regions.find(r => r.name == region).label
+        return (
+            <ConfigurationStep title="Select region" number={number} name="region" active={true}>
+                <strong>Region:</strong> {regionLabel}
+                {buttons}
+            </ConfigurationStep>
+        )
+    } else {
+        return (
+            <ConfigurationStep title="Select region" number={number} name="region" active={true}>
+                <strong>Region:</strong>
+                <select
+                    className="form-control form-inline"
+                    value={region}
+                    onChange={e => {
+                    e.preventDefault()
+                    onChange(e.target.value)
+                }}>
+                    {regions.map(r => (
+                        <option value={r.name} key={r.name} >{r.label}</option>
+                    ))}
+                </select>
+                {buttons}
+            </ConfigurationStep>
+        )
+    }
 }
 
 RegionStep.propTypes = {
@@ -47,7 +48,6 @@ RegionStep.propTypes = {
     active: PropTypes.bool.isRequired,
     region: PropTypes.string.isRequired,
     regionMethod: PropTypes.string.isRequired,
-    validRegions: PropTypes.array.isRequired
 }
 
 RegionStep.shouldRender = () => true

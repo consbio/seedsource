@@ -3,14 +3,14 @@ import RegionStep from '../componenets/RegionStep'
 import { selectRegion } from '../actions/region'
 
 const mapStateToProps = state => {
-    let { region, regionMethod, validRegions } = state.runConfiguration
+    let { region, regionMethod } = state.runConfiguration
 
-    return { region, regionMethod, validRegions }
+    return { region, regionMethod }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onThumb: region => {
+        onChange: region => {
             dispatch(selectRegion(region))
         }
     }
