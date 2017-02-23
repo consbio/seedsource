@@ -14,7 +14,6 @@ export default store => resync(store, popupSelect, (state, io, dispatch, previou
     let { point } = state
     let pointIsValid = point !== null && point.x && point.y
 
-
     if (pointIsValid) {
         // Update regions from this point
         let regionUrl = '/sst/regions/?' + urlEncode({
@@ -57,7 +56,6 @@ export default store => resync(store, popupSelect, (state, io, dispatch, previou
                     })
 
                 io.get(url).then(response => response.json()).then(json => {
-                    // Set elevation value
                     let results = json.results
                     let value = null
 
