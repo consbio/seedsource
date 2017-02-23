@@ -1,6 +1,6 @@
 import resync from '../resync'
 import { requestTransfer, receiveTransfer, requestValue, receiveValue } from '../actions/variables'
-import { requestPopupValue, receivePopupValue } from '../actions/popup'
+//import { requestPopupValue, receivePopupValue } from '../actions/popup'
 import { urlEncode } from '../io'
 import { getServiceName, morph } from '../utils'
 
@@ -52,14 +52,16 @@ const popupSelect = ({ runConfiguration, popup }) => {
     }
 }
 
-const fetchValues = (store, state, io, dispatch, previousState) => {
+export const fetchValues = (store, state, io, dispatch, previousState) => {
     let { objective, point } = state
     let pointIsValid = point !== null && point.x && point.y
-    let { variables, climate, region } = store.getState().runConfiguration
+    let { variables, climate, validRegions } = store.getState().runConfiguration
 
-    if (!pointIsValid) {
+    if (!(pointIsValid && validRegions.length)) {
         return
     }
+
+    let region = validRegions[0]
 
     // If only variables have changed, then not all variables need to be refreshed
     let variablesOnly = (
@@ -144,14 +146,14 @@ export default store => {
     })
 
     // Values at point (for popup)
-    resync(store, popupSelect, (state, io, dispatch, previousState) => {
-        let requests = fetchValues(store, state, io, dispatch, previousState)
-
-        if (requests) {
-            requests.forEach(request => {
-                dispatch(requestPopupValue(request.item.name))
-                request.promise.then(json => dispatch(receivePopupValue(request.item.name, json)))
-            })
-        }
-    })
+    //resync(store, popupSelect, (state, io, dispatch, previousState) => {
+    //    let requests = fetchValues(store, state, io, dispatch, previousState)
+//
+    //    if (requests) {
+    //        requests.forEach(request => {
+    //            dispatch(requestPopupValue(request.item.name))
+    //            request.promise.then(json => dispatch(receivePopupValue(request.item.name, json)))
+    //        })
+    //    }
+    //})
 }
