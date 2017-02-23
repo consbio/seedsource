@@ -1,6 +1,6 @@
 import resync from '../resync'
 import { requestTransfer, receiveTransfer, requestValue, receiveValue } from '../actions/variables'
-//import { requestPopupValue, receivePopupValue } from '../actions/popup'
+import { requestPopupValue, receivePopupValue } from '../actions/popup'
 import { urlEncode } from '../io'
 import { getServiceName, morph } from '../utils'
 
@@ -61,6 +61,7 @@ export const fetchValues = (store, state, io, dispatch, previousState) => {
         return
     }
 
+    // Always take the closest region for point data
     let region = validRegions[0]
 
     // If only variables have changed, then not all variables need to be refreshed
@@ -146,14 +147,22 @@ export default store => {
     })
 
     // Values at point (for popup)
-    //resync(store, popupSelect, (state, io, dispatch, previousState) => {
-    //    let requests = fetchValues(store, state, io, dispatch, previousState)
-//
-    //    if (requests) {
-    //        requests.forEach(request => {
-    //            dispatch(requestPopupValue(request.item.name))
-    //            request.promise.then(json => dispatch(receivePopupValue(request.item.name, json)))
-    //        })
-    //    }
-    //})
+    resync(store, popupSelect, (state, io, dispatch, previousState) => {
+
+        if (previousState !== undefined) {
+            let {variables: current} = state
+            let {variables: old} = previousState
+
+            // Only need to refresh if the variables have changed
+            if (JSON.stringify(current) !== JSON.stringify(old)) {
+                let requests = fetchValues(store, state, io, dispatch, previousState)
+                if (requests) {
+                    requests.forEach(request => {
+                        dispatch(requestPopupValue(request.item.name))
+                        request.promise.then(json => dispatch(receivePopupValue(request.item.name, json)))
+                    })
+                }
+            }
+        }
+    })
 }
