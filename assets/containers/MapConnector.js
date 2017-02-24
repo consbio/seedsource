@@ -9,7 +9,7 @@ import { setMapOpacity, setBasemap, setZoom, toggleVisibility, setMapCenter } fr
 import { setPopupLocation, resetPopupLocation } from '../actions/popup'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
-import { variables, timeLabels } from '../config'
+import { variables, timeLabels, regions } from '../config'
 import { get, urlEncode } from '../io'
 
 class MapConnector extends React.Component {
@@ -25,6 +25,7 @@ class MapConnector extends React.Component {
         this.currentZone = null
         this.opacityControl = null
         this.visibilityButton = null
+        this.boundaryName = null
         this.boundaryData = null
         this.boundaryLayers = null
         this.popup = null
@@ -119,11 +120,6 @@ class MapConnector extends React.Component {
         this.map.on('zoomend', () => {
             this.props.onZoomChange(this.map.getZoom())
         })
-
-        // Load boundary data
-        get('/static/sst/geometry/west2_boundary.json')
-            .then(result => result.json())
-            .then(json => {this.boundaryData = json})
     }
 
     updatePointMarker(point) {
@@ -177,24 +173,45 @@ class MapConnector extends React.Component {
         }
     }
 
-    updateBoundaryLayer(serviceId, showResults) {
-        if (serviceId !== null && showResults && this.boundaryData !== null) {
-            if (this.boundaryLayers === null) {
-                this.boundaryLayers = this.boundaryData.features.map(feature => (
-                    L.geoJson(feature, {
-                        style: {
-                            color: '#006',
-                            opacity: .7,
-                            weight: 2,
-                            fill: false
-                        }
-                    }).addTo(this.map)
-                ))
+    addBoundaryToMap() {
+        this.boundaryLayers = this.boundaryData.features.map(feature => (
+            L.geoJson(feature, {
+                style: {
+                    color: '#006',
+                    opacity: .7,
+                    weight: 2,
+                    fill: false
+                }
+            }).addTo(this.map)
+        ))
+    }
+
+    updateBoundaryLayer(region) {
+
+        if (region !== this.boundaryName) {
+            this.boundaryName = region
+
+            // Remove existing layer from viewer
+            if (this.boundaryLayers !== null) {
+                this.boundaryLayers.forEach(layer => this.map.removeLayer(layer))
+                this.boundaryLayers = null
             }
-        }
-        else if (this.boundaryLayers !== null) {
-            this.boundaryLayers.forEach(layer => this.map.removeLayer(layer))
-            this.boundaryLayers = null
+
+            // If the region's boundaryData hasn't been loaded: load, store in config, and render
+            if (regions.find(r => r.name === this.boundaryName).boundaryData === null) {
+                let boundaryUrl = regions.find(r => r.name === region).boundaryUrl
+                get(boundaryUrl)
+                    .then(result => result.json())
+                    .then(json => {
+                        this.boundaryData = json
+                        regions.find(r => r.name === region).boundaryData = json
+                        this.addBoundaryToMap()
+                    })
+            } else {
+                // Load from config
+                this.boundaryData = regions.find(r => r.name === region).boundaryData
+                this.addBoundaryToMap()
+            }
         }
     }
 
@@ -467,7 +484,7 @@ class MapConnector extends React.Component {
         this.updatePointMarker(point)
         this.updateVariableLayer(activeVariable, objective, climate, region)
         this.updateResultsLayer(serviceId, showResults)
-        this.updateBoundaryLayer(serviceId, showResults)
+        this.updateBoundaryLayer(region)
         this.updateOpacity(opacity, serviceId, activeVariable)
         this.updateVisibilityButton(serviceId, showResults)
         this.updateTimeOverlay(activeVariable, objective, climate)

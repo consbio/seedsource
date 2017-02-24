@@ -292,11 +292,13 @@ export const regions = [
     {
         name: 'ak2',
         label: 'Alaska',
-        boundaryUrl: '/static/sst/geometry/ak2_boundary.json'
+        boundaryUrl: '/static/sst/geometry/ak2_boundary.json',
+        boundaryData: null
     },
     {
         name: 'west2',
         label: 'Western US',
-        boundaryUrl: '/static/sst/geometry/west2_boundary.json'
+        boundaryUrl: '/static/sst/geometry/west2_boundary.json',
+        boundaryData: null
     }
 ]
