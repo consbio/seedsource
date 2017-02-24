@@ -6,8 +6,8 @@ import { pointSelect } from '../utils'
 export default store => {
     resync(store, pointSelect, ({ point }, io, dispatch) => {
         let pointIsValid = point !== null && point.x && point.y
-        let { region } = store.getState().runConfiguration
-
+        let { validRegions } = store.getState().runConfiguration
+        let region = validRegions[0]
         dispatch(setElevation(null))
 
         if (pointIsValid && region !== null) {
