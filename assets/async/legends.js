@@ -5,12 +5,13 @@ import {
 import { getServiceName } from '../utils'
 
 const variableLegendSelect = ({ activeVariable, runConfiguration }) => {
-    let { objective, climate } = runConfiguration
+    let { objective, climate, region } = runConfiguration
 
     return {
         activeVariable,
         objective,
-        climate: objective === 'seedlots' ? climate.site : climate.seedlot
+        climate: objective === 'seedlots' ? climate.site : climate.seedlot,
+        region
     }
 }
 
@@ -23,10 +24,10 @@ const resultsLegendSelect = ({ job, legends }) => {
 
 export default store => {
     // Variable legend
-    resync(store, variableLegendSelect, ({ activeVariable, objective }, io, dispatch) => {
+    resync(store, variableLegendSelect, ({ activeVariable, objective, region }, io, dispatch) => {
         if (activeVariable !== null) {
             dispatch(requestVariableLegend())
-            let {climate, region} = store.getState().runConfiguration
+            let { climate } = store.getState().runConfiguration
             let serviceName = getServiceName(activeVariable, objective, climate, region)
 
             let url = '/arcgis/rest/services/' + serviceName + '/MapServer/legend'
