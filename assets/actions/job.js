@@ -30,7 +30,7 @@ export const requestJob = configuration => {
 
 export const createJob = configuration => {
     return dispatch => {
-        let { variables, objective, climate } = configuration
+        let { variables, objective, climate, region } = configuration
 
         let inputs = {
             variables: variables.map(item => {
@@ -44,7 +44,7 @@ export const createJob = configuration => {
                     year = selectedClimate.model + '_' + selectedClimate.time
                 }
 
-                return 'service://west2_' + year + 'Y_' + item.name + ':' + item.name
+                return 'service://' + region + '_' + year + 'Y_' + item.name + ':' + item.name
             }),
             limits: variables.map(item => {
                 return {min: item.value - item.transfer, max: item.value + item.transfer}
