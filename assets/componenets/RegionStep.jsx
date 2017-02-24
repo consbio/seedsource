@@ -13,9 +13,8 @@ const RegionStep = ({ number, active, region, regionMethod, onChange }) => {
             </div>
         </div>
     )
-
     if (regionMethod === 'auto') {
-        let regionLabel = regions.find(r => r.name == region).label
+        let regionLabel = region !== '' ? regions.find(r => r.name == region).label : 'N/A'
         return (
             <ConfigurationStep title="Select region" number={number} name="region" active={true}>
                 <strong>Region:</strong> {regionLabel}
@@ -29,7 +28,7 @@ const RegionStep = ({ number, active, region, regionMethod, onChange }) => {
                     <strong>Region:</strong>
                     <select
                         className="form-control form-inline"
-                        value={region}
+                        value={region ? region : regions[0].name}
                         onChange={e => {
                         e.preventDefault()
                         onChange(e.target.value)

@@ -186,16 +186,19 @@ class MapConnector extends React.Component {
         ))
     }
 
-    updateBoundaryLayer(region) {
+    removeBoundaryFromMap() {
+        if (this.boundaryLayers !== null) {
+            this.boundaryLayers.forEach(layer => this.map.removeLayer(layer))
+            this.boundaryLayers = null
+        }
+    }
 
-        if (region !== this.boundaryName) {
+    updateBoundaryLayer(region) {
+        if (region !== '' && region !== this.boundaryName) {
             this.boundaryName = region
 
             // Remove existing layer from viewer
-            if (this.boundaryLayers !== null) {
-                this.boundaryLayers.forEach(layer => this.map.removeLayer(layer))
-                this.boundaryLayers = null
-            }
+            this.removeBoundaryFromMap()
 
             // If the region's boundaryData hasn't been loaded: load, store in config, and render
             if (regions.find(r => r.name === this.boundaryName).boundaryData === null) {
@@ -212,6 +215,9 @@ class MapConnector extends React.Component {
                 this.boundaryData = regions.find(r => r.name === region).boundaryData
                 this.addBoundaryToMap()
             }
+        } else if (region === '') {
+            this.boundaryName = null
+            this.removeBoundaryFromMap()
         }
     }
 

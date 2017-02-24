@@ -24,20 +24,22 @@ export default store => resync(store, popupSelect, (state, io, dispatch, previou
 
         io.get(regionUrl).then(response => response.json()).then(json => {
             let results = json.results
-            if (results.length) {
-                let region = results[0].name
-                let validRegions = results.map((a) => {
-                    return a.name
-                })
+            let { regionMethod } = store.getState().runConfiguration
+            let validRegions = results.map((a) => {
+                return a.name
+            })
 
-                dispatch(receiveRegions(validRegions))  // always update which regions are valid
+            dispatch(receiveRegions(validRegions))  // always update which regions are valid
+            let region = ''
 
-                let { regionMethod } = store.getState().runConfiguration
-
-                if (regionMethod === 'auto') {
-                    dispatch(selectRegion(region))
-                }
+            if (validRegions.length) {
+                region = validRegions[0]
             }
+
+            if (regionMethod === 'auto') {
+                dispatch(selectRegion(region))
+            }
+
         }).then(() => {
 
             // Set values from point location and nearest valid region
