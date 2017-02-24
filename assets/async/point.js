@@ -7,10 +7,13 @@ export default store => {
     resync(store, pointSelect, ({ point }, io, dispatch) => {
         let pointIsValid = point !== null && point.x && point.y
         let { validRegions } = store.getState().runConfiguration
+        if (!validRegions.length) {
+            return
+        }
         let region = validRegions[0]
         dispatch(setElevation(null))
 
-        if (pointIsValid && region !== null) {
+        if (pointIsValid) {
 
             let url = '/arcgis/rest/services/' + region + '_dem/MapServer/identify/?' + urlEncode({
                 f: 'json',
