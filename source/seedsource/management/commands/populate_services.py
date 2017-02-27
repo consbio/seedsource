@@ -36,10 +36,10 @@ class Command(BaseCommand):
             var_names = ds.variables.keys()
             lat = 'lat' if 'lat' in var_names else 'latitude'
             lon = 'lon' if 'lon' in var_names else 'longitude'
-            l = ds.variables[lon][:].min()
-            b = ds.variables[lat][:].min()
-            r = ds.variables[lon][:].max()
-            t = ds.variables[lat][:].max()
+            l = float(ds.variables[lon][:].min())
+            b = float(ds.variables[lat][:].min())
+            r = float(ds.variables[lon][:].max())
+            t = float(ds.variables[lat][:].max())
             extent = BBox((l, b, r, t), projection=pyproj.Proj(WGS84))
 
         # Generate DEM service
