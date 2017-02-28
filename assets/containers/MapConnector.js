@@ -29,6 +29,7 @@ class MapConnector extends React.Component {
         this.boundaryData = null
         this.boundaryLayers = null
         this.popup = null
+        this.mapIsMoving = false
     }
 
     // Initial map setup
@@ -41,10 +42,16 @@ class MapConnector extends React.Component {
         })
 
         this.map.on('moveend', event => {
+            this.mapIsMoving = false
             setTimeout(function() {
-                this.props.onMapMove(this.map.getCenter())
+                if (!this.mapIsMoving) {
+                    this.props.onMapMove(this.map.getCenter())
+                }
             }.bind(this), 1)
+        })
 
+        this.map.on('movestart', event => {
+            this.mapIsMoving = true;
         })
 
         this.map.zoomControl.setPosition('topright')
