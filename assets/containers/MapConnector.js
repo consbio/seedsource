@@ -35,8 +35,8 @@ class MapConnector extends React.Component {
     // Initial map setup
     componentWillMount() {
         this.map = L.map('Map', {
-            zoom: 5,
-            center: [44.68, -109.36],
+            zoom: 4,
+            center: [55.0, -112.0],
             minZoom: 3,
             maxZoom: 13
         })

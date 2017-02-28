@@ -6,8 +6,8 @@ import { morph } from '../utils'
 const defaultState = {
     opacity: 1,
     basemap: '//{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
-    zoom: 5,
-    center: [44.68, -109.36],
+    zoom: 4,
+    center: [55.0, -112.0],
     showResults: true
 }
 
