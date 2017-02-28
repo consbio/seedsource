@@ -300,5 +300,17 @@ export const regions = [
         label: 'Western US',
         boundaryUrl: '/static/sst/geometry/west2_boundary.json',
         boundaryData: null
+    },
+    {
+        name: 'nc1',
+        label: 'North Central',
+        boundaryUrl: '/static/sst/geometry/nc1_boundary.json',
+        boundaryData: null
+    },
+    {
+        name: 'ne1',
+        label: 'North East',
+        boundaryUrl: '/static/sst/geometry/ne1_boundary.json',
+        boundaryData: null
     }
 ]
