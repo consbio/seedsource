@@ -10,7 +10,7 @@ import { LOAD_CONFIGURATION, RESET_CONFIGURATION } from '../actions/saves'
 import { FINISH_JOB } from '../actions/job'
 import { SELECT_STEP } from '../actions/step'
 import { REQUEST_PDF, RECEIVE_PDF, FAIL_PDF } from '../actions/pdf'
-import { SELECT_REGION_METHOD, SELECT_REGION, RECEIVE_REGIONS } from '../actions/region'
+import { SELECT_REGION_METHOD, SET_REGION, RECEIVE_REGIONS } from '../actions/region'
 import { morph } from '../utils'
 
 const defaultConfiguration = {
@@ -61,7 +61,7 @@ export default (state = defaultConfiguration, action) => {
 
                 return state
 
-            case SELECT_REGION:
+            case SET_REGION:
                 return morph(state, {region: action.region})
 
             case RECEIVE_REGIONS:

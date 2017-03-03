@@ -30,9 +30,9 @@ const RegionStep = ({ number, active, region, regionMethod, onChange }) => {
                         className="form-control form-inline"
                         value={region ? region : regions[0].name}
                         onChange={e => {
-                        e.preventDefault()
-                        onChange(e.target.value)
-                    }}>
+                            e.preventDefault()
+                            onChange(e.target.value)
+                        }}>
                         {regions.map(r => (
                             <option value={r.name} key={r.name} >{r.label}</option>
                         ))}

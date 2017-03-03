@@ -1,4 +1,3 @@
-import { regions } from './config'
 
 /* A shortcut for Object.assign({}, obj, props) */
 export const morph = (obj, props = {}) => Object.assign({}, obj, props)
@@ -29,14 +28,4 @@ export const getCookies = () => {
     })
 
     return cookies
-}
-
-export const pointSelect = ({ runConfiguration }) => {
-    let { point } = runConfiguration
-
-    if (point) {
-        point = {x: point.x, y: point.y}
-    }
-
-    return {point}
 }

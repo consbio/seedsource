@@ -38,7 +38,7 @@ const valueSelect = ({ runConfiguration }) => {
 
 const popupSelect = ({ runConfiguration, popup }) => {
     let { objective, climate, variables } = runConfiguration
-    let { point } = popup
+    let { point, region } = popup
 
     if (point) {
         point = {x: point.x, y: point.y}
@@ -48,11 +48,12 @@ const popupSelect = ({ runConfiguration, popup }) => {
         objective,
         point,
         climate,
-        variables: variables.map(item => item.name)
+        variables: variables.map(item => item.name),
+        region
     }
 }
 
-export const fetchValues = (store, state, io, dispatch, previousState) => {
+export const fetchValues = (store, state, io, dispatch, previousState, region='') => {
     let { objective, point } = state
     let pointIsValid = point !== null && point.x && point.y
     let { variables, climate, validRegions } = store.getState().runConfiguration
@@ -61,8 +62,10 @@ export const fetchValues = (store, state, io, dispatch, previousState) => {
         return
     }
 
-    // Always take the closest region for point data
-    let region = validRegions[0]
+    // If region is not supplied, use nearest region captured
+    if (region === '') {
+        region = validRegions[0]
+    }
 
     // If only variables have changed, then not all variables need to be refreshed
     let variablesOnly = (
@@ -152,10 +155,11 @@ export default store => {
         if (previousState !== undefined) {
             let {variables: current} = state
             let {variables: old} = previousState
+            let { region } = state
 
             // Only need to refresh if the variables have changed
             if (JSON.stringify(current) !== JSON.stringify(old)) {
-                let requests = fetchValues(store, state, io, dispatch, previousState)
+                let requests = fetchValues(store, state, io, dispatch, previousState, region)
                 if (requests) {
                     requests.forEach(request => {
                         dispatch(requestPopupValue(request.item.name))

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import RegionStep from '../componenets/RegionStep'
-import { selectRegion } from '../actions/region'
+import { setRegion } from '../actions/region'
 
 const mapStateToProps = state => {
     let { region, regionMethod } = state.runConfiguration
@@ -11,7 +11,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onChange: region => {
-            dispatch(selectRegion(region))
+            dispatch(setRegion(region))
         }
     }
 }

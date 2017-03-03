@@ -1,8 +1,7 @@
 export const SELECT_REGION_METHOD = 'SELECT_REGION_METHOD'
-export const SELECT_REGION = 'SELECT_REGION'
+export const SET_REGION = 'SET_REGION'
 export const REQUEST_REGIONS = 'REQUEST_REGIONS'
 export const RECEIVE_REGIONS = 'RECEIVE_REGIONS'
-export const FAIL_REGIONS = 'FAIL_REGIONS'
 
 export const selectRegionMethod = method => {
     return {
@@ -11,9 +10,9 @@ export const selectRegionMethod = method => {
     }
 }
 
-export const selectRegion = region => {
+export const setRegion = region => {
     return {
-        type: SELECT_REGION,
+        type: SET_REGION,
         region
     }
 }
@@ -28,11 +27,5 @@ export const receiveRegions = regions => {
     return {
         type: RECEIVE_REGIONS,
         regions
-    }
-}
-
-export const failRegions = () => {
-    return {
-        type: FAIL_REGIONS
     }
 }

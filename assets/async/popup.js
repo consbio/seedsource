@@ -1,7 +1,8 @@
 import resync from '../resync'
 import { urlEncode } from '../io'
-import { selectRegion, requestRegions, receiveRegions } from '../actions/region'
-import { receivePopupElevation, requestPopupValue, receivePopupValue } from '../actions/popup'
+import {
+    receivePopupElevation, requestPopupValue, receivePopupValue, requestPopupRegion, receivePopupRegion
+} from '../actions/popup'
 import { fetchValues } from '../async/variables'
 
 const popupSelect = ({ popup }) => {
@@ -15,39 +16,31 @@ export default store => resync(store, popupSelect, (state, io, dispatch, previou
     let pointIsValid = point !== null && point.x && point.y
 
     if (pointIsValid) {
-        // Update regions from this point
+
+        // Update popup regions
         let regionUrl = '/sst/regions/?' + urlEncode({
                 point: point.x + ',' + point.y
             })
 
-        dispatch(requestRegions())
+        dispatch(requestPopupRegion())
 
         io.get(regionUrl).then(response => response.json()).then(json => {
             let results = json.results
-            let { regionMethod } = store.getState().runConfiguration
             let validRegions = results.map((a) => {
                 return a.name
             })
 
-            dispatch(receiveRegions(validRegions))  // always update which regions are valid
             let region = ''
-
             if (validRegions.length) {
                 region = validRegions[0]
             }
+            dispatch(receivePopupRegion(region))
+            return region
+        }).then(region => {
 
-            if (regionMethod === 'auto') {
-                dispatch(selectRegion(region))
-            }
-
-        }).then(() => {
-
-            // Set values from point location and nearest valid region
-            let { validRegions } = store.getState().runConfiguration
-            if (validRegions.length) {
+            if (region !== '') {
 
                 // Set elevation at point
-                let region = validRegions[0]
                 let url = '/arcgis/rest/services/' + region + '_dem/MapServer/identify/?' + urlEncode({
                         f: 'json',
                         tolerance: '2',
@@ -73,14 +66,13 @@ export default store => resync(store, popupSelect, (state, io, dispatch, previou
                 })
 
                 // Set values at point
-                let requests = fetchValues(store, state, io, dispatch, previousState)
+                let requests = fetchValues(store, state, io, dispatch, previousState, region)
                 if (requests) {
                     requests.forEach(request => {
                         dispatch(requestPopupValue(request.item.name))
                         request.promise.then(json => dispatch(receivePopupValue(request.item.name, json)))
                     })
                 }
-
             }
         })
     }
