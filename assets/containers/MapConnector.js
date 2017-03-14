@@ -207,19 +207,21 @@ class MapConnector extends React.Component {
             // Remove existing layer from viewer
             this.removeBoundaryFromMap()
 
+            let regionObj = regions.find(r => r.name === region)
+
             // If the region's boundaryData hasn't been loaded: load, store in config, and render
-            if (regions.find(r => r.name === this.boundaryName).boundaryData === null) {
-                let boundaryUrl = regions.find(r => r.name === region).boundaryUrl
+            if (regionObj.boundaryData === null) {
+                let boundaryUrl = regionObj.boundaryUrl
                 get(boundaryUrl)
                     .then(result => result.json())
                     .then(json => {
-                        this.boundaryData = json
-                        regions.find(r => r.name === region).boundaryData = json
+                        regionObj.boundaryData = json
+                        this.boundaryData = regionObj.boundaryData
                         this.addBoundaryToMap()
                     })
             } else {
                 // Load from config
-                this.boundaryData = regions.find(r => r.name === region).boundaryData
+                this.boundaryData = regionObj.boundaryData
                 this.addBoundaryToMap()
             }
         } else if (region === '') {
