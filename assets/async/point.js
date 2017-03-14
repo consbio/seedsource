@@ -1,8 +1,6 @@
 import resync from '../resync'
 import { setElevation } from '../actions/point'
 import { setRegion, requestRegions, receiveRegions } from '../actions/region'
-import { requestValue, receiveValue } from '../actions/variables'
-import { fetchValues } from '../async/variables'
 import { urlEncode } from '../io'
 
 const pointSelect = ({ runConfiguration }) => {
@@ -30,9 +28,7 @@ export default store => {
 
             io.get(regionUrl).then(response => response.json()).then(json => {
                 let results = json.results
-                let validRegions = results.map((a) => {
-                    return a.name
-                })
+                let validRegions = results.map(region => region.name);
 
                 dispatch(receiveRegions(validRegions))  // Always update valid regions
 
@@ -46,7 +42,6 @@ export default store => {
                 }
                 return region
             }).then(region => {
-
                 let url = '/arcgis/rest/services/' + region + '_dem/MapServer/identify/?' + urlEncode({
                         f: 'json',
                         tolerance: '2',
@@ -70,15 +65,6 @@ export default store => {
 
                     dispatch(setElevation(value))
                 })
-
-                let requests = fetchValues(store, state, io, dispatch, previousState, region)
-
-                if (requests) {
-                    requests.forEach(request => {
-                        dispatch(requestValue(request.item.name))
-                        request.promise.then(json => dispatch(receiveValue(request.item.name, json)))
-                    })
-                }
             })
         }
     })

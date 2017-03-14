@@ -14,7 +14,6 @@ const popupSelect = ({ popup }) => {
 export default store => resync(store, popupSelect, (state, io, dispatch, previousState) => {
     let { point } = state
     let pointIsValid = point !== null && point.x && point.y
-
     if (pointIsValid) {
 
         // Update popup regions
@@ -26,9 +25,7 @@ export default store => resync(store, popupSelect, (state, io, dispatch, previou
 
         io.get(regionUrl).then(response => response.json()).then(json => {
             let results = json.results
-            let validRegions = results.map((a) => {
-                return a.name
-            })
+            let validRegions = results.map(region => region.name)
 
             let region = ''
             if (validRegions.length) {
