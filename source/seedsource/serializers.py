@@ -77,7 +77,6 @@ class GeneratePDFSerializer(serializers.Serializer):
 
 
 class RegionSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Region
         fields = ('name',)
