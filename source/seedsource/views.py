@@ -98,7 +98,7 @@ class GeneratePDFView(GenericAPIView):
         return response
 
 
-class RegionsFromPoint(ListAPIView):
+class RegionsView(ListAPIView):
     queryset = Region.objects.all()
     serializer_class = RegionSerializer
 
