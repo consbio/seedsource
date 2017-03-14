@@ -44,7 +44,7 @@ class Command(BaseCommand):
         with transaction.atomic():
             print('Adding {}'.format(name))
             print('---')
-            print('elevation\n')
+            print('elevation')
             service_name = '{}_dem'.format(name)
             if not Service.objects.filter(name__iexact=service_name).exists():
 
@@ -77,6 +77,7 @@ class Command(BaseCommand):
         with transaction.atomic():
             for year in YEARS:
 
+                print('')
                 print(year)
                 print('---')
                 for var in VARS:
