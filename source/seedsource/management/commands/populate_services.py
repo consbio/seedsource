@@ -9,8 +9,6 @@ from django.core.management.base import BaseCommand
 from ncdjango.models import Service, Variable
 from netCDF4 import Dataset
 
-# TODO - add 'resume' capability for missing or new services
-
 VARS = (
     'MAT', 'MWMT', 'MCMT', 'TD', 'MAP', 'MSP', 'AHM', 'SHM', 'DD_0', 'DD5', 'FFP', 'PAS', 'EMT', 'EXT', 'Eref', 'CMD'
 )
@@ -46,7 +44,7 @@ class Command(BaseCommand):
         with transaction.atomic():
             print('Adding {}'.format(name))
             print('---')
-            print('elevation')
+            print('elevation\n')
             service_name = '{}_dem'.format(name)
             if not Service.objects.filter(name__iexact=service_name).exists():
 
@@ -78,10 +76,6 @@ class Command(BaseCommand):
         # Generate ClimateNA services
         with transaction.atomic():
             for year in YEARS:
-
-                # Bandaid fix for missing 1981_2010 data for ne1, remove when available
-                if name == 'ne1' and year == '1981_2010':
-                    continue
 
                 print(year)
                 print('---')
