@@ -8,14 +8,14 @@ from rest_framework import viewsets
 from rest_framework.decorators import detail_route
 from rest_framework.exceptions import ParseError
 from rest_framework.filters import DjangoFilterBackend
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from seedsource.models import TransferLimit, SeedZone, RunConfiguration
+from seedsource.models import TransferLimit, SeedZone, RunConfiguration, Region
 from seedsource.report import Report
 from seedsource.serializers import RunConfigurationSerializer, SeedZoneSerializer, GeneratePDFSerializer
-from seedsource.serializers import TransferLimitSerializer
+from seedsource.serializers import TransferLimitSerializer, RegionSerializer
 from seedsource.utils import get_elevation_at_point
 
 
@@ -96,3 +96,21 @@ class GeneratePDFView(GenericAPIView):
         response['Content-disposition'] = 'attachment; filename=report.pdf'
 
         return response
+
+
+class RegionsView(ListAPIView):
+    queryset = Region.objects.all()
+    serializer_class = RegionSerializer
+
+    def get_queryset(self):
+        if not self.request.query_params.get('point'):
+            return self.queryset
+        else:
+            try:
+                x, y = [float(x) for x in self.request.query_params['point'].split(',')]
+            except ValueError:
+                raise ParseError()
+
+            point = Point(x, y)
+            regions = self.queryset.filter(polygons__intersects=point)
+            return sorted(list(regions), key=lambda r: point.distance(r.polygons.centroid))

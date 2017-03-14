@@ -21,7 +21,7 @@ const transferSelect = ({ runConfiguration }) => {
 }
 
 const valueSelect = ({ runConfiguration }) => {
-    let { objective, point, climate, variables } = runConfiguration
+    let { objective, point, climate, variables, validRegions } = runConfiguration
 
     if (point) {
         point = {x: point.x, y: point.y}
@@ -32,13 +32,14 @@ const valueSelect = ({ runConfiguration }) => {
         objective,
         point,
         climate,
-        variables: variables.map(item => item.name)
+        variables: variables.map(item => item.name),
+        validRegions
     }
 }
 
 const popupSelect = ({ runConfiguration, popup }) => {
     let { objective, climate, variables } = runConfiguration
-    let { point } = popup
+    let { point, region } = popup
 
     if (point) {
         point = {x: point.x, y: point.y}
@@ -48,17 +49,23 @@ const popupSelect = ({ runConfiguration, popup }) => {
         objective,
         point,
         climate,
-        variables: variables.map(item => item.name)
+        variables: variables.map(item => item.name),
+        region
     }
 }
 
-const fetchValues = (store, state, io, dispatch, previousState) => {
+export const fetchValues = (store, state, io, dispatch, previousState, region) => {
     let { objective, point } = state
     let pointIsValid = point !== null && point.x && point.y
-    let { variables, climate } = store.getState().runConfiguration
+    let { variables, climate, validRegions } = store.getState().runConfiguration
 
-    if (!pointIsValid) {
+    if (!(pointIsValid && validRegions.length)) {
         return
+    }
+
+    // If region is not supplied, use nearest region captured
+    if (region === undefined) {
+        region = validRegions[0]
     }
 
     // If only variables have changed, then not all variables need to be refreshed
@@ -70,7 +77,7 @@ const fetchValues = (store, state, io, dispatch, previousState) => {
     }
 
     let requests = variables.map(item => {
-        let serviceName = getServiceName(item.name, objective, climate)
+        let serviceName = getServiceName(item.name, objective, climate, region)
         let url = '/arcgis/rest/services/' + serviceName + '/MapServer/identify/?' + urlEncode({
             f: 'json',
             tolerance: 2,
@@ -133,25 +140,36 @@ export default store => {
 
     // Values at point (for variables list)
     resync(store, valueSelect, (state, io, dispatch, previousState) => {
-        let requests = fetchValues(store, state, io, dispatch, previousState)
+        let { validRegions } = state
 
-        if (requests) {
-            requests.forEach(request => {
-                dispatch(requestValue(request.item.name))
-                request.promise.then(json => dispatch(receiveValue(request.item.name, json)))
-            })
+        if (validRegions.length) {
+            let requests = fetchValues(store, state, io, dispatch, previousState, validRegions[0])
+            if (requests) {
+                requests.forEach(request => {
+                    dispatch(requestValue(request.item.name))
+                    request.promise.then(json => dispatch(receiveValue(request.item.name, json)))
+                })
+            }
         }
     })
 
     // Values at point (for popup)
     resync(store, popupSelect, (state, io, dispatch, previousState) => {
-        let requests = fetchValues(store, state, io, dispatch, previousState)
 
-        if (requests) {
-            requests.forEach(request => {
-                dispatch(requestPopupValue(request.item.name))
-                request.promise.then(json => dispatch(receivePopupValue(request.item.name, json)))
-            })
+        if (previousState !== undefined) {
+            let {variables: current, region} = state
+            let {variables: old} = previousState
+
+            // Only need to refresh if the variables have changed
+            if (JSON.stringify(current) !== JSON.stringify(old)) {
+                let requests = fetchValues(store, state, io, dispatch, previousState, region)
+                if (requests) {
+                    requests.forEach(request => {
+                        dispatch(requestPopupValue(request.item.name))
+                        request.promise.then(json => dispatch(receivePopupValue(request.item.name, json)))
+                    })
+                }
+            }
         }
     })
 }

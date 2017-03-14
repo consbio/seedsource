@@ -10,18 +10,21 @@ import { LOAD_CONFIGURATION, RESET_CONFIGURATION } from '../actions/saves'
 import { FINISH_JOB } from '../actions/job'
 import { SELECT_STEP } from '../actions/step'
 import { REQUEST_PDF, RECEIVE_PDF, FAIL_PDF } from '../actions/pdf'
+import { SELECT_REGION_METHOD, SET_REGION, RECEIVE_REGIONS } from '../actions/region'
 import { morph } from '../utils'
 
 const defaultConfiguration = {
     objective: 'seedlots',
     species: 'generic',
     point: defaultPoint,
-    region: 'west2',
+    region: null,
+    validRegions: [],
     climate: null,
     method: 'custom',
     center: 'point',
     unit: 'metric',
     zones: null,
+    regionMethod: 'auto',
     variables: []
 }
 
@@ -48,6 +51,21 @@ export default (state = defaultConfiguration, action) => {
 
             case SELECT_CENTER:
                 return morph(state, {center: action.center})
+
+            case SELECT_REGION_METHOD:
+                state = morph(state, {regionMethod: action.method})
+
+                if (action.method === 'auto') {
+                    state.region = state.validRegions.length ? state.validRegions[0] : null
+                }
+
+                return state
+
+            case SET_REGION:
+                return morph(state, {region: action.region})
+
+            case RECEIVE_REGIONS:
+                return morph(state, {validRegions: action.regions})
 
             case RESET_CONFIGURATION:
                 return defaultConfiguration

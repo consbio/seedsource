@@ -1,7 +1,7 @@
 import resync from '../resync'
 import { setElevation } from '../actions/point'
+import { setRegion, requestRegions, receiveRegions } from '../actions/region'
 import { urlEncode } from '../io'
-import { findClosestRegion } from '../utils'
 
 const pointSelect = ({ runConfiguration }) => {
     let { point } = runConfiguration
@@ -14,36 +14,60 @@ const pointSelect = ({ runConfiguration }) => {
 }
 
 export default store => {
-    resync(store, pointSelect, ({ point }, io, dispatch) => {
+    resync(store, pointSelect, (state, io, dispatch, previousState) => {
+        let { point } = state
         let pointIsValid = point !== null && point.x && point.y
 
-        dispatch(setElevation(null))
-
         if (pointIsValid) {
-            let region = findClosestRegion(point.x, point.y)
 
-            let url = '/arcgis/rest/services/' + region.name + '_dem/MapServer/identify/?' + urlEncode({
-                f: 'json',
-                tolerance: '2',
-                imageDisplay: '1600,1031,96',
-                geometryType: 'esriGeometryPoint',
-                mapExtent: '0,0,0,0',
-                geometry: JSON.stringify({x: point.x, y: point.y})
+            dispatch(setElevation(null))
+            dispatch(requestRegions())
+            let regionUrl = '/sst/regions/?' + urlEncode({
+                point: point.x + ',' + point.y
             })
 
-            io.get(url).then(response => response.json()).then(json => {
+            io.get(regionUrl).then(response => response.json()).then(json => {
                 let results = json.results
-                let value = null
+                let validRegions = results.map(region => region.name);
 
-                if (results.length) {
-                    value = results[0].attributes['Pixel value']
+                dispatch(receiveRegions(validRegions))  // Always update valid regions
+
+                let region = null
+                if (validRegions.length) {
+                    region = validRegions[0]
                 }
 
-                if (isNaN(value)) {
-                    value = null
+                if (store.getState().runConfiguration.regionMethod === 'auto') {
+                    dispatch(setRegion(region))
                 }
+                return region
+            }).then(region => {
+                if (region !== null) {
 
-                dispatch(setElevation(value))
+                    let url = '/arcgis/rest/services/' + region + '_dem/MapServer/identify/?' + urlEncode({
+                            f: 'json',
+                            tolerance: '2',
+                            imageDisplay: '1600,1031,96',
+                            geometryType: 'esriGeometryPoint',
+                            mapExtent: '0,0,0,0',
+                            geometry: JSON.stringify({x: point.x, y: point.y})
+                        })
+
+                    io.get(url).then(response => response.json()).then(json => {
+                        let results = json.results
+                        let value = null
+
+                        if (results.length) {
+                            value = results[0].attributes['Pixel value']
+                        }
+
+                        if (isNaN(value)) {
+                            value = null
+                        }
+
+                        dispatch(setElevation(value))
+                    })
+                }
             })
         }
     })

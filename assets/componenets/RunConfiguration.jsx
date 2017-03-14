@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import ObjectiveStep from '../containers/ObjectiveStep'
 import LocationStep from '../containers/LocationStep'
+import RegionStep from '../containers/RegionStep'
 import ClimateStep from '../containers/ClimateStep'
 import TransferStep from '../containers/TransferStep'
 import VariableStep from '../containers/VariableStep'
@@ -58,6 +59,7 @@ class RunConfiguration extends React.Component {
         let steps = [
             {type: ObjectiveStep, key: 'objective'},
             {type: LocationStep, key: 'location'},
+            {type: RegionStep, key: 'region'},
             {type: ClimateStep, key: 'climate'},
             {type: TransferStep, key: 'transfer'},
             {type: VariableStep, key: 'variables'},
