@@ -11,7 +11,7 @@ const defaultState = {
     isFetchingElevation: false,
     elevation: null,
     values: [],
-    region: ''
+    region: null
 }
 
 export default (state = defaultState, action) => {
@@ -61,7 +61,7 @@ export default (state = defaultState, action) => {
             return morph(state, {elevation: action.elevation})
 
         case REQUEST_POPUP_REGION:
-            return morph(state, {region: ''})
+            return morph(state, {region: null})
 
         case RECEIVE_POPUP_REGION:
             return morph(state, {region: action.region})

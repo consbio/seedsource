@@ -13,7 +13,7 @@ const RegionStep = ({ number, active, region, regionMethod, onChange }) => {
         </div>
     )
     if (regionMethod === 'auto') {
-        let regionLabel = region !== '' ? regions.find(r => r.name == region).label : 'N/A'
+        let regionLabel = region !== null ? regions.find(r => r.name == region).label : 'N/A'
         return (
             <ConfigurationStep title="Select region" number={number} name="region" active={true}>
                 <strong>Region:</strong> {regionLabel}
@@ -46,7 +46,7 @@ const RegionStep = ({ number, active, region, regionMethod, onChange }) => {
 RegionStep.propTypes = {
     number: PropTypes.number.isRequired,
     active: PropTypes.bool.isRequired,
-    region: PropTypes.string.isRequired,
+    region: PropTypes.string,
     regionMethod: PropTypes.string.isRequired,
 }
 

@@ -17,7 +17,7 @@ const defaultConfiguration = {
     objective: 'seedlots',
     species: 'generic',
     point: defaultPoint,
-    region: '',
+    region: null,
     validRegions: [],
     climate: null,
     method: 'custom',
@@ -56,7 +56,7 @@ export default (state = defaultConfiguration, action) => {
                 state = morph(state, {regionMethod: action.method})
 
                 if (action.method === 'auto') {
-                    state.region = state.validRegions.length ? state.validRegions[0] : ''
+                    state.region = state.validRegions.length ? state.validRegions[0] : null
                 }
 
                 return state

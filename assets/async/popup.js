@@ -27,15 +27,14 @@ export default store => resync(store, popupSelect, (state, io, dispatch, previou
             let results = json.results
             let validRegions = results.map(region => region.name)
 
-            let region = ''
+            let region = null
             if (validRegions.length) {
                 region = validRegions[0]
             }
             dispatch(receivePopupRegion(region))
             return region
         }).then(region => {
-
-            if (region !== '') {
+            if (region !== null) {
 
                 // Set elevation at point
                 let url = '/arcgis/rest/services/' + region + '_dem/MapServer/identify/?' + urlEncode({

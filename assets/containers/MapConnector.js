@@ -201,7 +201,7 @@ class MapConnector extends React.Component {
     }
 
     updateBoundaryLayer(region) {
-        if (region !== '' && region !== this.boundaryName) {
+        if (region !== null && region !== this.boundaryName) {
             this.boundaryName = region
 
             // Remove existing layer from viewer
@@ -224,7 +224,7 @@ class MapConnector extends React.Component {
                 this.boundaryData = regionObj.boundaryData
                 this.addBoundaryToMap()
             }
-        } else if (region === '') {
+        } else if (region === null) {
             this.boundaryName = null
             this.removeBoundaryFromMap()
         }
