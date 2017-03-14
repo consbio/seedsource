@@ -4,7 +4,6 @@ import RegionButton from '../containers/RegionButton'
 import { regions } from '../config'
 
 const RegionStep = ({ number, active, region, regionMethod, onChange }) => {
-
     let buttons = (
         <div>
             <div className="btn-group-sm btn-group">

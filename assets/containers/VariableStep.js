@@ -2,9 +2,9 @@ import { connect } from 'react-redux'
 import VariableStep from '../componenets/VariableStep'
 
 const mapStateToProps = ({ runConfiguration }) => {
-    let { variables, region, regionMethod } = runConfiguration
+    let { variables } = runConfiguration
 
-    return { variables, region, regionMethod }
+    return { variables }
 }
 
 export default connect(mapStateToProps)(VariableStep)

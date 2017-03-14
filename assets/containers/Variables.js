@@ -1,17 +1,16 @@
 import { connect } from 'react-redux'
 import Variables from '../componenets/Variables'
 import { variables as allVariables } from '../config'
-import { addVariable, fetchValue } from '../actions/variables'
+import { addVariable } from '../actions/variables'
 import { setError } from '../actions/error'
 
 const mapStateToProps = state => {
     let { runConfiguration } = state
     let { variables } = runConfiguration
-    let { region, regionMethod } = runConfiguration
     let names = variables.map(item => item.name)
     let unusedVariables = allVariables.filter(item => !names.includes(item.name))
 
-    return {variables, unusedVariables, region, regionMethod}
+    return {variables, unusedVariables}
 }
 
 const mapDispatchToProps = dispatch => {
