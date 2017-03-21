@@ -16,7 +16,7 @@ from seedsource.models import TransferLimit, SeedZone, RunConfiguration, Region
 from seedsource.report import Report
 from seedsource.serializers import RunConfigurationSerializer, SeedZoneSerializer, GeneratePDFSerializer
 from seedsource.serializers import TransferLimitSerializer, RegionSerializer
-from seedsource.utils import get_elevation_at_point
+from seedsource.utils import get_elevation_at_point, get_regions_for_point
 
 
 class RunConfigurationViewset(viewsets.ModelViewSet):
@@ -112,5 +112,4 @@ class RegionsView(ListAPIView):
                 raise ParseError()
 
             point = Point(x, y)
-            regions = self.queryset.filter(polygons__intersects=point)
-            return sorted(list(regions), key=lambda r: point.distance(r.polygons.centroid))
+            return get_regions_for_point(point)
