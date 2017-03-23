@@ -69,7 +69,7 @@ class TransferLimitSerializer(serializers.ModelSerializer):
         fields = ('variable', 'zone', 'transfer', 'avg_transfer', 'center', 'low', 'high', 'time_period')
 
 
-class GeneratePDFSerializer(serializers.Serializer):
+class GenerateReportSerializer(serializers.Serializer):
     configuration = serializers.JSONField()
     tile_layers = serializers.JSONField()
     zoom = serializers.IntegerField()
