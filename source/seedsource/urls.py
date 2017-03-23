@@ -2,7 +2,7 @@ from django.conf.urls import url, include
 from django.views.generic.base import TemplateView
 from rest_framework.routers import DefaultRouter
 
-from seedsource.views import TransferLimitViewset, SeedZoneViewset, GeneratePDFView, RegionsView
+from seedsource.views import TransferLimitViewset, SeedZoneViewset, GeneratePDFView, GeneratePowerPointView, RegionsView
 from .views import RunConfigurationViewset
 import seedsource.tasks  # Make sure tasks are registered
 
@@ -15,5 +15,6 @@ urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='tool.html'), name='tool_page'),
     url(r'^', include(router.urls)),
     url(r'^create-pdf/$', GeneratePDFView.as_view(), name='create_pdf'),
+    url(r'^create-ppt/$', GeneratePowerPointView.as_view(), name='create_ppt'),
     url(r'^regions/$', RegionsView.as_view(), name='regions')
 ]

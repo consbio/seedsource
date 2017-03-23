@@ -14,9 +14,11 @@ from rest_framework.response import Response
 
 from seedsource.models import TransferLimit, SeedZone, RunConfiguration, Region
 from seedsource.report import Report
-from seedsource.serializers import RunConfigurationSerializer, SeedZoneSerializer, GeneratePDFSerializer
+from seedsource.serializers import RunConfigurationSerializer, SeedZoneSerializer, GenerateReportSerializer
 from seedsource.serializers import TransferLimitSerializer, RegionSerializer
 from seedsource.utils import get_elevation_at_point, get_regions_for_point
+
+PPTX_MIME_TYPE = 'application/vnd.openxmlformats-officedocument.presentationml.presentation' # maybe we need it, maybe we dont
 
 
 class RunConfigurationViewset(viewsets.ModelViewSet):
@@ -83,7 +85,7 @@ class TransferLimitViewset(viewsets.ReadOnlyModelViewSet):
 
 
 class GeneratePDFView(GenericAPIView):
-    serializer_class = GeneratePDFSerializer
+    serializer_class = GenerateReportSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -94,6 +96,22 @@ class GeneratePDFView(GenericAPIView):
 
         response = HttpResponse(content=pdf_data.getvalue(), content_type='application/x-pdf')
         response['Content-disposition'] = 'attachment; filename=report.pdf'
+
+        return response
+
+
+class GeneratePowerPointView(GenericAPIView):
+    serializer_class = GenerateReportSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
+        pptx_data = Report(data['configuration'], data['zoom'], data['tile_layers'], data['opacity']).get_pptx_data()
+
+        response = HttpResponse(content=pptx_data.getvalue(), content_type='application/vnd.ms-powerpoint')
+        response['Content-disposition'] = 'attachment; filename=report.pptx'
 
         return response
 
