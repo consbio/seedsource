@@ -221,7 +221,8 @@ class Report(object):
         ppt_data = BytesIO()
 
         ctx = self.get_context(use_string=True)
-        pptx_template_path = os.path.join(settings.BASE_DIR, 'seedsource', 'static', 'sst', 'ppt', 'report_template_test6.pptx')
+        pptx_template_path = os.path.join(settings.BASE_DIR, 'seedsource', 'static', 'sst', 'ppt',
+                                          'report_template.pptx')
         prs = Presentation(pptx_template_path)
 
         # Set map slide placeholders
