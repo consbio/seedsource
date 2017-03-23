@@ -4,7 +4,7 @@ import os
 import sys
 from base64 import b64encode
 from datetime import datetime
-from io import BytesIO
+from io import BytesIO, StringIO
 
 import aiohttp
 import mercantile
@@ -20,6 +20,7 @@ from geopy.distance import vincenty
 from ncdjango.geoimage import world_to_image, image_to_world
 from pyproj import Proj, transform
 from weasyprint import HTML
+from pptx import Presentation
 
 from seedsource.models import SeedZone, TransferLimit, Region
 from seedsource.utils import get_elevation_at_point
@@ -54,6 +55,31 @@ RESULTS_RENDERER = StretchedRenderer([
     (50, Color(254, 178, 76)),
     (100, Color(255, 237, 160))
 ])
+
+DEGREE_SIGN = u'\N{DEGREE SIGN}'
+
+MAP = 15
+SCALE = 21
+WEST = 16
+NORTH = 17
+EAST = 18
+SOUTH = 19
+ATTRIBUTION = 20
+OBJECTIVE = 21
+LOCATION_LABEL = 29		# idx's are dependent on template presentation's placeholder configuration.
+LOCATION_SITE = 22		# Update these indices or add to them as necessary.
+ELEVATION = 23
+SEEDLOT_YEAR = 24
+SITE_YEAR = 25
+METHOD = 26
+DATE = 27
+VAR_TABLE = 28
+
+
+def degree_sign(string):
+    return string.replace('&deg;', DEGREE_SIGN)
+
+ATTRIBUTION_TEXT = 'Made by a really cool dude'	 # TODO - either get text to add in, or remove entirely.
 
 
 class Report(object):
@@ -95,7 +121,7 @@ class Report(object):
 
         return variables
 
-    def get_context(self):
+    def get_context(self, use_string=False):
         point = self.configuration['point']
         elevation = get_elevation_at_point(Point(point['x'], point['y'])) / 0.3048
         method = self.configuration['method']
@@ -133,7 +159,7 @@ class Report(object):
         to_world = image_to_world(map_bbox, map_image.size)
         map_bbox = map_bbox.project(Proj(init='epsg:4326'), edge_points=0)
 
-        image_data = BytesIO()
+        image_data = StringIO() if use_string else BytesIO()
         map_image.save(image_data, 'png')
 
         with open(os.path.join(BASE_DIR, 'seedsource', 'static', 'sst', 'images', 'north.png'), 'rb') as f:
@@ -158,7 +184,7 @@ class Report(object):
 
         return {
             'today': datetime.today(),
-            'image_data': b64encode(image_data.getvalue()),
+            'image_data': b64encode(image_data.getvalue()) if not use_string else image_data,
             'north': format_y_coord(map_bbox.ymax),
             'east': format_x_coord(map_bbox.xmax),
             'south': format_y_coord(map_bbox.ymin),
@@ -190,6 +216,57 @@ class Report(object):
         ).write_pdf(pdf_data)
 
         return pdf_data
+
+    def get_pptx_data(self) -> BytesIO:
+        ppt_data = BytesIO()
+
+        ctx = self.get_context(use_string=True)
+        pptx_template_path = os.path.join(settings.BASE_DIR, 'seedsource', 'static', 'sst', 'ppt', 'report_template_test6.pptx')
+        prs = Presentation(pptx_template_path)
+
+        # Set map slide placeholders
+        mapslide = prs.slides[0]
+        placeholder = mapslide.placeholders[MAP]
+        placeholder.insert_picture(ctx['image_data'])  # TODO - get this as a StringIO object
+        placeholder = mapslide.placeholders[SCALE]
+        placeholder.text = ctx['scale']
+        placeholder = mapslide.placeholders[WEST]
+        placeholder.text = degree_sign(ctx['west'])
+        placeholder = mapslide.placeholders[NORTH]
+        placeholder.text = degree_sign(ctx['north'])
+        placeholder = mapslide.placeholders[EAST]
+        placeholder.text = degree_sign(ctx['east'])
+        placeholder = mapslide.placeholders[SOUTH]
+        placeholder.text = degree_sign(ctx['south'])
+        placeholder = mapslide.placeholders[ATTRIBUTION]
+        placeholder.text = ATTRIBUTION_TEXT
+
+        # Set run config placeholders
+        statslide = prs.slides[1]
+        placeholder = statslide.placeholders[ATTRIBUTION]
+        placeholder.text = ATTRIBUTION_TEXT
+        placeholder = statslide.placeholders[OBJECTIVE]
+        placeholder.text = ctx['objective']
+        placeholder = statslide.placeholders[LOCATION_LABEL]
+        placeholder.text = ctx['location_label']
+        placeholder = statslide.placeholders[LOCATION_SITE]
+        point = ctx['point']
+        placeholder.text = 'Lat: {y}{degree_sign}, Lon: {x}{degree_sign}'.format(x=point['x'], y=point['y'],
+                                                                                 degree_sign=DEGREE_SIGN)
+        placeholder = statslide.placeholders[ELEVATION]
+        placeholder.text = str(ctx['elevation'])
+        placeholder = statslide.placeholders[SEEDLOT_YEAR]
+        placeholder.text = ctx['seedlot_year']
+        placeholder = statslide.placeholders[SITE_YEAR]
+        placeholder.text = ctx['site_year']
+        placeholder = statslide.placeholders[METHOD]
+        placeholder.text = ctx['method']
+        t = ctx['today']
+        placeholder = statslide.placeholders[DATE]
+        placeholder.text = '{}/{}/{}'.format('0' + str(t.month) if t.month < 10 else t.month, t.day, t.year)
+        # TODO - set variable table data
+        prs.save(ppt_data)
+        return ppt_data
 
 
 class MapImage(object):
