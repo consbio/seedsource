@@ -270,7 +270,7 @@ class Report(object):
         placeholder.text = 'Lat: {y}{degree_sign}, Lon: {x}{degree_sign}'.format(x=point['x'], y=point['y'],
                                                                                  degree_sign=DEGREE_SIGN)
         placeholder = statslide.placeholders[ELEVATION]
-        placeholder.text = str(ctx['elevation'])
+        placeholder.text = '{} ft'.format(ctx['elevation'])
         placeholder = statslide.placeholders[SEEDLOT_YEAR]
         placeholder.text = ctx['seedlot_year']
         placeholder = statslide.placeholders[SITE_YEAR]
