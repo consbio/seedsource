@@ -180,11 +180,7 @@ class MapConnector extends React.Component {
     }
 
     addBoundaryToMap(region) {
-        regionsBoundaries.setStyle(f => {
-            if (f.properties.region === region) {
-                return {opacity: 1}
-            }
-        })
+        regionsBoundaries.setStyle(f => f.properties.region === region ? {opacity: 1} : undefined)
     }
 
     removeBoundaryFromMap() {
