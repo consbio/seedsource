@@ -255,31 +255,19 @@ class Report(object):
         placeholder = mapslide.placeholders[ATTRIBUTION]
         placeholder.text = ATTRIBUTION_TEXT
 
-        # TODO - set mapslide.notes_slide with all the stat info used below
-
-        # Set run config placeholders
-        statslide = prs.slides[1]
-        placeholder = statslide.placeholders[ATTRIBUTION]
-        placeholder.text = ATTRIBUTION_TEXT
-        placeholder = statslide.placeholders[OBJECTIVE]
-        placeholder.text = ctx['objective']
-        placeholder = statslide.placeholders[LOCATION_LABEL]
-        placeholder.text = ctx['location_label'] + ':'
-        placeholder = statslide.placeholders[LOCATION_SITE]
+        # Gather all text for mapslide.notes_slide with all the stat info used below and in statslide
+        objective = ctx['objective']
+        location_label = ctx['location_label'] + ':'
         point = ctx['point']
-        placeholder.text = 'Lat: {y}{degree_sign}, Lon: {x}{degree_sign}'.format(x=point['x'], y=point['y'],
-                                                                                 degree_sign=DEGREE_SIGN)
-        placeholder = statslide.placeholders[ELEVATION]
-        placeholder.text = '{} ft'.format(ctx['elevation'])
-        placeholder = statslide.placeholders[SEEDLOT_YEAR]
-        placeholder.text = ctx['seedlot_year']
-        placeholder = statslide.placeholders[SITE_YEAR]
-        placeholder.text = ctx['site_year']
-        placeholder = statslide.placeholders[METHOD]
-
-        # Determine method text
+        point_label = 'Lat: {y}{degree_sign}, Lon: {x}{degree_sign}'.format(x=point['x'], y=point['y'],
+                                                                            degree_sign=DEGREE_SIGN)
+        elev_label = '{} ft'.format(ctx['elevation'])
+        seedlot_year = ctx['seedlot_year']
+        site_year = ctx['site_year']
         tmethod = ctx['method']
         center = ctx['center']
+
+        # Determine method text
         if tmethod == 'seedzone':
             if center == 'zone':
                 method_text = 'Transfer limits and climatic center based on seed zone'
@@ -287,22 +275,69 @@ class Report(object):
                 method_text = 'Transfer limits based on seed zone, climatic center based on the selected location'
         else:
             method_text = 'Custom transfer limits, climatic center based on the selected location'
-        placeholder.text = method_text
+
         t = ctx['today']
+        date = '{}/{}/{}'.format('0' + str(t.month) if t.month < 10 else t.month, t.day, t.year)
+
+        mapslide_lines = [
+            'Objective: ' + objective,
+            '',
+            location_label + point_label,
+            'Elevation: ' + elev_label,
+            '',
+            'Climate Scenarios',
+            'Seedlot climate: ' + seedlot_year,
+            'Planting site climate: ' + site_year,
+            '',
+            'Transfer limit method: ' + method_text
+        ]
+
+        if tmethod == 'seedzone':
+            species_text = 'Species:'
+            species_label = ctx['species']
+            sz_text = 'Seed zone:'
+            band_str = ", {}' - {}'".format(ctx['band'][0], ctx['band'][1]) if ctx['band'] else ''
+            sz_label = '{}{}'.format(ctx['zone'], band_str)
+            mapslide_lines += [
+                ' '.join([species_text, species_label]),
+                ' '.join([sz_text, sz_label])
+            ]
+
+        notes_slide = mapslide.notes_slide
+        text_frame = notes_slide.notes_text_frame
+        text_frame.text = '\n'.join(mapslide_lines)
+
+        # Set run config placeholders
+        statslide = prs.slides[1]
+        placeholder = statslide.placeholders[ATTRIBUTION]
+        placeholder.text = ATTRIBUTION_TEXT
+        placeholder = statslide.placeholders[OBJECTIVE]
+        placeholder.text = objective
+        placeholder = statslide.placeholders[LOCATION_LABEL]
+        placeholder.text = location_label
+        placeholder = statslide.placeholders[LOCATION_SITE]
+        placeholder.text = point_label
+        placeholder = statslide.placeholders[ELEVATION]
+        placeholder.text = elev_label
+        placeholder = statslide.placeholders[SEEDLOT_YEAR]
+        placeholder.text = seedlot_year
+        placeholder = statslide.placeholders[SITE_YEAR]
+        placeholder.text = site_year
+        placeholder = statslide.placeholders[METHOD]
+        placeholder.text = method_text
         placeholder = statslide.placeholders[DATE]
-        placeholder.text = '{}/{}/{}'.format('0' + str(t.month) if t.month < 10 else t.month, t.day, t.year)
+        placeholder.text = date
 
         # Conditionally fill or delete placeholders for species and seedzones
         if tmethod == 'seedzone':
             placeholder = statslide.placeholders[SPECIES_IDX]
-            placeholder.text = 'Species:'
+            placeholder.text = species_text
             placeholder = statslide.placeholders[SPECIES_LABEL_IDX]
-            placeholder.text = ctx['species']
+            placeholder.text = species_label
             placeholder = statslide.placeholders[SZ_IDX]
-            placeholder.text = 'Seed zone:'
+            placeholder.text = sz_text
             placeholder = statslide.placeholders[SZ_LABEL_IDX]
-            band_str = ", {}' - {}'".format(ctx['band'][0], ctx['band'][1]) if ctx['band'] else ''
-            placeholder.text = '{}{}'.format(ctx['zone'], band_str)
+            placeholder.text = sz_label
         else:
             for idx in [SPECIES_IDX, SPECIES_LABEL_IDX, SZ_IDX, SZ_LABEL_IDX]:
                 p = statslide.placeholders[idx]
