@@ -21,6 +21,7 @@ from ncdjango.geoimage import world_to_image, image_to_world
 from pyproj import Proj, transform
 from weasyprint import HTML
 from pptx import Presentation
+from pptx.util import Inches, Pt
 
 from seedsource.models import SeedZone, TransferLimit, Region
 from seedsource.utils import get_elevation_at_point
@@ -58,6 +59,8 @@ RESULTS_RENDERER = StretchedRenderer([
 
 DEGREE_SIGN = u'\N{DEGREE SIGN}'
 
+# pptx-python indexes for report_template3.pptx
+# Map idxs
 MAP = 15
 SCALE = 21
 WEST = 16
@@ -65,6 +68,8 @@ NORTH = 17
 EAST = 18
 SOUTH = 19
 ATTRIBUTION = 20
+
+# Stats idxs
 OBJECTIVE = 21
 LOCATION_LABEL = 29		# idx's are dependent on template presentation's placeholder configuration.
 LOCATION_SITE = 22		# Update these indices or add to them as necessary.
@@ -73,6 +78,12 @@ SEEDLOT_YEAR = 24
 SITE_YEAR = 25
 METHOD = 26
 DATE = 27
+SPECIES_IDX = 30
+SPECIES_LABEL_IDX = 31
+SZ_IDX = 32
+SZ_LABEL_IDX = 33
+
+# Table idxs
 VAR_TABLE = 28
 
 
@@ -224,7 +235,7 @@ class Report(object):
 
         ctx = self.get_context(img_as_bytes=True)
         pptx_template_path = os.path.join(settings.BASE_DIR, 'seedsource', 'static', 'sst', 'ppt',
-                                          'report_template.pptx')
+                                          'report_template3.pptx')
         prs = Presentation(pptx_template_path)
 
         # Set map slide placeholders
@@ -253,7 +264,7 @@ class Report(object):
         placeholder = statslide.placeholders[OBJECTIVE]
         placeholder.text = ctx['objective']
         placeholder = statslide.placeholders[LOCATION_LABEL]
-        placeholder.text = ctx['location_label']
+        placeholder.text = ctx['location_label'] + ':'
         placeholder = statslide.placeholders[LOCATION_SITE]
         point = ctx['point']
         placeholder.text = 'Lat: {y}{degree_sign}, Lon: {x}{degree_sign}'.format(x=point['x'], y=point['y'],
@@ -265,6 +276,7 @@ class Report(object):
         placeholder = statslide.placeholders[SITE_YEAR]
         placeholder.text = ctx['site_year']
         placeholder = statslide.placeholders[METHOD]
+
         # Determine method text
         tmethod = ctx['method']
         center = ctx['center']
@@ -280,28 +292,60 @@ class Report(object):
         placeholder = statslide.placeholders[DATE]
         placeholder.text = '{}/{}/{}'.format('0' + str(t.month) if t.month < 10 else t.month, t.day, t.year)
 
-        # TODO - add 'Climate Variables' above the table
+        # Conditionally fill or delete placeholders for species and seedzones
+        if tmethod == 'seedzone':
+            placeholder = statslide.placeholders[SPECIES_IDX]
+            placeholder.text = 'Species:'
+            placeholder = statslide.placeholders[SPECIES_LABEL_IDX]
+            placeholder.text = ctx['species']
+            placeholder = statslide.placeholders[SZ_IDX]
+            placeholder.text = 'Seed zone:'
+            placeholder = statslide.placeholders[SZ_LABEL_IDX]
+            band_str = ", {}' - {}'".format(ctx['band'][0], ctx['band'][1]) if ctx['band'] else ''
+            placeholder.text = '{}{}'.format(ctx['zone'], band_str)
+        else:
+            for idx in [SPECIES_IDX, SPECIES_LABEL_IDX, SZ_IDX, SZ_LABEL_IDX]:
+                p = statslide.placeholders[idx]
+                sp = p.element
+                sp.getparent().remove(sp)
+
+        # Populate variables slide
+        variable_slide = prs.slides[2]
+        placeholder = variable_slide.placeholders[ATTRIBUTION]
+        placeholder.text = ATTRIBUTION_TEXT
 
         # Insert table
-        placeholder = statslide.placeholders[VAR_TABLE]
+        placeholder = variable_slide.placeholders[VAR_TABLE]
         table = placeholder.insert_table(rows=len(ctx['variables'])+1, cols=3).table    # +1 row for column headings
+        table.horz_banding = False
+        table.vert_banding = False
+
+        table.columns[0].width = Inches(3.0)
+        table.columns[1].width = Inches(2.0)
+        table.columns[2].width = Inches(3.0)
 
         # Fill column headings
         row = 0
         table.cell(row, 0).text = 'Variable'
         table.cell(row, 1).text = 'Center'
         table.cell(row, 2).text = 'Transfer limit (+/-)'
-        row += 1
 
         # Now fill cells
         for variable in ctx['variables']:
+            row += 1
             units = degree_sign(variable['units'])
             center_label = '{} {}'.format(variable['value'], units)
-            limit_label = '{} {} {}'.format(variable['limit'], units, '(modified)' if variable['modified'] else '')
+            limit_label = '{} {}{}'.format(variable['limit'], units, ' (modified)' if variable['modified'] else '')
             table.cell(row, 0).text = variable['label']
             table.cell(row, 1).text = center_label
             table.cell(row, 2).text = limit_label
-            row += 1
+
+        # Now format the text. Easier to do this after being set
+        for i in range(row):
+            font_size = Pt(18) if i == 0 else Pt(16)
+            for j in range(3):
+                p = table.cell(i, j).text_frame.paragraphs[0]
+                p.font.size = font_size
 
         prs.save(ppt_data)
         ppt_data.seek(0)    # for good measure, may not be necessary
