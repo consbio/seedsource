@@ -4,7 +4,7 @@ import os
 import sys
 from base64 import b64encode
 from datetime import datetime
-from io import BytesIO, StringIO
+from io import BytesIO
 
 import aiohttp
 import mercantile
@@ -121,7 +121,7 @@ class Report(object):
 
         return variables
 
-    def get_context(self, use_string=False):
+    def get_context(self, img_as_bytes=False):
         point = self.configuration['point']
         elevation = get_elevation_at_point(Point(point['x'], point['y'])) / 0.3048
         method = self.configuration['method']
@@ -159,8 +159,10 @@ class Report(object):
         to_world = image_to_world(map_bbox, map_image.size)
         map_bbox = map_bbox.project(Proj(init='epsg:4326'), edge_points=0)
 
-        image_data = StringIO() if use_string else BytesIO()
+        image_data = BytesIO()
         map_image.save(image_data, 'png')
+        if img_as_bytes:
+            image_data.seek(0)  # seek to file start so we can read into ppt
 
         with open(os.path.join(BASE_DIR, 'seedsource', 'static', 'sst', 'images', 'north.png'), 'rb') as f:
             north_image_data = b64encode(f.read())
@@ -184,7 +186,7 @@ class Report(object):
 
         return {
             'today': datetime.today(),
-            'image_data': b64encode(image_data.getvalue()) if not use_string else image_data,
+            'image_data': b64encode(image_data.getvalue()) if not img_as_bytes else image_data,
             'north': format_y_coord(map_bbox.ymax),
             'east': format_x_coord(map_bbox.xmax),
             'south': format_y_coord(map_bbox.ymin),
@@ -220,7 +222,7 @@ class Report(object):
     def get_pptx_data(self) -> BytesIO:
         ppt_data = BytesIO()
 
-        ctx = self.get_context(use_string=True)
+        ctx = self.get_context(img_as_bytes=True)
         pptx_template_path = os.path.join(settings.BASE_DIR, 'seedsource', 'static', 'sst', 'ppt',
                                           'report_template.pptx')
         prs = Presentation(pptx_template_path)
@@ -228,7 +230,7 @@ class Report(object):
         # Set map slide placeholders
         mapslide = prs.slides[0]
         placeholder = mapslide.placeholders[MAP]
-        placeholder.insert_picture(ctx['image_data'])  # TODO - get this as a StringIO object
+        placeholder.insert_picture(ctx['image_data'])
         placeholder = mapslide.placeholders[SCALE]
         placeholder.text = ctx['scale']
         placeholder = mapslide.placeholders[WEST]
@@ -267,6 +269,7 @@ class Report(object):
         placeholder.text = '{}/{}/{}'.format('0' + str(t.month) if t.month < 10 else t.month, t.day, t.year)
         # TODO - set variable table data
         prs.save(ppt_data)
+        ppt_data.seek(0)    # for good measure, may not be necessary
         return ppt_data
 
 
