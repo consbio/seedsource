@@ -59,29 +59,19 @@ RESULTS_RENDERER = StretchedRenderer([
 
 DEGREE_SIGN = u'\N{DEGREE SIGN}'
 
-# pptx-python indexes for report_template3.pptx
+# pptx-python indexes for report_template4.pptx
 # Map idxs
-MAP = 15
-SCALE = 21
-WEST = 16
-NORTH = 17
-EAST = 18
-SOUTH = 19
-ATTRIBUTION = 20
+MAP_IDX = 15
+SCALE_IDX = 21
+WEST_IDX = 16
+NORTH_IDX = 17
+EAST_IDX = 18
+SOUTH_IDX = 19
+ATTRIBUTION_IDX = 20    # Copied throughout slide master, same in each slide
 
 # Stats idxs
-OBJECTIVE = 21
-LOCATION_LABEL = 29		# idx's are dependent on template presentation's placeholder configuration.
-LOCATION_SITE = 22		# Update these indices or add to them as necessary.
-ELEVATION = 23
-SEEDLOT_YEAR = 24
-SITE_YEAR = 25
-METHOD = 26
-DATE = 27
-SPECIES_IDX = 30
-SPECIES_LABEL_IDX = 31
-SZ_IDX = 32
-SZ_LABEL_IDX = 33
+DATE_IDX = 27
+CONFIG_TEXT_IDX = 34
 
 # Table idxs
 VAR_TABLE = 28
@@ -235,25 +225,29 @@ class Report(object):
 
         ctx = self.get_context(img_as_bytes=True)
         pptx_template_path = os.path.join(settings.BASE_DIR, 'seedsource', 'static', 'sst', 'ppt',
-                                          'report_template3.pptx')
+                                          'report_template4.pptx')
         prs = Presentation(pptx_template_path)
+
+        t = ctx['today']
+        date = '{}/{}/{}'.format('0' + str(t.month) if t.month < 10 else t.month, t.day, t.year)
+        attribution = '{} on {}'.format(ATTRIBUTION_TEXT, date)
 
         # Set map slide placeholders
         mapslide = prs.slides[0]
-        placeholder = mapslide.placeholders[MAP]
+        placeholder = mapslide.placeholders[MAP_IDX]
         placeholder.insert_picture(ctx['image_data'])
-        placeholder = mapslide.placeholders[SCALE]
+        placeholder = mapslide.placeholders[SCALE_IDX]
         placeholder.text = ctx['scale']
-        placeholder = mapslide.placeholders[WEST]
+        placeholder = mapslide.placeholders[WEST_IDX]
         placeholder.text = degree_sign(ctx['west'])
-        placeholder = mapslide.placeholders[NORTH]
+        placeholder = mapslide.placeholders[NORTH_IDX]
         placeholder.text = degree_sign(ctx['north'])
-        placeholder = mapslide.placeholders[EAST]
+        placeholder = mapslide.placeholders[EAST_IDX]
         placeholder.text = degree_sign(ctx['east'])
-        placeholder = mapslide.placeholders[SOUTH]
+        placeholder = mapslide.placeholders[SOUTH_IDX]
         placeholder.text = degree_sign(ctx['south'])
-        placeholder = mapslide.placeholders[ATTRIBUTION]
-        placeholder.text = ATTRIBUTION_TEXT
+        placeholder = mapslide.placeholders[ATTRIBUTION_IDX]
+        placeholder.text = attribution
 
         # Gather all text for mapslide.notes_slide with all the stat info used below and in statslide
         objective = ctx['objective']
@@ -276,13 +270,10 @@ class Report(object):
         else:
             method_text = 'Custom transfer limits, climatic center based on the selected location'
 
-        t = ctx['today']
-        date = '{}/{}/{}'.format('0' + str(t.month) if t.month < 10 else t.month, t.day, t.year)
-
         mapslide_lines = [
             'Objective: ' + objective,
             '',
-            location_label + point_label,
+            location_label + ' ' + point_label,
             'Elevation: ' + elev_label,
             '',
             'Climate Scenarios',
@@ -309,45 +300,17 @@ class Report(object):
 
         # Set run config placeholders
         statslide = prs.slides[1]
-        placeholder = statslide.placeholders[ATTRIBUTION]
-        placeholder.text = ATTRIBUTION_TEXT
-        placeholder = statslide.placeholders[OBJECTIVE]
-        placeholder.text = objective
-        placeholder = statslide.placeholders[LOCATION_LABEL]
-        placeholder.text = location_label
-        placeholder = statslide.placeholders[LOCATION_SITE]
-        placeholder.text = point_label
-        placeholder = statslide.placeholders[ELEVATION]
-        placeholder.text = elev_label
-        placeholder = statslide.placeholders[SEEDLOT_YEAR]
-        placeholder.text = seedlot_year
-        placeholder = statslide.placeholders[SITE_YEAR]
-        placeholder.text = site_year
-        placeholder = statslide.placeholders[METHOD]
-        placeholder.text = method_text
-        placeholder = statslide.placeholders[DATE]
+        placeholder = statslide.placeholders[ATTRIBUTION_IDX]
+        placeholder.text = attribution
+        placeholder = statslide.placeholders[DATE_IDX]
         placeholder.text = date
-
-        # Conditionally fill or delete placeholders for species and seedzones
-        if tmethod == 'seedzone':
-            placeholder = statslide.placeholders[SPECIES_IDX]
-            placeholder.text = species_text
-            placeholder = statslide.placeholders[SPECIES_LABEL_IDX]
-            placeholder.text = species_label
-            placeholder = statslide.placeholders[SZ_IDX]
-            placeholder.text = sz_text
-            placeholder = statslide.placeholders[SZ_LABEL_IDX]
-            placeholder.text = sz_label
-        else:
-            for idx in [SPECIES_IDX, SPECIES_LABEL_IDX, SZ_IDX, SZ_LABEL_IDX]:
-                p = statslide.placeholders[idx]
-                sp = p.element
-                sp.getparent().remove(sp)
+        placeholder = statslide.placeholders[CONFIG_TEXT_IDX]
+        placeholder.text = '\n'.join(mapslide_lines)    # TODO - build text for CONFIG_TEXT_IDX
 
         # Populate variables slide
         variable_slide = prs.slides[2]
-        placeholder = variable_slide.placeholders[ATTRIBUTION]
-        placeholder.text = ATTRIBUTION_TEXT
+        placeholder = variable_slide.placeholders[ATTRIBUTION_IDX]
+        placeholder.text = attribution
 
         # Insert table
         placeholder = variable_slide.placeholders[VAR_TABLE]
