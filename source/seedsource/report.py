@@ -244,6 +244,8 @@ class Report(object):
         placeholder = mapslide.placeholders[ATTRIBUTION]
         placeholder.text = ATTRIBUTION_TEXT
 
+        # TODO - set mapslide.notes_slide with all the stat info used below
+
         # Set run config placeholders
         statslide = prs.slides[1]
         placeholder = statslide.placeholders[ATTRIBUTION]
@@ -263,11 +265,44 @@ class Report(object):
         placeholder = statslide.placeholders[SITE_YEAR]
         placeholder.text = ctx['site_year']
         placeholder = statslide.placeholders[METHOD]
-        placeholder.text = ctx['method']
+        # Determine method text
+        tmethod = ctx['method']
+        center = ctx['center']
+        if tmethod == 'seedzone':
+            if center == 'zone':
+                method_text = 'Transfer limits and climatic center based on seed zone'
+            else:
+                method_text = 'Transfer limits based on seed zone, climatic center based on the selected location'
+        else:
+            method_text = 'Custom transfer limits, climatic center based on the selected location'
+        placeholder.text = method_text
         t = ctx['today']
         placeholder = statslide.placeholders[DATE]
         placeholder.text = '{}/{}/{}'.format('0' + str(t.month) if t.month < 10 else t.month, t.day, t.year)
-        # TODO - set variable table data
+
+        # TODO - add 'Climate Variables' above the table
+
+        # Insert table
+        placeholder = statslide.placeholders[VAR_TABLE]
+        table = placeholder.insert_table(rows=len(ctx['variables'])+1, cols=3).table    # +1 row for column headings
+
+        # Fill column headings
+        row = 0
+        table.cell(row, 0).text = 'Variable'
+        table.cell(row, 1).text = 'Center'
+        table.cell(row, 2).text = 'Transfer limit (+/-)'
+        row += 1
+
+        # Now fill cells
+        for variable in ctx['variables']:
+            units = degree_sign(variable['units'])
+            center_label = '{} {}'.format(variable['value'], units)
+            limit_label = '{} {} {}'.format(variable['limit'], units, '(modified)' if variable['modified'] else '')
+            table.cell(row, 0).text = variable['label']
+            table.cell(row, 1).text = center_label
+            table.cell(row, 2).text = limit_label
+            row += 1
+
         prs.save(ppt_data)
         ppt_data.seek(0)    # for good measure, may not be necessary
         return ppt_data
