@@ -59,7 +59,7 @@ RESULTS_RENDERER = StretchedRenderer([
 
 DEGREE_SIGN = u'\N{DEGREE SIGN}'
 
-# pptx-python indexes for report_template4.pptx
+# pptx-python indexes for report_template5.pptx
 # Map idxs
 MAP_IDX = 15
 SCALE_IDX = 21
@@ -225,7 +225,7 @@ class Report(object):
 
         ctx = self.get_context(img_as_bytes=True)
         pptx_template_path = os.path.join(settings.BASE_DIR, 'seedsource', 'static', 'sst', 'ppt',
-                                          'report_template4.pptx')
+                                          'report_template5.pptx')
         prs = Presentation(pptx_template_path)
 
         t = ctx['today']
@@ -270,33 +270,45 @@ class Report(object):
         else:
             method_text = 'Custom transfer limits, climatic center based on the selected location'
 
-        mapslide_lines = [
-            'Objective: ' + objective,
-            '',
-            location_label + ' ' + point_label,
-            'Elevation: ' + elev_label,
-            '',
-            'Climate Scenarios',
-            'Seedlot climate: ' + seedlot_year,
-            'Planting site climate: ' + site_year,
-            '',
-            'Transfer limit method: ' + method_text
+        lines = [
+            ('Objective: ', objective, True),               # (bold_text, norm_text, add_newline)
+            (location_label + ' ', point_label, False),
+            ('Elevation: ', elev_label, True),
+            ('Climate Scenarios', '', False),
+            ('', 'Seedlot climate: ' + seedlot_year, False),
+            ('', 'Planting site climate: ' + site_year, True),
+            ('Transfer limit method: ', method_text, True)
         ]
 
         if tmethod == 'seedzone':
-            species_text = 'Species:'
+            species_text = 'Species: '
             species_label = ctx['species']
             sz_text = 'Seed zone:'
             band_str = ", {}' - {}'".format(ctx['band'][0], ctx['band'][1]) if ctx['band'] else ''
             sz_label = '{}{}'.format(ctx['zone'], band_str)
-            mapslide_lines += [
-                ' '.join([species_text, species_label]),
-                ' '.join([sz_text, sz_label])
+            lines += [
+                (species_text, species_label, False),
+                (sz_text, sz_label, False)
             ]
 
+        # Add a text frame where needed
+        def add_text_frame(tframe):
+            p = tframe.paragraphs[0]
+            for line in lines:
+                bold_text = line[0]
+                norm_text = line[1]
+                add_newline = line[2]
+                run = p.add_run()
+                run.text = bold_text
+                run.font.bold = True
+                run = p.add_run()
+                run.text = norm_text + '\n'
+                if add_newline:
+                    run = p.add_run()
+                    run.text = '\n'
+
         notes_slide = mapslide.notes_slide
-        text_frame = notes_slide.notes_text_frame
-        text_frame.text = '\n'.join(mapslide_lines)
+        add_text_frame(notes_slide.notes_text_frame)
 
         # Set run config placeholders
         statslide = prs.slides[1]
@@ -305,7 +317,7 @@ class Report(object):
         placeholder = statslide.placeholders[DATE_IDX]
         placeholder.text = date
         placeholder = statslide.placeholders[CONFIG_TEXT_IDX]
-        placeholder.text = '\n'.join(mapslide_lines)    # TODO - build text for CONFIG_TEXT_IDX
+        add_text_frame(placeholder.text_frame)
 
         # Populate variables slide
         variable_slide = prs.slides[2]
@@ -346,7 +358,7 @@ class Report(object):
                 p.font.size = font_size
 
         prs.save(ppt_data)
-        ppt_data.seek(0)    # for good measure, may not be necessary
+        ppt_data.seek(0)
         return ppt_data
 
 
