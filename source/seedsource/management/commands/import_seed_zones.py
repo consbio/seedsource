@@ -137,7 +137,13 @@ class Command(BaseCommand):
 
                 zones = os.path.join(temp_dir, config['dir'])
 
-                for species, (zone_file, name, uid, col_name, bands_fn) in config['species'].items():
+                for species, props in config['species'].items():
+                    zone_file = props['file']
+                    name = props['label']
+                    uid = props['name']
+                    col_name = props['column']
+                    bands_fn = props['bands_fn']
+
                     if not name:
                         name = getattr(self, '_get_{}_name'.format(config['label'].lower()))
 

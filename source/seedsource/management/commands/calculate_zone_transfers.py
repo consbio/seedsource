@@ -30,7 +30,7 @@ class Command(BaseCommand):
         super().__init__(*args, **kwargs)
 
     def add_arguments(self, parser):
-        parser.add_argument('zone_name', nargs=1, type=str, default='all', help='Accepts zone name or all')
+        parser.add_argument('zone_name', nargs='?', type=str, default='all', help='Accepts zone name or all')
 
     def _get_bands_fn(self, bands_fn):
         def _every(low, high, increment, start=0):
@@ -148,11 +148,10 @@ class Command(BaseCommand):
         self.transfers_by_source[zone.source] = transfers_by_variable
 
     def handle(self, zone_name, *args, **options):
-        zone_name = zone_name[0]
-
         query_zone_name = '' if zone_name == 'all' else zone_name
 
-        if not SeedZone.objects.filter(source__istartswith=query_zone_name).first():
+        zones = SeedZone.objects.filter(source__istartswith=query_zone_name)
+        if not zones:
             seed_zone_choices = SeedZone.objects.values_list('source', flat=True).order_by('source').distinct()
             print('Error: {} zone does not exists'.format(zone_name))
             print('Choices are:\n\t- {}'.format('\n\t- '.join(seed_zone_choices)))
@@ -182,7 +181,7 @@ class Command(BaseCommand):
                     with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, variable_service.data_path)) as ds:
                         data = ds.variables[variable][:]
 
-                    for zone in SeedZone.objects.filter(source__istartswith=query_zone_name):
+                    for zone in zones:
                         clipped_elevation, clipped_data, clipped_coords = self._get_subsets(
                             elevation, data, coords, BBox(zone.polygon.extent)
                         )
