@@ -5,17 +5,22 @@
 
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { topojson } from 'leaflet-omnivore'
+import TurfInside from '@turf/inside'
 import { setMapOpacity, setBasemap, setZoom, toggleVisibility, setMapCenter } from '../actions/map'
 import { setPopupLocation, resetPopupLocation } from '../actions/popup'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
-import { variables, timeLabels, regions, regionsBoundaries } from '../config'
+import { variables, timeLabels, regions, regionsBoundariesUrl } from '../config'
 
 class MapConnector extends React.Component {
     constructor(props) {
         super(props)
 
         this.map = null
+        this.regionsBoundaries = null
+        this.clickedRegions = []
+        this.resultRegion = null
         this.pointMarker = null
         this.variableLayer = null
         this.legend = null
@@ -119,13 +124,36 @@ class MapConnector extends React.Component {
             }
 
             this.props.onPopupLocation(e.latlng.lat, e.latlng.lng)
+
+            for (let r of this.clickedRegions) {
+                this.removeBoundaryFromMap(r)
+            }
+
+            this.clickedRegions = []
+            if (this.props.regionMethod === 'auto') {
+                this.regionsBoundaries.eachLayer(layer => {
+                    if (TurfInside([e.latlng.lng, e.latlng.lat], layer.toGeoJSON()) && layer.feature.properties.region !== this.boundaryName) {
+                        this.clickedRegions.push(layer.feature.properties.region);
+                    }
+                })
+            }
         })
 
         this.map.on('zoomend', () => {
             this.props.onZoomChange(this.map.getZoom())
         })
 
-        this.map.addLayer(regionsBoundaries)
+        this.regionsBoundaries = topojson(
+            regionsBoundariesUrl,
+            null,
+            L.geoJson(null, {
+                style: {
+                    fillColor: 'transparent',
+                    opacity: 0
+                }
+            })
+        )
+        this.map.addLayer(this.regionsBoundaries)
     }
 
     updatePointMarker(point) {
@@ -172,6 +200,8 @@ class MapConnector extends React.Component {
             else if (layerUrl !== this.resultsLayer._url) {
                 this.resultsLayer.setUrl(layerUrl)
             }
+
+            this.addBoundaryToMap(this.props.resultRegion, '#006600')
         }
         else if (this.resultsLayer !== null) {
             this.map.removeLayer(this.resultsLayer)
@@ -179,12 +209,17 @@ class MapConnector extends React.Component {
         }
     }
 
-    addBoundaryToMap(region) {
-        regionsBoundaries.setStyle(f => f.properties.region === region ? {opacity: 1} : undefined)
+    addBoundaryToMap(region, color = '#000066') {
+        this.regionsBoundaries.setStyle(f => f.properties.region === region ? {opacity: 1, fillColor: color, fillOpacity: 0.3, color} : undefined)
     }
 
-    removeBoundaryFromMap() {
-        regionsBoundaries.setStyle({opacity: 0})
+    removeBoundaryFromMap(region) {
+        let style = {opacity: 0, fillColor: 'transparent', fillOpacity: 0}
+        if (region) {
+            this.regionsBoundaries.setStyle(f => f.properties.region === region ? style : undefined)
+        } else {
+            this.regionsBoundaries.setStyle(style)
+        }
     }
 
     updateBoundaryLayer(region) {
@@ -196,6 +231,10 @@ class MapConnector extends React.Component {
 
             let regionObj = regions.find(r => r.name === region)
             this.addBoundaryToMap(regionObj.name)
+
+            if (this.props.resultRegion) {
+                this.addBoundaryToMap(this.props.resultRegion, '#006600')
+            }
         } else if (region === null) {
             this.boundaryName = null
             this.removeBoundaryFromMap()
@@ -359,6 +398,10 @@ class MapConnector extends React.Component {
         let { point, elevation } = popup
 
         if (point !== null) {
+            for (let r of this.clickedRegions) {
+                this.addBoundaryToMap(r, '#aaa')
+            }
+
             if (this.popup === null) {
                 let container = L.DomUtil.create('div', 'map-info-popup')
 
@@ -384,6 +427,11 @@ class MapConnector extends React.Component {
                     let { point } = this.popup
                     this.map.closePopup(popup)
                     this.props.onMapClick(point.y, point.x)
+
+                    for (let r of this.clickedRegions) {
+                        this.removeBoundaryFromMap(r)
+                    }
+                    this.clickedRegions = []
                 })
 
                 this.popup = {
@@ -496,15 +544,16 @@ MapConnector.propTypes = {
 }
 
 const mapStatetoProps = state => {
-    let { runConfiguration, activeVariable, map, job, legends, popup } = state
+    let { runConfiguration, activeVariable, map, job, legends, popup, lastRun } = state
     let { opacity, showResults, center } = map
-    let { objective, point, climate, unit, method, zones, region } = runConfiguration
+    let { objective, point, climate, unit, method, zones, region, regionMethod } = runConfiguration
     let { geometry } = zones
     let zone = zones.selected
+    let resultRegion = lastRun ? lastRun.region : null
 
     return {
         activeVariable, objective, point, climate, opacity, job, showResults, legends, popup, unit, method, geometry,
-        zone, center, region
+        zone, center, region, regionMethod, resultRegion
     }
 }
 

@@ -1,5 +1,3 @@
-import {topojson} from 'leaflet-omnivore';
-
 export const collapsibleSteps = false
 
 const celsiusUnits = {
@@ -309,13 +307,4 @@ export const regions = [
     }
 ]
 
-export const regionsBoundaries = topojson(
-    '/static/sst/geometry/regions.topojson',
-    null,
-    L.geoJson(null, {
-        style: {
-            fill: 0,
-            opacity: 0
-        }
-    })
-)
+export const regionsBoundariesUrl = '/static/sst/geometry/regions.topojson'
