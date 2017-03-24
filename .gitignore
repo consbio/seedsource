@@ -8,3 +8,4 @@ node_modules/
 webpack-stats.json
 build/
 docs/_*/
+regions.topojson

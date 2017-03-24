@@ -9,8 +9,7 @@ import { setMapOpacity, setBasemap, setZoom, toggleVisibility, setMapCenter } fr
 import { setPopupLocation, resetPopupLocation } from '../actions/popup'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
-import { variables, timeLabels, regions } from '../config'
-import { get, urlEncode } from '../io'
+import { variables, timeLabels, regions, regionsBoundaries } from '../config'
 
 class MapConnector extends React.Component {
     constructor(props) {
@@ -26,8 +25,6 @@ class MapConnector extends React.Component {
         this.opacityControl = null
         this.visibilityButton = null
         this.boundaryName = null
-        this.boundaryData = null
-        this.boundaryLayers = null
         this.popup = null
         this.mapIsMoving = false
     }
@@ -127,6 +124,8 @@ class MapConnector extends React.Component {
         this.map.on('zoomend', () => {
             this.props.onZoomChange(this.map.getZoom())
         })
+
+        this.map.addLayer(regionsBoundaries)
     }
 
     updatePointMarker(point) {
@@ -180,24 +179,12 @@ class MapConnector extends React.Component {
         }
     }
 
-    addBoundaryToMap() {
-        this.boundaryLayers = this.boundaryData.features.map(feature => (
-            L.geoJson(feature, {
-                style: {
-                    color: '#006',
-                    opacity: .7,
-                    weight: 2,
-                    fill: false
-                }
-            }).addTo(this.map)
-        ))
+    addBoundaryToMap(region) {
+        regionsBoundaries.setStyle(f => f.properties.region === region ? {opacity: 1} : undefined)
     }
 
     removeBoundaryFromMap() {
-        if (this.boundaryLayers !== null) {
-            this.boundaryLayers.forEach(layer => this.map.removeLayer(layer))
-            this.boundaryLayers = null
-        }
+        regionsBoundaries.setStyle({opacity: 0})
     }
 
     updateBoundaryLayer(region) {
@@ -208,22 +195,7 @@ class MapConnector extends React.Component {
             this.removeBoundaryFromMap()
 
             let regionObj = regions.find(r => r.name === region)
-
-            // If the region's boundaryData hasn't been loaded: load, store in config, and render
-            if (regionObj.boundaryData === null) {
-                let boundaryUrl = regionObj.boundaryUrl
-                get(boundaryUrl)
-                    .then(result => result.json())
-                    .then(json => {
-                        regionObj.boundaryData = json
-                        this.boundaryData = regionObj.boundaryData
-                        this.addBoundaryToMap()
-                    })
-            } else {
-                // Load from config
-                this.boundaryData = regionObj.boundaryData
-                this.addBoundaryToMap()
-            }
+            this.addBoundaryToMap(regionObj.name)
         } else if (region === null) {
             this.boundaryName = null
             this.removeBoundaryFromMap()

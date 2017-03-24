@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "webpack": "webpack --config webpack.config.js --watch",
-    "webpack_production": "webpack --config webpack_production.config.js"
+    "webpack_production": "webpack --config webpack_production.config.js",
+    "merge-regions": "mapshaper -i source/seedsource/static/sst/geometry/*.json combine-files -o source/seedsource/static/sst/geometry/regions.topojson"
   },
   "author": "",
   "license": "BSD-2-Clause",
@@ -15,12 +16,14 @@
     "babel-loader": "^6.2.8",
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.5.0",
+    "mapshaper": "^0.4.15",
     "webpack": "^1.13.3",
     "webpack-bundle-tracker": "0.1.0"
   },
   "dependencies": {
     "babel-polyfill": "^6.9.1",
     "isomorphic-fetch": "^2.2.1",
+    "leaflet-omnivore": "^0.3.4",
     "node-uuid": "^1.4.7",
     "react": "^15.4.1",
     "react-bootstrap": "^0.30.7",

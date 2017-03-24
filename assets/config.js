@@ -1,3 +1,5 @@
+import {topojson} from 'leaflet-omnivore';
+
 export const collapsibleSteps = false
 
 const celsiusUnits = {
@@ -291,27 +293,19 @@ export const timeLabels = {
 export const regions = [
     {
         name: 'ak2',
-        label: 'Alaska',
-        boundaryUrl: '/static/sst/geometry/ak2_boundary.json',
-        boundaryData: null
+        label: 'Alaska'
     },
     {
         name: 'west2',
-        label: 'Western US',
-        boundaryUrl: '/static/sst/geometry/west2_boundary.json',
-        boundaryData: null
+        label: 'Western US'
     },
     {
         name: 'nc1',
-        label: 'North Central',
-        boundaryUrl: '/static/sst/geometry/nc1_boundary.json',
-        boundaryData: null
+        label: 'North Central'
     },
     {
         name: 'ne1',
-        label: 'North East',
-        boundaryUrl: '/static/sst/geometry/ne1_boundary.json',
-        boundaryData: null
+        label: 'North East'
     }
 ]
 
@@ -327,3 +321,14 @@ export const reports = [
         reportUrl: '/sst/create-ppt/'
     }
 ]
+
+export const regionsBoundaries = topojson(
+    '/static/sst/geometry/regions.topojson',
+    null,
+    L.geoJson(null, {
+        style: {
+            fill: 0,
+            opacity: 0
+        }
+    })
+)
