@@ -27,9 +27,12 @@ class Command(BaseCommand):
     def __init__(self, *args, **kwargs):
         self.transfers_by_source = {}
 
-        return super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
-    def _get_bands_fn(self, source):
+    def add_arguments(self, parser):
+        parser.add_argument('zone_name', nargs='?', type=str, default='all', help='Accepts zone name or all')
+
+    def _get_bands_fn(self, bands_fn):
         def _every(low, high, increment, start=0):
             """ Returns a generator for zones within low-high based on the increment """
 
@@ -114,20 +117,7 @@ class Command(BaseCommand):
         def or_pimo(zone_id, low, high):
             return [(low, high + 1)]
 
-        return {
-            'historic_seed_zones/historic_seed_zones.shp': historical,
-            'Oregon_Seed_Zones/Douglas_Fir.shp': or_psme,
-            'WA_NEW_ZONES/PSME.shp': wa_psme,
-            'Oregon_Seed_Zones/Lodgepole_Pine.shp': or_pico,
-            'WA_NEW_ZONES/PICO.shp': wa_pico,
-            'Oregon_Seed_Zones/Ponderosa_Pine.shp': or_pipo,
-            'WA_NEW_ZONES/PIPO.shp': wa_pipo,
-            'Oregon_Seed_Zones/Western_Red_Cedar.shp': or_thpl,
-            'WA_NEW_ZONES/THPL.shp': wa_thpl,
-            'Oregon_Seed_Zones/Western_White_Pine.shp': or_pimo,
-            'WA_NEW_ZONES/PIMO.shp': wa_pimo,
-            'updatedCAgeneric/updatedCAgeneric.shp': historical
-        }[source]
+        return locals()[bands_fn]
 
     def _get_subsets(self, elevation, data, coords: SpatialCoordinateVariables, bbox):
         """ Returns subsets of elevation, data, and coords, clipped to the given bounds """
@@ -157,7 +147,16 @@ class Command(BaseCommand):
         transfers_by_variable[variable] = transfers_by_variable.get(variable, []) + [transfer]
         self.transfers_by_source[zone.source] = transfers_by_variable
 
-    def handle(self, *args, **options):
+    def handle(self, zone_name, *args, **options):
+        query_zone_name = '' if zone_name == 'all' else zone_name
+
+        zones = SeedZone.objects.filter(source__istartswith=query_zone_name)
+        if not zones:
+            seed_zone_choices = SeedZone.objects.values_list('source', flat=True).order_by('source').distinct()
+            print('Error: {} zone does not exists'.format(zone_name))
+            print('Choices are:\n\t- {}'.format('\n\t- '.join(seed_zone_choices)))
+            return
+
         elevation_service = Service.objects.get(name='west2_dem')
         with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, elevation_service.data_path)) as ds:
             coords = SpatialCoordinateVariables.from_dataset(
@@ -165,14 +164,14 @@ class Command(BaseCommand):
             )
             elevation = ds.variables['elevation'][:]
 
-        message = 'WARNING: This will replace all your transfer limits. Do you want to continue? [y/n]'
+        message = 'WARNING: This will replace "{}" transfer limits. Do you want to continue? [y/n]'.format(zone_name)
         if input(message).lower() not in {'y', 'yes'}:
             return
 
         self.transfers_by_source = {}
 
         with transaction.atomic():
-            TransferLimit.objects.all().delete()
+            TransferLimit.objects.filter(zone__source__istartswith=query_zone_name).delete()
 
             for time_period in ('1961_1990', '1981_2010'):
                 for variable in VARIABLES:
@@ -182,7 +181,7 @@ class Command(BaseCommand):
                     with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, variable_service.data_path)) as ds:
                         data = ds.variables[variable][:]
 
-                    for zone in SeedZone.objects.all():
+                    for zone in zones:
                         clipped_elevation, clipped_data, clipped_coords = self._get_subsets(
                             elevation, data, coords, BBox(zone.polygon.extent)
                         )
@@ -195,7 +194,7 @@ class Command(BaseCommand):
                         masked_dem = numpy.ma.masked_where(zone_mask == 0, clipped_elevation)
                         min_elevation = max(math.floor(numpy.nanmin(masked_dem) / 0.3048), 0)
                         max_elevation = math.ceil(numpy.nanmax(masked_dem) / 0.3048)
-                        bands = list(self._get_bands_fn(zone.source)(zone.zone_id, min_elevation, max_elevation))
+                        bands = list(self._get_bands_fn(zone.bands_fn)(zone.zone_id, min_elevation, max_elevation))
 
                         if not bands:
                             print('WARNING: No elevation bands found for {}, zone {}'.format(

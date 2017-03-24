@@ -23,6 +23,7 @@ class SeedZone(gis_models.Model):
     zone_id = models.IntegerField(null=True)
     zone_uid = models.CharField(max_length=20, unique=True, null=True)
     polygon = gis_models.PolygonField(geography=True)
+    bands_fn = models.CharField(max_length=30, null=True)
 
 
 class TransferLimit(models.Model):

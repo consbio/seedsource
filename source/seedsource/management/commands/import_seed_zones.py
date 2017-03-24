@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 from tempfile import mkdtemp
@@ -13,30 +14,6 @@ from django.db.utils import IntegrityError
 from rasterio.warp import transform_geom
 
 from seedsource.models import SeedZone
-
-WASHINGTON_ZONES_DIR = 'WA_NEW_ZONES'
-OREGON_ZONES_DIR = 'Oregon_Seed_Zones'
-HISTORIC_ZONES_DIR = 'historic_seed_zones'
-CALIFORNIA_ZONES_DIR = 'updatedCAgeneric'
-
-WASHINGTON_ZONES = {
-    'psme': ('PSME.shp', 'Washington (2002) Douglas-fir Zone {zone_id}'),
-    'pico': ('PICO.shp', 'Washington (2002) lodgepole pine Zone {zone_id}'),
-    'pipo': ('PIPO.shp', 'Washington (2002) ponderosa pine Zone {zone_id}'),
-    'thpl': ('THPL.shp', 'Washington (2002) western redcedar Zone {zone_id}'),
-    'pimo': ('PIMO.shp', 'Washington (2002) western white pine Zone {zone_id}')
-}
-
-OREGON_ZONES = {
-    'psme': ('Douglas_Fir.shp', 'Oregon (1996) Douglas-fir Zone {zone_id}'),
-    'pico': ('Lodgepole_Pine.shp', 'Oregon (1996) lodgepole pine Zone {zone_id}'),
-    'pipo': ('Ponderosa_Pine.shp', 'Oregon (1996) ponderosa pine Zone {zone_id}'),
-    'thpl': ('Western_Red_Cedar.shp', 'Oregon (1996) western redcedar Zone {zone_id}'),
-    'pimo': ('Western_White_Pine.shp', 'Oregon (1996) western white pine Zone {zone_id}')
-}
-
-HISTORIC_ZONES = 'historic_seed_zones.shp'
-CALIFORNIA_ZONES = 'updatedCAgeneric.shp'
 
 SPECIES_NAMES = {
     'psme': 'Douglas-fir',
@@ -66,7 +43,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('zones_file', nargs=1, type=str)
 
-    def _add_zones(self, source, name, uid, species, path, zone_field):
+    def _add_zones(self, source, name, uid, species, path, zone_field, bands_fn):
         with fiona.open(path, 'r') as shp:
             for feature in shp:
                 try:
@@ -106,7 +83,7 @@ class Command(BaseCommand):
                         with transaction.atomic():
                             SeedZone.objects.create(
                                 source=source, name=zone_name, species=species, zone_id=zone_id, zone_uid=zone_uid,
-                                polygon=polygon
+                                polygon=polygon, bands_fn=bands_fn
                             )
                         break
                     except IntegrityError:
@@ -115,76 +92,65 @@ class Command(BaseCommand):
 
                         uid_suffix += 1
 
+    def _get_historic_name(self, zone_id, object_id):
+        # Special case: there are two zone 842s: one in WA and the other in OR
+        if zone_id == 842:
+            if object_id == 28:
+                state = 'Washington'
+            else:
+                state = 'Oregon'
+
+        elif zone_id in WA_HISTORIC:
+            state = 'Washington'
+        elif zone_id in OR_HISTORIC:
+            state = 'Oregon'
+        elif zone_id in WA_OR_HISTORIC:
+            state = 'Oregon & Washington'
+        else:
+            raise ValueError('Could not find state for zone {}'.format(zone_id))
+
+        return '{} (1966/1973) Zone {:03d}'.format(state, zone_id)
+
     def handle(self, zones_file, *args, **options):
         temp_dir = mkdtemp()
 
+        zones_file = zones_file[0]
+
         try:
-            with ZipFile(zones_file[0]) as zf:
+            with ZipFile(zones_file) as zf:
                 zf.extractall(temp_dir)
 
-            wa_zones = os.path.join(temp_dir, WASHINGTON_ZONES_DIR)
-            or_zones = os.path.join(temp_dir, OREGON_ZONES_DIR)
-            historic_zones = os.path.join(temp_dir, HISTORIC_ZONES_DIR)
-            california_zones = os.path.join(temp_dir, CALIFORNIA_ZONES_DIR)
+            with open(os.path.join(temp_dir, 'config.json'), 'r') as f:
+                config = json.loads(f.read())
 
             message = (
-                'WARNING: This will replace all your seed zone records and remove associated transfer limits. '
-                'Do you want to continue? [y/n]'
+                'WARNING: This will replace {} seed zone records and remove associated transfer limits. '
+                'Do you want to continue? [y/n]'.format(config['label'])
             )
             if input(message).lower() not in {'y', 'yes'}:
                 return
 
             with transaction.atomic():
-                SeedZone.objects.all().delete()
+                SeedZone.objects.filter(source__startswith=config['dir']).delete()
 
-                print('Loading Washington seed zones...')
+                print('Loading {} seed zones...'.format(config['label']))
 
-                for species, (zone_file, name) in WASHINGTON_ZONES.items():
+                zones = os.path.join(temp_dir, config['dir'])
+
+                for species, props in config['species'].items():
+                    zone_file = props['file']
+                    name = props['label']
+                    uid = props['name']
+                    col_name = props['column']
+                    bands_fn = props['bands_fn']
+
+                    if not name:
+                        name = getattr(self, '_get_{}_name'.format(config['label'].lower()))
+
                     self._add_zones(
-                        os.path.join(WASHINGTON_ZONES_DIR, zone_file), name, 'wa_{}_{{zone_id}}'.format(species),
-                        species, os.path.join(wa_zones, zone_file), 'ZONE_NO'
+                        os.path.join(config['dir'], zone_file), name, uid, species,
+                        os.path.join(zones, zone_file), col_name, bands_fn
                     )
-
-                print('Loading Oregon seed zones...')
-
-                for species, (zone_file, name) in OREGON_ZONES.items():
-                    self._add_zones(
-                        os.path.join(OREGON_ZONES_DIR, zone_file), name, 'or_{}_{{zone_id}}'.format(species), species,
-                        os.path.join(or_zones, zone_file), 'SZ{}'.format(species).upper()
-                    )
-
-                print('Loading historic seed zones...')
-
-                def get_historic_name(zone_id, object_id):
-                    # Special case: there are two zone 842s: one in WA and the other in OR
-                    if zone_id == 842:
-                        if object_id == 28:
-                            state = 'Washington'
-                        else:
-                            state = 'Oregon'
-
-                    elif zone_id in WA_HISTORIC:
-                        state = 'Washington'
-                    elif zone_id in OR_HISTORIC:
-                        state = 'Oregon'
-                    elif zone_id in WA_OR_HISTORIC:
-                        state = 'Oregon & Washington'
-                    else:
-                        raise ValueError('Could not find state for zone {}'.format(zone_id))
-
-                    return '{} (1966/1973) Zone {:03d}'.format(state, zone_id)
-
-                self._add_zones(
-                    os.path.join(HISTORIC_ZONES_DIR, HISTORIC_ZONES), get_historic_name, 'wa_or_historic_{zone_id}',
-                    'generic', os.path.join(historic_zones, HISTORIC_ZONES), 'SUBJ_FSZ'
-                )
-
-                print('Loading California seed zones...')
-
-                self._add_zones(
-                    os.path.join(CALIFORNIA_ZONES_DIR, CALIFORNIA_ZONES), 'California Zone {zone_id:03d}',
-                    'ca_{zone_id}', 'generic', os.path.join(california_zones, CALIFORNIA_ZONES), 'SEEDZNO'
-                )
 
         finally:
             try:
