@@ -313,12 +313,12 @@ export const reports = [
     {
         name: 'pdf',
         label: 'PDF',
-        reportUrl: '/sst/create-pdf/'
+        url: '/sst/create-pdf/'
     },
     {
         name: 'pptx',
         label: 'PPT',
-        reportUrl: '/sst/create-ppt/'
+        url: '/sst/create-ppt/'
     }
 ]
 

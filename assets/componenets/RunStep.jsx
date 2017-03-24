@@ -38,6 +38,7 @@ const RunStep = ({ number, configuration, canRun, canSave, isLoggedIn, reportIsF
                             data-toggle="dropdown"
                             aria-haspopup="true"
                             aria-expanded="false"
+                            disabled={!canSave || reportIsFetching}
                         >
                             <span className="icon12 icon-file" aria-hidden="true"></span>
                             {reportIsFetching ? 'Please wait...' : 'Export'}

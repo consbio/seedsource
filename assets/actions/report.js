@@ -41,16 +41,13 @@ export const createReport = name => {
         }
 
         dispatch(requestReport(name))
-        console.log(name)
-        console.log(reports)
-        const reportObj = reports.find(r => r.name === name)
-        console.log(reportObj)
+        const reportUrl = reports.find(r => r.name === name).url
         // Safari workaround
         let supportsDownloadAttr = "download" in document.createElement("a")
         if (!supportsDownloadAttr) {
             let form = document.createElement('form')
             form.method = 'POST'
-            form.action = reportObj.reportUrl
+            form.action = reportUrl
 
             for (let key in data) {
                 let input = document.createElement('input')
@@ -69,7 +66,7 @@ export const createReport = name => {
             return
         }
 
-        return post(reportObj.reportUrl, data).then(response => {
+        return post(reportUrl, data).then(response => {
             let { status } = response
 
             if (status >= 200 && status < 300) {
@@ -79,8 +76,7 @@ export const createReport = name => {
                 throw new Error('Bad status creating report: ' + response.status)
             }
         }).then(blob => {
-            const reportObj = reports.find(r => r.name == getState().report.name)
-            const filename = 'report.' + reportObj.name
+            const filename = 'report.' + getState().report.name
             if (navigator.msSaveBlob !== undefined) {
                 navigator.msSaveBlob(blob, filename)
             }
