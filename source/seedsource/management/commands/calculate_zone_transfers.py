@@ -184,10 +184,6 @@ class Command(BaseCommand):
                 for variable in VARIABLES:
                     print('Processing {} for {}...'.format(variable, time_period))
 
-                    variable_service = Service.objects.get(name='west2_{}Y_{}'.format(time_period, variable))
-                    with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, variable_service.data_path)) as ds:
-                        data = ds.variables[variable][:]
-
                     for zone in zones:
                         print(zone.name)
                         if zone.source != last_zone_set:
