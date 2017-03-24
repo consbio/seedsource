@@ -7,7 +7,7 @@ export const REQUEST_REPORT = 'REQUEST_REPORT'
 export const RECEIVE_REPORT = 'RECEIVE_REPORT'
 export const FAIL_REPORT = 'FAIL_REPORT'
 
-export const requestReport = (name) => {
+export const requestReport = name => {
     return {
         type: REQUEST_REPORT,
         name: name
