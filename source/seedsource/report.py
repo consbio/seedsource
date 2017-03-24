@@ -229,7 +229,7 @@ class Report(object):
         prs = Presentation(pptx_template_path)
 
         t = ctx['today']
-        date = '{}/{}/{}'.format('0' + str(t.month) if t.month < 10 else t.month, t.day, t.year)
+        date = t.strftime('%m/%d/%Y')
         attribution = '{} on {}'.format(ATTRIBUTION_TEXT, date)
 
         # Set map slide placeholders
@@ -295,9 +295,7 @@ class Report(object):
         def add_text_frame(tframe):
             p = tframe.paragraphs[0]
             for line in lines:
-                bold_text = line[0]
-                norm_text = line[1]
-                add_newline = line[2]
+                bold_text, norm_text, add_newline = line
                 run = p.add_run()
                 run.text = bold_text
                 run.font.bold = True
@@ -335,14 +333,12 @@ class Report(object):
         table.columns[2].width = Inches(3.0)
 
         # Fill column headings
-        row = 0
-        table.cell(row, 0).text = 'Variable'
-        table.cell(row, 1).text = 'Center'
-        table.cell(row, 2).text = 'Transfer limit (+/-)'
+        table.cell(0, 0).text = 'Variable'
+        table.cell(0, 1).text = 'Center'
+        table.cell(0, 2).text = 'Transfer limit (+/-)'
 
         # Now fill cells
-        for variable in ctx['variables']:
-            row += 1
+        for variable, row in enumerate(ctx['variables'], start=1):
             units = degree_sign(variable['units'])
             center_label = '{} {}'.format(variable['value'], units)
             limit_label = '{} {}{}'.format(variable['limit'], units, ' (modified)' if variable['modified'] else '')

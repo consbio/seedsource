@@ -84,35 +84,32 @@ class TransferLimitViewset(viewsets.ReadOnlyModelViewSet):
             )
 
 
-class GeneratePDFView(GenericAPIView):
+class ReportViewBase(GenericAPIView):
     serializer_class = GenerateReportSerializer
+
+    def _response(self, report):
+        raise NotImplementedError
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
+        return self._response(Report(data['configuration'], data['zoom'], data['tile_layers'], data['opacity']))
 
-        pdf_data = Report(data['configuration'], data['zoom'], data['tile_layers'], data['opacity']).get_pdf_data()
 
+class GeneratePDFView(ReportViewBase):
+    def _response(self, report):
+        pdf_data = report.get_pdf_data()
         response = HttpResponse(content=pdf_data.getvalue(), content_type='application/x-pdf')
         response['Content-disposition'] = 'attachment; filename=report.pdf'
-
         return response
 
 
-class GeneratePowerPointView(GenericAPIView):
-    serializer_class = GenerateReportSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        data = serializer.validated_data
-
-        pptx_data = Report(data['configuration'], data['zoom'], data['tile_layers'], data['opacity']).get_pptx_data()
-
+class GeneratePowerPointView(ReportViewBase):
+    def _response(self, report):
+        pptx_data = report.get_pptx_data()
         response = HttpResponse(content=pptx_data.getvalue(), content_type='application/vnd.ms-powerpoint')
         response['Content-disposition'] = 'attachment; filename=report.pptx'
-
         return response
 
 
