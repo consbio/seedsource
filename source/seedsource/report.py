@@ -59,7 +59,6 @@ RESULTS_RENDERER = StretchedRenderer([
 
 DEGREE_SIGN = u'\N{DEGREE SIGN}'
 
-# pptx-python indexes for report_template6.pptx
 # Map idxs
 MAP_IDX = 15
 SCALE_IDX = 21
@@ -225,7 +224,7 @@ class Report(object):
 
         ctx = self.get_context(img_as_bytes=True)
         pptx_template_path = os.path.join(settings.BASE_DIR, 'seedsource', 'static', 'sst', 'ppt',
-                                          'report_template6.pptx')
+                                          'report_template7.pptx')
         prs = Presentation(pptx_template_path)
 
         t = ctx['today']
@@ -324,7 +323,9 @@ class Report(object):
 
         # Insert table
         placeholder = variable_slide.placeholders[VAR_TABLE]
-        table = placeholder.insert_table(rows=len(ctx['variables'])+1, cols=3).table    # +1 row for column headings
+        numrows = len(ctx['variables'])+1
+        numcols = 3
+        table = placeholder.insert_table(rows=numrows, cols=numcols).table    # +1 row for column headings
         table.horz_banding = False
         table.vert_banding = False
 
@@ -338,7 +339,7 @@ class Report(object):
         table.cell(0, 2).text = 'Transfer limit (+/-)'
 
         # Now fill cells
-        for variable, row in enumerate(ctx['variables'], start=1):
+        for row, variable in enumerate(ctx['variables'], start=1):
             units = degree_sign(variable['units'])
             center_label = '{} {}'.format(variable['value'], units)
             limit_label = '{} {}{}'.format(variable['limit'], units, ' (modified)' if variable['modified'] else '')
@@ -347,9 +348,9 @@ class Report(object):
             table.cell(row, 2).text = limit_label
 
         # Now format the text. Easier to do this after being set
-        for i in range(row):
+        for i in range(numrows):
             font_size = Pt(18) if i == 0 else Pt(16)
-            for j in range(3):
+            for j in range(numcols):
                 p = table.cell(i, j).text_frame.paragraphs[0]
                 p.font.size = font_size
 
