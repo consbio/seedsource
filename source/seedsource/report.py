@@ -59,7 +59,7 @@ RESULTS_RENDERER = StretchedRenderer([
 
 DEGREE_SIGN = u'\N{DEGREE SIGN}'
 
-# pptx-python indexes for report_template5.pptx
+# pptx-python indexes for report_template6.pptx
 # Map idxs
 MAP_IDX = 15
 SCALE_IDX = 21
@@ -225,7 +225,7 @@ class Report(object):
 
         ctx = self.get_context(img_as_bytes=True)
         pptx_template_path = os.path.join(settings.BASE_DIR, 'seedsource', 'static', 'sst', 'ppt',
-                                          'report_template5.pptx')
+                                          'report_template6.pptx')
         prs = Presentation(pptx_template_path)
 
         t = ctx['today']
