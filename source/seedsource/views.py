@@ -18,8 +18,6 @@ from seedsource.serializers import RunConfigurationSerializer, SeedZoneSerialize
 from seedsource.serializers import TransferLimitSerializer, RegionSerializer
 from seedsource.utils import get_elevation_at_point, get_regions_for_point
 
-PPTX_MIME_TYPE = 'application/vnd.openxmlformats-officedocument.presentationml.presentation' # maybe we need it, maybe we dont
-
 
 class RunConfigurationViewset(viewsets.ModelViewSet):
     queryset = RunConfiguration.objects.all()
