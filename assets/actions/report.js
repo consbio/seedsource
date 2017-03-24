@@ -26,7 +26,7 @@ export const failReport = () => {
     }
 }
 
-export const createReport = (name) => {
+export const createReport = name => {
     return (dispatch, getState) => {
         let { lastRun, job, map } = getState()
         let { basemap, zoom, opacity } = map
