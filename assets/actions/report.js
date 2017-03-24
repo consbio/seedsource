@@ -1,30 +1,32 @@
 import { post } from '../io'
 import { setError } from './error'
 import { dumpConfiguration } from './saves'
+import { reports } from '../config'
 
-export const REQUEST_PDF = 'REQUEST_PDF'
-export const RECEIVE_PDF = 'RECEIVE_PDF'
-export const FAIL_PDF = 'FAIL_PDF'
+export const REQUEST_REPORT = 'REQUEST_REPORT'
+export const RECEIVE_REPORT = 'RECEIVE_REPORT'
+export const FAIL_REPORT = 'FAIL_REPORT'
 
-export const requestPDF = () => {
+export const requestReport = (name) => {
     return {
-        type: REQUEST_PDF
+        type: REQUEST_REPORT,
+        name: name
     }
 }
 
-export const receivePDF = () => {
+export const receiveReport = () => {
     return {
-        type: RECEIVE_PDF
+        type: RECEIVE_REPORT
     }
 }
 
-export const failPDF = () => {
+export const failReport = () => {
     return {
-        type: FAIL_PDF
+        type: FAIL_REPORT
     }
 }
 
-export const createPDF = () => {
+export const createReport = (name) => {
     return (dispatch, getState) => {
         let { lastRun, job, map } = getState()
         let { basemap, zoom, opacity } = map
@@ -38,14 +40,17 @@ export const createPDF = () => {
             opacity
         }
 
-        dispatch(requestPDF())
-
+        dispatch(requestReport(name))
+        console.log(name)
+        console.log(reports)
+        const reportObj = reports.find(r => r.name === name)
+        console.log(reportObj)
         // Safari workaround
         let supportsDownloadAttr = "download" in document.createElement("a")
         if (!supportsDownloadAttr) {
             let form = document.createElement('form')
             form.method = 'POST'
-            form.action = '/sst/create-pdf/'
+            form.action = reportObj.reportUrl
 
             for (let key in data) {
                 let input = document.createElement('input')
@@ -59,30 +64,32 @@ export const createPDF = () => {
             form.submit()
 
             // We don't know when the report is complete in this so wait a few seconds and dispatch the receive event
-            setTimeout(() => dispatch(receivePDF()), 5000)
+            setTimeout(() => dispatch(receiveReport()), 5000)
 
             return
         }
 
-        return post('/sst/create-pdf/', data).then(response => {
+        return post(reportObj.reportUrl, data).then(response => {
             let { status } = response
 
             if (status >= 200 && status < 300) {
                 return response.blob()
             }
             else {
-                throw new Error('Bad status creating PDF: ' + response.status)
+                throw new Error('Bad status creating report: ' + response.status)
             }
         }).then(blob => {
+            const reportObj = reports.find(r => r.name == getState().report.name)
+            const filename = 'report.' + reportObj.name
             if (navigator.msSaveBlob !== undefined) {
-                navigator.msSaveBlob(blob, 'report.pdf')
+                navigator.msSaveBlob(blob, filename)
             }
             else {
                 let reader = new FileReader()
                 reader.addEventListener('loadend', e => {
                     let node = document.createElement('a')
                     node.setAttribute('href', e.target.result)
-                    node.setAttribute('download', 'report.pdf')
+                    node.setAttribute('download', filename)
                     document.body.appendChild(node)
                     node.click()
                     document.body.removeChild(node)
@@ -90,18 +97,18 @@ export const createPDF = () => {
                 reader.readAsDataURL(blob)
             }
 
-            dispatch(receivePDF())
+            dispatch(receiveReport())
         }).catch(err => {
             console.log(err)
 
             dispatch(setError(
-                'Error creating PDF', 'Sorry, there was an error creating the PDF report.', JSON.stringify({
-                    action: 'createPDF',
+                'Error creating report', 'Sorry, there was an error creating the report.', JSON.stringify({
+                    action: 'createReport',
                     error: err ? err.message : null,
                     data
                 }, null, 2)
             ))
-            dispatch(failPDF())
+            dispatch(failReport())
         })
     }
 }

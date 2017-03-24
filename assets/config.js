@@ -314,3 +314,16 @@ export const regions = [
         boundaryData: null
     }
 ]
+
+export const reports = [
+    {
+        name: 'pdf',
+        label: 'PDF',
+        reportUrl: '/sst/create-pdf/'
+    },
+    {
+        name: 'pptx',
+        label: 'PPT',
+        reportUrl: '/sst/create-ppt/'
+    }
+]
