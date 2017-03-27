@@ -6,6 +6,8 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { topojson } from 'leaflet-omnivore'
+import TurfCenter from '@turf/center'
+import TurfDistance from '@turf/distance'
 import TurfInside from '@turf/inside'
 import { setMapOpacity, setBasemap, setZoom, toggleVisibility, setMapCenter } from '../actions/map'
 import { setPopupLocation, resetPopupLocation } from '../actions/popup'
@@ -19,7 +21,7 @@ class MapConnector extends React.Component {
 
         this.map = null
         this.regionsBoundaries = null
-        this.clickedRegions = []
+        this.clickedRegion = null
         this.resultRegion = null
         this.pointMarker = null
         this.variableLayer = null
@@ -125,17 +127,27 @@ class MapConnector extends React.Component {
 
             this.props.onPopupLocation(e.latlng.lat, e.latlng.lng)
 
-            for (let r of this.clickedRegions) {
-                this.removeBoundaryFromMap(r)
+            if (this.clickedRegion) {
+                this.removeBoundaryFromMap(this.clickedRegion)
             }
 
-            this.clickedRegions = []
             if (this.props.regionMethod === 'auto') {
+                let minDistance = Infinity
+
                 this.regionsBoundaries.eachLayer(layer => {
-                    if (TurfInside([e.latlng.lng, e.latlng.lat], layer.toGeoJSON()) && layer.feature.properties.region !== this.boundaryName) {
-                        this.clickedRegions.push(layer.feature.properties.region);
+                    let layerGeoJSON = layer.toGeoJSON()
+                    let isInside = TurfInside([e.latlng.lng, e.latlng.lat], layerGeoJSON)
+                    let distance = TurfDistance([e.latlng.lng, e.latlng.lat], TurfCenter(layerGeoJSON))
+
+                    if (isInside && distance < minDistance) {
+                        this.clickedRegion = layer.feature.properties.region;
+                        minDistance = distance
                     }
                 })
+
+                if (this.clickedRegion === this.boundaryName) {
+                    this.clickedRegion = null
+                }
             }
         })
 
@@ -210,7 +222,9 @@ class MapConnector extends React.Component {
     }
 
     addBoundaryToMap(region, color = '#000066') {
-        this.regionsBoundaries.setStyle(f => f.properties.region === region ? {opacity: 1, fillColor: color, fillOpacity: 0.3, color} : undefined)
+        this.regionsBoundaries.setStyle(
+            f => f.properties.region === region ? {opacity: 1, fillColor: color, fillOpacity: 0.3, color} : undefined
+        )
     }
 
     removeBoundaryFromMap(region) {
@@ -223,6 +237,11 @@ class MapConnector extends React.Component {
     }
 
     updateBoundaryLayer(region) {
+        if(this.props.regionMethod === 'custom' && this.clickedRegion) {
+            this.removeBoundaryFromMap(this.clickedRegion)
+            this.clickedRegion = null
+        }
+
         if (region !== null && region !== this.boundaryName) {
             this.boundaryName = region
 
@@ -318,7 +337,7 @@ class MapConnector extends React.Component {
             }
         }
     }
-    
+
     updateLegends(legends, activeVariable, serviceId, unit) {
         let mapLegends = []
 
@@ -398,8 +417,8 @@ class MapConnector extends React.Component {
         let { point, elevation } = popup
 
         if (point !== null) {
-            for (let r of this.clickedRegions) {
-                this.addBoundaryToMap(r, '#aaa')
+            if (this.clickedRegion) {
+                this.addBoundaryToMap(this.clickedRegion, '#aaa')
             }
 
             if (this.popup === null) {
@@ -428,10 +447,10 @@ class MapConnector extends React.Component {
                     this.map.closePopup(popup)
                     this.props.onMapClick(point.y, point.x)
 
-                    for (let r of this.clickedRegions) {
-                        this.removeBoundaryFromMap(r)
+                    if (this.clickedRegion) {
+                        this.removeBoundaryFromMap(this.clickedRegion)
+                        this.clickedRegion = null
                     }
-                    this.clickedRegions = []
                 })
 
                 this.popup = {
