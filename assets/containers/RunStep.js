@@ -3,7 +3,7 @@ import RunStep from '../componenets/RunStep'
 import { setError } from '../actions/error'
 import { createJob } from '../actions/job'
 import { showSaveModal } from '../actions/saves'
-import { createPDF } from '../actions/pdf'
+import { createReport, setExportMethod } from '../actions/report'
 
 const configurationCanRun = ({point, variables}) =>  {
     if (point === null || point.x === null || point.y === null) {
@@ -13,14 +13,14 @@ const configurationCanRun = ({point, variables}) =>  {
     return variables.length > 0 && variables.every(item => item.value !== null && item.isFetching === false)
 }
 
-const mapStateToProps = ({ runConfiguration, lastRun, job, isLoggedIn, pdfIsFetching }) => {
+const mapStateToProps = ({ runConfiguration, lastRun, job, isLoggedIn, reportIsFetching }) => {
     return {
         canRun: configurationCanRun(runConfiguration) && !job.isRunning,
         canSave: lastRun !== null,
         configuration: runConfiguration,
         job,
         isLoggedIn,
-        pdfIsFetching
+        reportIsFetching
     }
 }
 
@@ -47,8 +47,8 @@ const mapDispatchToProps = dispatch => {
             dispatch(showSaveModal())
         },
 
-        onPDF: () => {
-            dispatch(createPDF())
+        onExport: (name) => {
+            dispatch(createReport(name))
         }
     }
 }
