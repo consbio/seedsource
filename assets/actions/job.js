@@ -48,7 +48,8 @@ export const createJob = configuration => {
             }),
             limits: variables.map(item => {
                 return {min: item.value - item.transfer, max: item.value + item.transfer}
-            })
+            }),
+            region
         }
 
         dispatch(requestJob(configuration))

@@ -1,18 +1,33 @@
 import numpy
 from ncdjango.geoprocessing.data import Raster
-from ncdjango.geoprocessing.params import ListParameter, RasterParameter, DictParameter
+from ncdjango.geoprocessing.params import ListParameter, RasterParameter, DictParameter, StringParameter
 from ncdjango.geoprocessing.workflow import Task
+from numpy.ma import is_masked
+
+from seedsource.tasks.constraints import Constraint
 
 
 class GenerateScores(Task):
     name = 'sst:generate_scores'
     inputs = [
         ListParameter(RasterParameter(''), 'variables'),
-        DictParameter('limits')
+        DictParameter('limits'),
+        StringParameter('region'),
+        DictParameter('constraints', required=False)
     ]
     outputs = [RasterParameter('raster_out')]
 
-    def execute(self, variables, limits):
+    def apply_constraints(self, data, constraints, region):
+        if constraints is None:
+            return data
+
+        for constraint in constraints:
+            name, kwargs = constraint['name'], constraint['args']
+            data = Constraint.by_name(name)(data, region).apply_constraint(**kwargs)
+
+        return data
+
+    def execute(self, variables, limits, region, constraints=None):
         factors = []
 
         for limit in limits:
@@ -27,7 +42,10 @@ class GenerateScores(Task):
         sum_masks = None
 
         for i, data in enumerate(variables):
-            mask = data < limits[i]['min']
+            data = self.apply_constraints(data, constraints, region)
+            mask = data.mask if is_masked(data) else numpy.zeros_like(data, 'bool')
+
+            mask |= data < limits[i]['min']
             mask |= data > limits[i]['max']
 
             if sum_masks is not None:
