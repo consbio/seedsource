@@ -132,6 +132,19 @@
                         <div style="clear: both;">&nbsp;</div>
                         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
                     </form>
+                    <hr/>
+                    <p class="text-center">Or sign in using:</p>
+                    <div class="text-center">
+                        <a href="{% url 'social:begin' 'google-oauth2' %}">
+                            <img src="{% static 'sst/images/google.png' %}" />
+                        </a>
+                        <a href="{% url 'social:begin' 'facebook' %}">
+                            <img src="{% static 'sst/images/facebook.png' %}" />
+                        </a>
+                        <a href="{% url 'social:begin' 'twitter' %}">
+                            <img src="{% static 'sst/images/twitter.png' %}" />
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
