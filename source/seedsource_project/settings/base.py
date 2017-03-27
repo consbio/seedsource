@@ -64,6 +64,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'seedsource_project.urls'
@@ -108,6 +109,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = reverse_lazy('tool_page')
 SOCIAL_AUTH_LOGIN_ERROR_URL = reverse_lazy('tool_page')
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = CONFIG.get('google_oauth2_key', '')
