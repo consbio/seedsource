@@ -23,7 +23,7 @@ cache:
     - ~/.cache/pip
 
 addons:
-  postgresql: "9.4"
+  postgresql: "9.5"
   apt:
     packages:
       - gdal-bin
@@ -36,7 +36,7 @@ addons:
       - gfortran
       - netcdf-bin
       - libnetcdf-dev
-      - postgresql-9.4-postgis-2.2
+      - postgresql-9.5-postgis-2.3
 
 before_install:
   - "pip install GDAL==1.10"
