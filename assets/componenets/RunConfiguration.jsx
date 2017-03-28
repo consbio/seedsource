@@ -5,6 +5,7 @@ import RegionStep from '../containers/RegionStep'
 import ClimateStep from '../containers/ClimateStep'
 import TransferStep from '../containers/TransferStep'
 import VariableStep from '../containers/VariableStep'
+import ConstraintStep from '../containers/ConstraintStep'
 import RunStep from '../containers/RunStep'
 import { collapsibleSteps } from '../config'
 
@@ -63,6 +64,7 @@ class RunConfiguration extends React.Component {
             {type: ClimateStep, key: 'climate'},
             {type: TransferStep, key: 'transfer'},
             {type: VariableStep, key: 'variables'},
+            {type: ConstraintStep, key: 'constraints'},
             {type: RunStep, key: 'run'}
         ]
 

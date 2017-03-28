@@ -2,6 +2,7 @@ import point, { defaultState as defaultPoint } from './point'
 import variables from './variables'
 import zones from './zones'
 import climate from './climate'
+import constraints from './constraints'
 import { SELECT_OBJECTIVE } from '../actions/objectives'
 import { SET_LATITUDE, SET_LONGITUDE, SET_POINT, SET_ELEVATION } from '../actions/point'
 import { SELECT_SPECIES } from '../actions/species'
@@ -26,7 +27,8 @@ const defaultConfiguration = {
     unit: 'metric',
     zones: null,
     regionMethod: 'auto',
-    variables: []
+    variables: [],
+    constraints: []
 }
 
 export default (state = defaultConfiguration, action) => {
@@ -87,7 +89,8 @@ export default (state = defaultConfiguration, action) => {
     return morph(state, {
         variables: variables(state.variables, action),
         zones: zones(state.zones || undefined, action),
-        climate: climate(state.climate || undefined, action)
+        climate: climate(state.climate || undefined, action),
+        constraints: constraints(state.constraints, action)
     })
 }
 

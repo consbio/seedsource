@@ -285,6 +285,13 @@ export const species = [
     }
 ]
 
+export const constraints = {
+    elevation: {
+        min: null,
+        max: null
+    }
+}
+
 export const timeLabels = {
     '1961_1990': '1961 - 1990',
     '1981_2010': '1981 - 2010',
