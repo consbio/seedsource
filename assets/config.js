@@ -309,6 +309,19 @@ export const regions = [
     }
 ]
 
+export const reports = [
+    {
+        name: 'pdf',
+        label: 'PDF',
+        url: '/sst/create-pdf/'
+    },
+    {
+        name: 'pptx',
+        label: 'PPT',
+        url: '/sst/create-ppt/'
+    }
+]
+
 export const regionsBoundaries = topojson(
     '/static/sst/geometry/regions.topojson',
     null,
