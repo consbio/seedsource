@@ -21,9 +21,6 @@
     "webpack-bundle-tracker": "0.1.0"
   },
   "dependencies": {
-    "@turf/center": "^3.14.0",
-    "@turf/distance": "^3.14.0",
-    "@turf/inside": "^3.14.0",
     "babel-polyfill": "^6.9.1",
     "isomorphic-fetch": "^2.2.1",
     "leaflet-omnivore": "^0.3.4",
