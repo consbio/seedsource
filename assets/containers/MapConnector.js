@@ -145,7 +145,7 @@ class MapConnector extends React.Component {
                         region = validRegions[0]
                     }
 
-                    if (this.showPreview) {
+                    if (this.showPreview && this.boundaryName !== region) {
                         this.addBoundaryToMap(region, '#aaa')
                         this.clickedRegion = region
                     }
@@ -528,6 +528,7 @@ class MapConnector extends React.Component {
             }
         }
         else if (this.popup) {
+            this.cancelBoundaryPreview()
             this.map.closePopup(this.popup.popup)
             this.popup = null
         }
