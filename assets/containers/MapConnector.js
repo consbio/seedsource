@@ -21,7 +21,7 @@ class MapConnector extends React.Component {
         this.regionsBoundaries = null
         this.clickedRegion = null
         this.showPreview = false
-        this.resultRegion = null
+        this.resultRegion = props.resultRegion
         this.pointMarker = null
         this.variableLayer = null
         this.legend = null
@@ -170,6 +170,13 @@ class MapConnector extends React.Component {
         this.map.addLayer(this.regionsBoundaries)
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (this.resultRegion !== nextProps.resultRegion) {
+            this.removeBoundaryFromMap(this.resultRegion)
+            this.resultRegion = nextProps.resultRegion
+        }
+    }
+
     updatePointMarker(point) {
         let pointIsValid = point !== null && point.x && point.y
 
@@ -215,7 +222,7 @@ class MapConnector extends React.Component {
                 this.resultsLayer.setUrl(layerUrl)
             }
 
-            this.addBoundaryToMap(this.props.resultRegion, '#006600', false)
+            this.addBoundaryToMap(this.resultRegion, '#006600', false)
         }
         else if (this.resultsLayer !== null) {
             this.map.removeLayer(this.resultsLayer)
@@ -248,7 +255,7 @@ class MapConnector extends React.Component {
     }
 
     updateBoundaryLayer(region) {
-        if(this.props.regionMethod === 'custom' || region) {
+        if(this.props.regionMethod === 'custom') {
             this.cancelBoundaryPreview()
         }
 
@@ -261,8 +268,8 @@ class MapConnector extends React.Component {
             let regionObj = regions.find(r => r.name === region)
             this.addBoundaryToMap(regionObj.name, '#000066', false)
 
-            if (this.props.resultRegion) {
-                this.addBoundaryToMap(this.props.resultRegion, '#006600', false)
+            if (this.resultRegion) {
+                this.addBoundaryToMap(this.resultRegion, '#006600', false)
             }
         } else if (region === null) {
             this.boundaryName = null
