@@ -124,33 +124,9 @@ class MapConnector extends React.Component {
                 return
             }
 
-            this.cancelBoundaryPreview()
+            this.updateBoundaryPreview(e.latlng)
 
             this.props.onPopupLocation(e.latlng.lat, e.latlng.lng)
-
-            if (this.props.regionMethod === 'auto') {
-                let point = e.latlng
-                let regionUrl = '/sst/regions/?' + io.urlEncode({
-                    point: point.lng + ',' + point.lat
-                })
-
-                this.showPreview = true
-
-                io.get(regionUrl).then(response => response.json()).then(json => {
-                    let results = json.results
-                    let validRegions = results.map(region => region.name);
-
-                    let region = null
-                    if (validRegions.length) {
-                        region = validRegions[0]
-                    }
-
-                    if (this.showPreview && this.boundaryName !== region) {
-                        this.addBoundaryToMap(region, '#aaa')
-                        this.clickedRegion = region
-                    }
-                })
-            }
         })
 
         this.map.on('zoomend', () => {
@@ -176,6 +152,14 @@ class MapConnector extends React.Component {
             this.resultRegion = nextProps.resultRegion
         }
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.regionMethod === 'auto' && prevProps.regionMethod !== 'auto' && this.popup) {
+            let point = this.popup.point
+            this.updateBoundaryPreview({lng: point.x, lat: point.y})
+        }
+    }
+
 
     updatePointMarker(point) {
         let pointIsValid = point !== null && point.x && point.y
@@ -243,6 +227,33 @@ class MapConnector extends React.Component {
             this.regionsBoundaries.setStyle(f => f.properties.region === region ? style : undefined)
         } else {
             this.regionsBoundaries.setStyle(style)
+        }
+    }
+
+    updateBoundaryPreview(point) {
+        this.cancelBoundaryPreview()
+
+        if (this.props.regionMethod === 'auto') {
+            let regionUrl = '/sst/regions/?' + io.urlEncode({
+                point: point.lng + ',' + point.lat
+            })
+
+            this.showPreview = true
+
+            io.get(regionUrl).then(response => response.json()).then(json => {
+                let results = json.results
+                let validRegions = results.map(region => region.name);
+
+                let region = null
+                if (validRegions.length) {
+                    region = validRegions[0]
+                }
+
+                if (this.showPreview && this.boundaryName !== region) {
+                    this.addBoundaryToMap(region, '#aaa')
+                    this.clickedRegion = region
+                }
+            })
         }
     }
 
