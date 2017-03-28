@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import include, url
 from django.views.generic.base import TemplateView
 
 from . import views
@@ -15,5 +15,6 @@ urlpatterns = [
     url(
         r'^reset-password-success/', TemplateView.as_view(template_name='password_reset_success.html'),
         name='reset_password_success'
-    )
+    ),
+    url('', include('social_django.urls', namespace='social'))
 ]

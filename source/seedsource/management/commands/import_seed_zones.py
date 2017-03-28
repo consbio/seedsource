@@ -7,7 +7,7 @@ from zipfile import ZipFile
 import fiona
 import itertools
 from django.contrib.gis.geos import LinearRing
-from django.contrib.gis.geos import Polygon
+from django.contrib.gis.geos import Polygon, MultiPolygon
 from django.core.management import BaseCommand
 from django.db import transaction
 from django.db.utils import IntegrityError
@@ -20,7 +20,7 @@ SPECIES_NAMES = {
     'pico': 'Lodgepole pine',
     'pipo': 'Ponderosa pine',
     'thpl': 'Western redcedar',
-    'pimo': 'Wester white pine'
+    'pimo': 'Western white pine'
 }
 
 WA_HISTORIC = {
@@ -61,16 +61,19 @@ class Command(BaseCommand):
 
                 if hasattr(name, '__call__'):
                     object_id = feature['properties'].get('OBJECTID')
-                    zone_name = name(zone_id, object_id)
+                    zone_name = name(zone_id, object_id, feature)
                 else:
                     zone_name = name.format(zone_id=zone_id, species=SPECIES_NAMES.get(species))
 
                 geometry = transform_geom(shp.crs, {'init': 'EPSG:4326'}, feature['geometry'])
 
                 if feature['geometry']['type'] == 'MultiPolygon':
-                    geometry['coordinates'] = itertools.chain(*geometry['coordinates'])
+                    polygon = MultiPolygon(
+                        *[Polygon(*[LinearRing(x) for x in g]) for g in geometry['coordinates']]
+                    )
+                else:
+                    polygon = Polygon(*[LinearRing(x) for x in geometry['coordinates']])
 
-                polygon = Polygon(*[LinearRing(x) for x in geometry['coordinates']])
                 uid_suffix = 0
 
                 while True:
@@ -92,7 +95,7 @@ class Command(BaseCommand):
 
                         uid_suffix += 1
 
-    def _get_historic_name(self, zone_id, object_id):
+    def _get_historic_name(self, zone_id, object_id, feature):
         # Special case: there are two zone 842s: one in WA and the other in OR
         if zone_id == 842:
             if object_id == 28:

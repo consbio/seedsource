@@ -7,6 +7,7 @@ import numpy
 from clover.geometry.bbox import BBox
 from clover.netcdf.variable import SpatialCoordinateVariables
 from django.conf import settings
+from django.contrib.gis.geos import Polygon
 from django.core.management import BaseCommand
 from django.db import transaction
 from ncdjango.models import Service
@@ -14,7 +15,7 @@ from netCDF4 import Dataset
 from pyproj import Proj
 from rasterio.features import rasterize
 
-from seedsource.models import SeedZone, TransferLimit
+from seedsource.models import SeedZone, TransferLimit, Region
 
 VARIABLES = (
     'MAT', 'MWMT', 'MCMT', 'TD', 'MAP', 'MSP', 'AHM', 'SHM', 'DD_0', 'DD5', 'FFP', 'PAS', 'EMT', 'EXT', 'Eref', 'CMD'
@@ -117,6 +118,9 @@ class Command(BaseCommand):
         def or_pimo(zone_id, low, high):
             return [(low, high + 1)]
 
+        def no_bands(zone_id, low, high):
+            return [(low, high + 1)]
+
         return locals()[bands_fn]
 
     def _get_subsets(self, elevation, data, coords: SpatialCoordinateVariables, bbox):
@@ -150,7 +154,7 @@ class Command(BaseCommand):
     def handle(self, zone_name, *args, **options):
         query_zone_name = '' if zone_name == 'all' else zone_name
 
-        zones = SeedZone.objects.filter(source__istartswith=query_zone_name)
+        zones = SeedZone.objects.filter(source__istartswith=query_zone_name).order_by('source')
         if not zones:
             seed_zone_choices = SeedZone.objects.values_list('source', flat=True).order_by('source').distinct()
             print('Error: {} zone does not exists'.format(zone_name))
@@ -173,15 +177,42 @@ class Command(BaseCommand):
         with transaction.atomic():
             TransferLimit.objects.filter(zone__source__istartswith=query_zone_name).delete()
 
+            last_zone_set = None
+            last_region = None
+
             for time_period in ('1961_1990', '1981_2010'):
                 for variable in VARIABLES:
                     print('Processing {} for {}...'.format(variable, time_period))
 
-                    variable_service = Service.objects.get(name='west2_{}Y_{}'.format(time_period, variable))
-                    with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, variable_service.data_path)) as ds:
-                        data = ds.variables[variable][:]
-
                     for zone in zones:
+                        print(zone.name)
+                        if zone.source != last_zone_set:
+                            last_zone_set = zone.source
+                            region = Region.objects.filter(
+                                polygons__intersects=Polygon.from_bbox(zone.polygon.extent)
+                            ).first()
+
+                            if region != last_region:
+                                last_region = region
+
+                                print('Loading region {}'.format(region.name))
+
+                                elevation_service = Service.objects.get(name='{}_dem'.format(region.name))
+                                dataset_path = os.path.join(settings.NC_SERVICE_DATA_ROOT, elevation_service.data_path)
+
+                                with Dataset(dataset_path) as ds:
+                                    coords = SpatialCoordinateVariables.from_dataset(
+                                        ds, x_name='lon', y_name='lat', projection=Proj(elevation_service.projection)
+                                    )
+                                    elevation = ds.variables['elevation'][:]
+
+                                variable_service = Service.objects.get(
+                                    name='{}_{}Y_{}'.format(region.name, time_period, variable)
+                                )
+                                dataset_path = os.path.join(settings.NC_SERVICE_DATA_ROOT, variable_service.data_path)
+                                with Dataset(dataset_path) as ds:
+                                    data = ds.variables[variable][:]
+
                         clipped_elevation, clipped_data, clipped_coords = self._get_subsets(
                             elevation, data, coords, BBox(zone.polygon.extent)
                         )
