@@ -95,7 +95,7 @@ class Variable extends React.Component {
 
 
         let tooltip = (
-            <ReactTooltip id={name + "_Tooltip"} class="variable-tooltip" place="right" effect="solid">
+            <ReactTooltip id={name + "_Tooltip"} className="variable-tooltip" place="right" effect="solid">
                 <h4>{name}: {label}</h4>
                 <div><span className="tooltip-label">Value at point:</span> <strong>{value}</strong></div>
                 <div>

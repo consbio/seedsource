@@ -34,11 +34,12 @@ class ElevationConstraint(Constraint):
         except KeyError:
             raise ValueError('Missing constraint arguments')
 
-        if self.elevation is None:
+        if self.mask is None:
             service = Service.objects.get(name='{}_dem'.format(self.region))
             with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, service.data_path)) as ds:
                 elevation = ds.variables['elevation'][:]
 
-            self.mask = (elevation >= min_elevation) | (elevation <= max_elevation)
+            self.mask = (elevation < min_elevation)
+            self.mask |= (elevation > max_elevation)
 
         return numpy.ma.masked_where(self.mask, self.data)

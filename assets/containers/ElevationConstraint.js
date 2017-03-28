@@ -20,7 +20,10 @@ const mapDispatchToProps = dispatch => {
             let value = parseFloat(min)
 
             if (!isNaN(value)) {
-                console.log("...")
+                if (unit === 'imperial') {
+                    value *= 0.3048
+                }
+
                 dispatch(updateConstraintValues(index, {min: value}))
             }
         },
@@ -28,6 +31,10 @@ const mapDispatchToProps = dispatch => {
             let value = parseFloat(max)
 
             if (!isNaN(value)) {
+                if (unit === 'imperial') {
+                    value *= 0.3048
+                }
+
                 dispatch(updateConstraintValues(index, {max: value}))
             }
         }
