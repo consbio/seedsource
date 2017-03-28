@@ -95,7 +95,7 @@ class Command(BaseCommand):
 
                         uid_suffix += 1
 
-    def _get_historic_name(self, zone_id, object_id):
+    def _get_historic_name(self, zone_id, object_id, feature):
         # Special case: there are two zone 842s: one in WA and the other in OR
         if zone_id == 842:
             if object_id == 28:
