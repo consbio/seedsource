@@ -7,8 +7,8 @@ const mapStateToProps = ({ runConfiguration }, { values }) => {
     let { min, max } = values
 
     if (unit === 'imperial') {
-        min = Math.round(min / 0.3048)
-        max = Math.round(max / 0.3048)
+        min = min === null ? min : Math.round(min / 0.3048)
+        max = max === null ? max: Math.round(max / 0.3048)
     }
 
     return {unit, min, max}
@@ -20,6 +20,7 @@ const mapDispatchToProps = dispatch => {
             let value = parseFloat(min)
 
             if (!isNaN(value)) {
+                console.log("...")
                 dispatch(updateConstraintValues(index, {min: value}))
             }
         },

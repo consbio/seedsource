@@ -11,11 +11,14 @@ class ElevationConstraint extends React.Component {
         let { index, min, max, unit, onMinChange, onMaxChange } = this.props
 
         let { minValue, maxValue } = this.state
-        let unitLabel = unit === 'metric' ? 'm' : 'ft'
+        let unitLabel = unit === 'metric' ? 'meters' : 'feet'
+
+        min = min === null ? '' : min
+        max = max === null ? '' : max
 
         return (
-            <Constraint index={index} title="Elevation">
-                <span class="constraint-label">Between </span>
+            <Constraint index={index} title="Elevation" className="elevation-constraint">
+                <span className="constraint-label">Between&nbsp;</span>
                 <input
                     type="text"
                     className="form form-control form-inline"
@@ -24,7 +27,7 @@ class ElevationConstraint extends React.Component {
                         this.setState({minValue: e.target.value})
                     }}
                     onBlur={e => {
-                        if (parseFloat(e.target.value) !== parseFloat(minValue)) {
+                        if (parseFloat(e.target.value) !== parseFloat(min)) {
                             onMinChange(index, e.target.value, unit)
                         }
 
@@ -37,7 +40,7 @@ class ElevationConstraint extends React.Component {
                     }}
                 />
 
-                <span className="constraint-label"> and </span>
+                <span className="constraint-label">&nbsp;and&nbsp;</span>
                 <input
                     type="text"
                     className="form form-control form-inline"
@@ -46,7 +49,7 @@ class ElevationConstraint extends React.Component {
                         this.setState({maxValue: e.target.value})
                     }}
                     onBlur={e => {
-                        if (parseFloat(e.target.value) !== parseFloat(maxValue)) {
+                        if (parseFloat(e.target.value) !== parseFloat(max)) {
                             onMaxChange(index, e.target.value, unit)
                         }
 
@@ -58,7 +61,7 @@ class ElevationConstraint extends React.Component {
                         }
                     }}
                 />
-                <span>{unitLabel}</span>
+                <span>&nbsp;{unitLabel}</span>
             </Constraint>
         )
     }

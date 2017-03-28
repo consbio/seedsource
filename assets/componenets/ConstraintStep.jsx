@@ -16,7 +16,7 @@ const constraintMap = {
 const ConstraintStep = ({ number, active, constraints, onChange }) => {
     return (
         <ConfigurationStep title="Apply constraints" number={number} name="constraints" active={true}>
-            <div className="constraintsList">
+            <div className="constraint-list">
                 {constraints.map(({ type, values }, i) => {
                     let tag = {type: constraintMap[type]}
                     return <tag.type index={i} values={values} key={type + '_' + i} />

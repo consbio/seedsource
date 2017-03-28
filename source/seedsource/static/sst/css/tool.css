@@ -424,6 +424,31 @@ body {
     margin-right: 8px;
 }
 
+.constraint button.close {
+    float: left;
+    margin-right: 10px;
+    margin-top: -2px;
+}
+
+.constraint .constraint-body {
+    margin-left: 24px;
+}
+
+.constraint .constraint-label {
+    font-size: .8em;
+    color: #AAA;
+}
+
+.constraint-list .constraint:last-child {
+    margin-bottom: 20px;
+}
+
+.constraint.elevation-constraint input[type=text] {
+    width: 65px;
+    height: 25px;
+    text-align: right;
+}
+
 pre.error-debug-info {
     max-height: 200px;
     overflow: auto;

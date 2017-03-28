@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 
-const Constraint = ({ children, index, title, onRemove }) => (
-    <div class="constraint">
+const Constraint = ({ children, index, title, className, onRemove }) => (
+    <div className={'constraint ' + className}>
         <div>
             <button
                 type="button"
@@ -15,7 +15,7 @@ const Constraint = ({ children, index, title, onRemove }) => (
             </button>
             <span><strong>{title}</strong></span>
         </div>
-        <div class="constraint-body">
+        <div className="constraint-body">
             {children}
         </div>
     </div>
