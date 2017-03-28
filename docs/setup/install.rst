@@ -131,6 +131,21 @@ You can also add the following optional keys to your ``config.json``:
         "db_host": ""
     }
 
+These keys are needed for social authentication:
+
+.. code-block:: json
+
+    {
+        "google_oauth2_key": "",
+        "google_oauth2_secret": "",
+        "facebook_key": "",
+        "facebook_secret": "",
+        "twitter_key": "",
+        "twitter_secret": ""
+    }
+
+Make sure access to user email is activated by the OAuth provider.
+
 Create a new Python module in ``seedsource/source/seedsource_project/settings`` called ``custom.py``. Add the following
 to this new file:
 
