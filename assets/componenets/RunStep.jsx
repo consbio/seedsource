@@ -41,7 +41,8 @@ const RunStep = ({ number, configuration, canRun, canSave, isLoggedIn, reportIsF
                             disabled={!canSave || reportIsFetching}
                         >
                             <span className="icon12 icon-file" aria-hidden="true"></span>
-                            {reportIsFetching ? 'Please wait...' : 'Export'}
+                            {reportIsFetching ? 'Please wait...' : 'Export As...'} &nbsp;
+                            <b className="caret"></b>
                         </button>
                         <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="reportMenuButton">
                             {reports.map(r => (
