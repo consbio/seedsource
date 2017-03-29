@@ -216,8 +216,8 @@ class MapConnector extends React.Component {
 
     addBoundaryToMap(region, color, showFill = true) {
         let fillOpacity = showFill ? 0.3 : 0
-        this.regionsBoundaries.setStyle(
-            f => f.properties.region === region ? {opacity: 1, fillColor: color, fillOpacity, color} : undefined
+        this.regionsBoundaries.setStyle(f =>
+            f.properties.region === region ? {opacity: 1, fillColor: color, fillOpacity, color, weight: 2} : undefined
         )
     }
 
