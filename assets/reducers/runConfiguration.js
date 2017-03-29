@@ -12,6 +12,7 @@ import { SELECT_STEP } from '../actions/step'
 import { REQUEST_REPORT, RECEIVE_REPORT, FAIL_REPORT } from '../actions/report'
 import { SELECT_REGION_METHOD, SET_REGION, RECEIVE_REGIONS } from '../actions/region'
 import { morph } from '../utils'
+import { regions } from '../config'
 
 const defaultConfiguration = {
     objective: 'seedlots',
@@ -57,6 +58,9 @@ export default (state = defaultConfiguration, action) => {
 
                 if (action.method === 'auto') {
                     state.region = state.validRegions.length ? state.validRegions[0] : null
+                }
+                else if (state.region === null) {
+                    state.region = regions[0].name
                 }
 
                 return state
