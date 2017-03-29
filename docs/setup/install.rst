@@ -1,3 +1,5 @@
+.. _setup-install:
+
 Install & Project Setup
 =======================
 
@@ -34,6 +36,10 @@ Python Requirements
 * ``raven``
 * ``WeasyPrint``
 * ``gunicorn``
+* ``django-celery-results``
+* ``social-auth-app-django``
+* ``python-pptx``
+* ``django-webpack``
 
 Other Requirements
 ^^^^^^^^^^^^^^^^^^
@@ -151,6 +157,8 @@ to this new file:
 
 .. code-block:: python
 
+    from .production import *  # For development, import from .local instead
+
     ALLOWED_HOSTS = []  # Add your host name or names here. E.g., 'seedlotselectiontool.org'
 
 .. note::
@@ -228,6 +236,7 @@ Navigate to the ``seedsource`` root directory, install the npm dependencies, and
 
     $ npm install
     $ npm run-script webpack_production
+    $ npm run-script merge-regions
 
 One this completes, navigate to the ``source`` folder and run the ``collectstatic`` manage command:
 
