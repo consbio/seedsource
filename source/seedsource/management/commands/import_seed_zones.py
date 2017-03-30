@@ -63,7 +63,14 @@ class Command(BaseCommand):
                     object_id = feature['properties'].get('OBJECTID')
                     zone_name = name(zone_id, object_id, feature)
                 else:
-                    zone_name = name.format(zone_id=zone_id, species=SPECIES_NAMES.get(species))
+                    zone_name = name.format(
+                        zone_id=zone_id,
+                        species=SPECIES_NAMES.get(species),
+                        **{
+                            k.lower(): v for k, v in feature['properties'].items()
+                            if k.lower() not in {'zone_id', 'species'}
+                        }
+                    )
 
                 geometry = transform_geom(shp.crs, {'init': 'EPSG:4326'}, feature['geometry'])
 
