@@ -159,7 +159,14 @@ $('#InfoModal').on('show.bs.modal', function(event) {
     var button = $(event.relatedTarget);
     $('#InfoModal .modal-title').html(button.data('title'));
     $('#InfoModal .modal-body').addClass('hidden');
+
     $(button.data('content')).removeClass('hidden');
+    if ($(button.data('content') + '.modal-body.small').length) {
+        $('#InfoModal .modal-dialog').removeClass('modal-lg').addClass('modal-sm')
+    }
+    else {
+        $('#InfoModal .modal-dialog').removeClass('modal-sm').addClass('modal-lg')
+    }
 });
 
 $('#ForgotPasswordModal').on('hide.bs.modal', function() {
