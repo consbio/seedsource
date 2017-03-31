@@ -1,14 +1,17 @@
 import {
-    SET_POPUP_LOCATION, RESET_POPUP_LOCATION, REQUEST_POPUP_VALUE, RECEIVE_POPUP_VALUE, RECEIVE_POPUP_ELEVATION
+    SET_POPUP_LOCATION, RESET_POPUP_LOCATION, REQUEST_POPUP_VALUE, RECEIVE_POPUP_VALUE, RECEIVE_POPUP_ELEVATION,
+    REQUEST_POPUP_REGION, RECEIVE_POPUP_REGION
 } from '../actions/popup'
 import { REMOVE_VARIABLE, ADD_VARIABLE } from '../actions/variables'
+import { LOAD_CONFIGURATION } from '../actions/saves'
 import { morph } from '../utils'
 
 const defaultState = {
     point: null,
     isFetchingElevation: false,
     elevation: null,
-    values: []
+    values: [],
+    region: null
 }
 
 export default (state = defaultState, action) => {
@@ -56,6 +59,15 @@ export default (state = defaultState, action) => {
 
         case RECEIVE_POPUP_ELEVATION:
             return morph(state, {elevation: action.elevation})
+
+        case REQUEST_POPUP_REGION:
+            return morph(state, {region: null})
+
+        case RECEIVE_POPUP_REGION:
+            return morph(state, {region: action.region})
+
+        case LOAD_CONFIGURATION:
+            return defaultState
 
         default:
             return state

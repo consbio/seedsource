@@ -1,3 +1,5 @@
+.. _setup-install:
+
 Install & Project Setup
 =======================
 
@@ -34,6 +36,10 @@ Python Requirements
 * ``raven``
 * ``WeasyPrint``
 * ``gunicorn``
+* ``django-celery-results``
+* ``social-auth-app-django``
+* ``python-pptx``
+* ``django-webpack``
 
 Other Requirements
 ^^^^^^^^^^^^^^^^^^
@@ -131,10 +137,27 @@ You can also add the following optional keys to your ``config.json``:
         "db_host": ""
     }
 
+These keys are needed for social authentication:
+
+.. code-block:: json
+
+    {
+        "google_oauth2_key": "",
+        "google_oauth2_secret": "",
+        "facebook_key": "",
+        "facebook_secret": "",
+        "twitter_key": "",
+        "twitter_secret": ""
+    }
+
+Make sure access to user email is activated by the OAuth provider.
+
 Create a new Python module in ``seedsource/source/seedsource_project/settings`` called ``custom.py``. Add the following
 to this new file:
 
 .. code-block:: python
+
+    from .production import *  # For development, import from .local instead
 
     ALLOWED_HOSTS = []  # Add your host name or names here. E.g., 'seedlotselectiontool.org'
 
@@ -213,6 +236,7 @@ Navigate to the ``seedsource`` root directory, install the npm dependencies, and
 
     $ npm install
     $ npm run-script webpack_production
+    $ npm run-script merge-regions
 
 One this completes, navigate to the ``source`` folder and run the ``collectstatic`` manage command:
 

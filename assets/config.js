@@ -287,3 +287,38 @@ export const timeLabels = {
     '2085rcp45': '2085 RCP 4.5',
     '2085rcp85': '2085 RCP 8.5'
 }
+
+export const regions = [
+    {
+        name: 'ak2',
+        label: 'Alaska'
+    },
+    {
+        name: 'west2',
+        label: 'Western US'
+    },
+    {
+        name: 'nc1',
+        label: 'North Central'
+    },
+    {
+        name: 'ne1',
+        label: 'North East'
+    }
+]
+
+export const regionsBoundariesUrl = '/static/sst/geometry/regions.topojson'
+
+export const reports = [
+    {
+        name: 'pdf',
+        label: 'PDF',
+        url: '/sst/create-pdf/'
+    },
+    {
+        name: 'pptx',
+        label: 'PPT',
+        url: '/sst/create-ppt/'
+    }
+]
+

@@ -26,29 +26,36 @@ export default () => (
                 </p>
             </div>
             <div className="aboutStep">
+                <img src="/static/sst/images/about_region.gif" />
+                <h4>3. Select Region</h4>
+                <p>
+                    You can select the geographic region closest to your site or choose from a list of available regions
+                </p>
+            </div>
+            <div className="aboutStep">
                 <img src="/static/sst/images/about_climate.gif" />
-                <h4>3. Select Climate Scenarios</h4>
+                <h4>4. Select Climate Scenarios</h4>
                 <p>
                     You can select historical, current, or future climates for your seedlots of planting sites
                 </p>
             </div>
             <div className="aboutStep">
                 <img src="/static/sst/images/about_method.gif" />
-                <h4>4. Select Transfer Limit Method</h4>
+                <h4>5. Select Transfer Limit Method</h4>
                 <p>
                     You can enter your own custom limit or use an existing zone to calculate a transfer limit
                 </p>
             </div>
             <div className="aboutStep">
                 <img src="/static/sst/images/about_variables.gif" />
-                <h4>5. Select Climate Variables</h4>
+                <h4>6. Select Climate Variables</h4>
                 <p>
                     You can use a variety of climate variables to match your seedlot and planting site
                 </p>
             </div>
             <div className="aboutStep">
                 <img src="/static/sst/images/about_map.gif" />
-                <h4>6. Map your Results</h4>
+                <h4>7. Map your Results</h4>
                 <p>
                     The map shows where to find appropriate seedlots or planting sites
                 </p>

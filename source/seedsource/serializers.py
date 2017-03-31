@@ -2,7 +2,7 @@ from django.contrib.gis.geos import Point
 from rest_framework import serializers
 from rest_framework.exceptions import ParseError
 
-from seedsource.models import SeedZone, TransferLimit
+from seedsource.models import SeedZone, TransferLimit, Region
 from seedsource.utils import get_elevation_at_point
 from .models import RunConfiguration
 
@@ -69,8 +69,14 @@ class TransferLimitSerializer(serializers.ModelSerializer):
         fields = ('variable', 'zone', 'transfer', 'avg_transfer', 'center', 'low', 'high', 'time_period')
 
 
-class GeneratePDFSerializer(serializers.Serializer):
-    configuration = serializers.DictField()
-    tile_layers = serializers.ListField(child=serializers.CharField())
+class GenerateReportSerializer(serializers.Serializer):
+    configuration = serializers.JSONField()
+    tile_layers = serializers.JSONField()
     zoom = serializers.IntegerField()
     opacity = serializers.FloatField()
+
+
+class RegionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
+        fields = ('name',)

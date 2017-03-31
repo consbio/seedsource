@@ -34,10 +34,6 @@ class Variable extends React.Component {
             </span>
         )
 
-        if (zoneCenter === null) {
-            zoneCenter = 'N/A'
-        }
-
         if (editTransfer) {
             transferNode = (
                 <span>
@@ -86,6 +82,17 @@ class Variable extends React.Component {
             center = <span>{centerValue} {units[unit].label}</span>
         }
 
+        let climaticCenter = null
+        if (zoneCenter !== null) {
+            climaticCenter = (
+                <div>
+                    <span className="tooltip-label">Zone climatic center:</span>
+                    <strong>{zoneCenter} {units[unit].label}</strong>
+                </div>
+            )
+        }
+
+
         let tooltip = (
             <ReactTooltip id={name + "_Tooltip"} class="variable-tooltip" place="right" effect="solid">
                 <h4>{name}: {label}</h4>
@@ -98,10 +105,7 @@ class Variable extends React.Component {
                     <span className="tooltip-label">Avg. transfer limit for zone set:</span>
                     <strong>{avgTransfer} {units[unit].label}</strong>
                 </div>
-                <div>
-                    <span className="tooltip-label">Zone climatic center:</span>
-                    <strong>{zoneCenter} {units[unit].label}</strong>
-                </div>
+                {climaticCenter}
             </ReactTooltip>
         )
 

@@ -1,5 +1,9 @@
-export const getServiceName = (variable, objective, climate) => {
-    let serviceName = 'west2_'
+
+/* A shortcut for Object.assign({}, obj, props) */
+export const morph = (obj, props = {}) => Object.assign({}, obj, props)
+
+export const getServiceName = (variable, objective, climate, region) => {
+    let serviceName = region + '_'
 
     // Show site climate when looking for seedlots, and seedlot climate when looking for sites
     let selectedClimate = objective === 'seedlots' ? climate.site : climate.seedlot
@@ -25,6 +29,3 @@ export const getCookies = () => {
 
     return cookies
 }
-
-/* A shortcut for Object.assign({}, obj, props) */
-export const morph = (obj, props = {}) => Object.assign({}, obj, props)

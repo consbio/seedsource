@@ -4,7 +4,7 @@ import VariableStep from '../componenets/VariableStep'
 const mapStateToProps = ({ runConfiguration }) => {
     let { variables } = runConfiguration
 
-    return {variables}
+    return { variables }
 }
 
 export default connect(mapStateToProps)(VariableStep)

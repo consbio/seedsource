@@ -493,10 +493,6 @@ pre.error-debug-info {
     vertical-align: bottom;
 }
 
-.legend-item.results img {
-    transform: rotate(180deg);
-}
-
 .map-info-popup {
     min-width: 150px;
 }
@@ -560,4 +556,31 @@ pre.error-debug-info {
     height: 18px;
     display: inline-block;
     background-size: 18px 18px;
+}
+
+.thumbnail {
+    margin-bottom: 0;
+    padding: 0;
+    border: 5px solid #ddd;
+}
+
+.thumbnail.img {
+    cursor: inherit;
+}
+
+.thumbnail-label {
+    text-align: center;
+    margin: 0;
+}
+
+.thumbnail-disabled {
+    cursor: not-allowed;
+}
+
+a.thumbnail-disabled:hover, a.thumbnail-disabled:focus {
+    border-color: #ddd;
+}
+
+a.thumbnail-disabled.active:hover, a.thumbnail-disabled.active:focus {
+    border-color: #337ab7;
 }

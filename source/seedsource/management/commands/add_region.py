@@ -51,7 +51,14 @@ class Command(BaseCommand):
             with fiona.open(file, 'r') as shp:
                 for feature in shp:
                     geometry = transform_geom(shp.crs, {'init': 'EPSG:4326'}, feature['geometry'])
-                    polygons.append(Polygon(*[LinearRing(x) for x in geometry['coordinates']]))
+
+                    if geometry['type'] == 'MultiPolygon':
+                        coordinate_set = geometry['coordinates']
+                    else:
+                        coordinate_set = [geometry['coordinates']]
+
+                    for coordinates in coordinate_set:
+                        polygons.append(Polygon(*[LinearRing(x) for x in coordinates]))
 
             with transaction.atomic():
                 Region.objects.filter(name__iexact=name).delete()

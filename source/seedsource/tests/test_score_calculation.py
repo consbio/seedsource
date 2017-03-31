@@ -25,7 +25,7 @@ def test_generate_scores_workflow_validity():
     cmd = Raster(numpy.array([[292, 305], [300, 291]]), BBox((0, 0, 10, 10)), 1, 0)
     limits = [{'min': 264, 'max': 304}, {'min': 271, 'max': 311}]
     expected_mask = numpy.array([[False, False], [True, False]])
-    expected_results = numpy.ma.masked_array([[5, 86], [None, 70]], mask=expected_mask)
+    expected_results = numpy.ma.masked_array([[95, 14], [None, 30]], mask=expected_mask)
 
     results = GenerateScores()(variables=[ahm, cmd], limits=limits)
 

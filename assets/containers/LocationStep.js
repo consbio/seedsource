@@ -6,7 +6,7 @@ const mapStateToProps = ({ runConfiguration }) => {
     let { elevation } = point
 
     if (elevation !== null) {
-        elevation = elevation / 0.3048
+        elevation = {ft: elevation / 0.3048, m: elevation}
     }
 
     return {objective, point, elevation}

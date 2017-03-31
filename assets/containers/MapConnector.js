@@ -5,18 +5,23 @@
 
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { setMapOpacity, setBasemap, setZoom, toggleVisibility } from '../actions/map'
+import { topojson } from 'leaflet-omnivore'
+import { setMapOpacity, setBasemap, setZoom, toggleVisibility, setMapCenter } from '../actions/map'
 import { setPopupLocation, resetPopupLocation } from '../actions/popup'
 import { setPoint } from '../actions/point'
 import { getServiceName } from '../utils'
-import { variables, timeLabels } from '../config'
-import { get, urlEncode } from '../io'
+import { variables, timeLabels, regions, regionsBoundariesUrl } from '../config'
+import * as io from '../io'
 
 class MapConnector extends React.Component {
     constructor(props) {
         super(props)
 
         this.map = null
+        this.regionsBoundaries = null
+        this.clickedRegion = null
+        this.showPreview = false
+        this.resultRegion = props.resultRegion
         this.pointMarker = null
         this.variableLayer = null
         this.legend = null
@@ -25,18 +30,31 @@ class MapConnector extends React.Component {
         this.currentZone = null
         this.opacityControl = null
         this.visibilityButton = null
-        this.boundaryData = null
-        this.boundaryLayers = null
+        this.boundaryName = null
         this.popup = null
+        this.mapIsMoving = false
     }
 
     // Initial map setup
     componentWillMount() {
         this.map = L.map('Map', {
-            zoom: 5,
-            center: [44.68, -109.36],
+            zoom: 4,
+            center: [55.0, -112.0],
             minZoom: 3,
             maxZoom: 13
+        })
+
+        this.map.on('moveend', event => {
+            this.mapIsMoving = false
+            setTimeout(function() {
+                if (!this.mapIsMoving) {
+                    this.props.onMapMove(this.map.getCenter())
+                }
+            }.bind(this), 1)
+        })
+
+        this.map.on('movestart', event => {
+            this.mapIsMoving = true;
         })
 
         this.map.zoomControl.setPosition('topright')
@@ -106,6 +124,8 @@ class MapConnector extends React.Component {
                 return
             }
 
+            this.updateBoundaryPreview(e.latlng)
+
             this.props.onPopupLocation(e.latlng.lat, e.latlng.lng)
         })
 
@@ -113,11 +133,33 @@ class MapConnector extends React.Component {
             this.props.onZoomChange(this.map.getZoom())
         })
 
-        // Load boundary data
-        get('/static/sst/geometry/west2_boundary.json')
-            .then(result => result.json())
-            .then(json => {this.boundaryData = json})
+        this.regionsBoundaries = topojson(
+            regionsBoundariesUrl,
+            null,
+            L.geoJson(null, {
+                style: {
+                    fillColor: 'transparent',
+                    opacity: 0
+                }
+            })
+        )
+        this.map.addLayer(this.regionsBoundaries)
     }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.resultRegion !== nextProps.resultRegion) {
+            this.removeBoundaryFromMap(this.resultRegion)
+            this.resultRegion = nextProps.resultRegion
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.regionMethod === 'auto' && prevProps.regionMethod !== 'auto' && this.popup) {
+            let point = this.popup.point
+            this.updateBoundaryPreview({lng: point.x, lat: point.y})
+        }
+    }
+
 
     updatePointMarker(point) {
         let pointIsValid = point !== null && point.x && point.y
@@ -136,9 +178,9 @@ class MapConnector extends React.Component {
         }
     }
 
-    updateVariableLayer(variable, objective, climate) {
+    updateVariableLayer(variable, objective, climate, region) {
         if (variable !== null) {
-            let layerUrl = '/tiles/' + getServiceName(variable, objective, climate) + '/{z}/{x}/{y}.png'
+            let layerUrl = '/tiles/' + getServiceName(variable, objective, climate, region) + '/{z}/{x}/{y}.png'
 
             if (this.variableLayer === null) {
                 this.variableLayer = L.tileLayer(layerUrl, {zIndex: 1, opacity: 1}).addTo(this.map)
@@ -163,6 +205,8 @@ class MapConnector extends React.Component {
             else if (layerUrl !== this.resultsLayer._url) {
                 this.resultsLayer.setUrl(layerUrl)
             }
+
+            this.addBoundaryToMap(this.resultRegion, '#006600', false)
         }
         else if (this.resultsLayer !== null) {
             this.map.removeLayer(this.resultsLayer)
@@ -170,24 +214,81 @@ class MapConnector extends React.Component {
         }
     }
 
-    updateBoundaryLayer(serviceId, showResults) {
-        if (serviceId !== null && showResults && this.boundaryData !== null) {
-            if (this.boundaryLayers === null) {
-                this.boundaryLayers = this.boundaryData.features.map(feature => (
-                    L.geoJson(feature, {
-                        style: {
-                            color: '#006',
-                            opacity: .7,
-                            weight: 2,
-                            fill: false
-                        }
-                    }).addTo(this.map)
-                ))
-            }
+    addBoundaryToMap(region, color, showFill = true) {
+        let fillOpacity = showFill ? 0.3 : 0
+        this.regionsBoundaries.setStyle(f =>
+            f.properties.region === region ? {opacity: 1, fillColor: color, fillOpacity, color, weight: 2} : undefined
+        )
+    }
+
+    removeBoundaryFromMap(region) {
+        let style = {opacity: 0, fillColor: 'transparent', fillOpacity: 0}
+        if (region) {
+            this.regionsBoundaries.setStyle(f => f.properties.region === region ? style : undefined)
+        } else {
+            this.regionsBoundaries.setStyle(style)
         }
-        else if (this.boundaryLayers !== null) {
-            this.boundaryLayers.forEach(layer => this.map.removeLayer(layer))
-            this.boundaryLayers = null
+    }
+
+    updateBoundaryPreview(point) {
+        this.cancelBoundaryPreview()
+
+        if (this.props.regionMethod === 'auto') {
+            let regionUrl = '/sst/regions/?' + io.urlEncode({
+                point: point.lng + ',' + point.lat
+            })
+
+            this.showPreview = true
+
+            io.get(regionUrl).then(response => response.json()).then(json => {
+                let results = json.results
+                let validRegions = results.map(region => region.name);
+
+                let region = null
+                if (validRegions.length) {
+                    region = validRegions[0]
+                }
+
+                if (this.showPreview && this.boundaryName !== region) {
+                    this.addBoundaryToMap(region, '#aaa')
+                    this.clickedRegion = region
+                }
+            })
+        }
+    }
+
+    cancelBoundaryPreview() {
+        this.showPreview = false
+        if (this.clickedRegion) {
+            this.removeBoundaryFromMap(this.clickedRegion)
+            this.clickedRegion = null
+        }
+    }
+
+    updateBoundaryLayer(region) {
+        if(this.props.regionMethod === 'custom') {
+            this.cancelBoundaryPreview()
+        }
+
+        if (region !== null && region !== this.boundaryName) {
+            this.boundaryName = region
+
+            // Remove existing layer from viewer
+            this.removeBoundaryFromMap()
+
+            let regionObj = regions.find(r => r.name === region)
+            this.addBoundaryToMap(regionObj.name, '#000066', false)
+
+            if (this.resultRegion) {
+                this.addBoundaryToMap(this.resultRegion, '#006600', false)
+            }
+        } else if (region === null) {
+            this.boundaryName = null
+            this.removeBoundaryFromMap()
+
+            if (this.showPreview && this.clickedRegion) {
+                this.addBoundaryToMap(this.clickedRegion, '#aaa')
+            }
         }
     }
 
@@ -268,7 +369,7 @@ class MapConnector extends React.Component {
             }
         }
     }
-    
+
     updateLegends(legends, activeVariable, serviceId, unit) {
         let mapLegends = []
 
@@ -276,7 +377,7 @@ class MapConnector extends React.Component {
             mapLegends.push({
                 label: 'Match',
                 className: 'results',
-                elements: [...legends.results.legend].reverse()
+                elements: legends.results.legend
             })
         }
 
@@ -370,6 +471,7 @@ class MapConnector extends React.Component {
                 }).setLatLng([point.y, point.x]).setContent(container).openOn(this.map)
 
                 L.DomEvent.on(button, 'click', () => {
+                    this.cancelBoundaryPreview()
                     let { point } = this.popup
                     this.map.closePopup(popup)
                     this.props.onMapClick(point.y, point.x)
@@ -399,7 +501,10 @@ class MapConnector extends React.Component {
                 this.popup.location.innerHTML = locationLabel
             }
 
-            let elevationLabel = elevation === null ? 'N/A' : Math.round(elevation / 0.3048) + ' ft'
+            let elevationLabel = 'N/A'
+            if (elevation !== null) {
+                elevationLabel = Math.round(elevation / 0.3048) + ' ft (' + Math.round(elevation) + ' m)'
+            }
             if (elevationLabel !== this.popup.elevationLabel.innerHTML) {
                 this.popup.elevationLabel.innerHTML = elevationLabel
             }
@@ -434,28 +539,38 @@ class MapConnector extends React.Component {
             }
         }
         else if (this.popup) {
+            this.cancelBoundaryPreview()
             this.map.closePopup(this.popup.popup)
             this.popup = null
+        }
+    }
+
+    updateMapCenter(center) {
+        let mapCenter = this.map.getCenter()
+
+        if (center[0] != mapCenter.lat || center[1] != mapCenter.lng) {
+            this.map.setView(center)
         }
     }
 
     render() {
         let {
             activeVariable, objective, point, climate, opacity, job, showResults, legends, popup, unit, method, zone,
-            geometry
+            geometry, center, region
         } = this.props
         let { serviceId } = job
 
         this.updatePointMarker(point)
-        this.updateVariableLayer(activeVariable, objective, climate)
+        this.updateVariableLayer(activeVariable, objective, climate, region)
         this.updateResultsLayer(serviceId, showResults)
-        this.updateBoundaryLayer(serviceId, showResults)
+        this.updateBoundaryLayer(region)
         this.updateOpacity(opacity, serviceId, activeVariable)
         this.updateVisibilityButton(serviceId, showResults)
         this.updateTimeOverlay(activeVariable, objective, climate)
         this.updateLegends(legends, activeVariable, serviceId, unit)
         this.updateZoneLayer(method, zone, geometry)
         this.updatePopup(popup, unit)
+        this.updateMapCenter(center)
 
         return null
     }
@@ -468,19 +583,21 @@ MapConnector.propTypes = {
     onMapClick: PropTypes.func.isRequired,
     onPopupLocation: PropTypes.func.isRequired,
     onPopupClose: PropTypes.func.isRequired,
-    onToggleVisibility: PropTypes.func.isRequired
+    onToggleVisibility: PropTypes.func.isRequired,
+    onMapMove: PropTypes.func.isRequired
 }
 
 const mapStatetoProps = state => {
-    let { runConfiguration, activeVariable, map, job, legends, popup } = state
-    let { opacity, showResults } = map
-    let { objective, point, climate, unit, method, zones } = runConfiguration
+    let { runConfiguration, activeVariable, map, job, legends, popup, lastRun } = state
+    let { opacity, showResults, center } = map
+    let { objective, point, climate, unit, method, zones, region, regionMethod } = runConfiguration
     let { geometry } = zones
     let zone = zones.selected
+    let resultRegion = lastRun ? lastRun.region : null
 
     return {
         activeVariable, objective, point, climate, opacity, job, showResults, legends, popup, unit, method, geometry,
-        zone
+        zone, center, region, regionMethod, resultRegion
     }
 }
 
@@ -513,6 +630,10 @@ const mapDispatchToProps = dispatch => {
 
         onToggleVisibility: () => {
             dispatch(toggleVisibility())
+        },
+
+        onMapMove: center => {
+            dispatch(setMapCenter([center.lat, center.lng]))
         }
     }
 }

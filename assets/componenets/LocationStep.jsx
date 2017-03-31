@@ -13,7 +13,7 @@ class LocationStep extends React.Component {
         if (elevation !== null) {
             elevation = (
                 <div>
-                    <div><strong>Elevation:</strong> {Math.round(elevation)} ft</div>
+                    <div><strong>Elevation:</strong> {Math.round(elevation.ft)} ft ({Math.round(elevation.m)} m)</div>
                 </div>
             )
         }
@@ -79,7 +79,7 @@ LocationStep.propTypes = {
     active: PropTypes.bool.isRequired,
     point: PropTypes.object,
     objective: PropTypes.string.isRequired,
-    elevation: PropTypes.number,
+    elevation: PropTypes.object,
     number: PropTypes.number.isRequired
 }
 

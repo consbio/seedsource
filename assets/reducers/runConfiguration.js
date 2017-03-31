@@ -9,19 +9,23 @@ import { SELECT_UNIT, SELECT_METHOD, SELECT_CENTER } from '../actions/variables'
 import { LOAD_CONFIGURATION, RESET_CONFIGURATION } from '../actions/saves'
 import { FINISH_JOB } from '../actions/job'
 import { SELECT_STEP } from '../actions/step'
-import { REQUEST_PDF, RECEIVE_PDF, FAIL_PDF } from '../actions/pdf'
+import { REQUEST_REPORT, RECEIVE_REPORT, FAIL_REPORT } from '../actions/report'
+import { SELECT_REGION_METHOD, SET_REGION, RECEIVE_REGIONS } from '../actions/region'
 import { morph } from '../utils'
+import { regions } from '../config'
 
 const defaultConfiguration = {
     objective: 'seedlots',
     species: 'generic',
     point: defaultPoint,
-    region: 'west2',
+    region: null,
+    validRegions: [],
     climate: null,
     method: 'custom',
     center: 'point',
     unit: 'metric',
     zones: null,
+    regionMethod: 'auto',
     variables: []
 }
 
@@ -48,6 +52,24 @@ export default (state = defaultConfiguration, action) => {
 
             case SELECT_CENTER:
                 return morph(state, {center: action.center})
+
+            case SELECT_REGION_METHOD:
+                state = morph(state, {regionMethod: action.method})
+
+                if (action.method === 'auto') {
+                    state.region = state.validRegions.length ? state.validRegions[0] : null
+                }
+                else if (state.region === null) {
+                    state.region = regions[0].name
+                }
+
+                return state
+
+            case SET_REGION:
+                return morph(state, {region: action.region})
+
+            case RECEIVE_REGIONS:
+                return morph(state, {validRegions: action.regions})
 
             case RESET_CONFIGURATION:
                 return defaultConfiguration
@@ -92,13 +114,13 @@ export const activeStep = (state = 'objective', action) => {
     }
 }
 
-export const pdfIsFetching = (state = false, action) => {
+export const reportIsFetching = (state = false, action) => {
     switch (action.type) {
-        case REQUEST_PDF:
+        case REQUEST_REPORT:
             return true
 
-        case RECEIVE_PDF:
-        case FAIL_PDF:
+        case RECEIVE_REPORT:
+        case FAIL_REPORT:
             return false
 
         default:
