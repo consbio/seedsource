@@ -42,9 +42,10 @@ export const createReport = name => {
 
         dispatch(requestReport(name))
         const reportUrl = reports.find(r => r.name === name).url
+
         // Safari workaround
         let supportsDownloadAttr = "download" in document.createElement("a")
-        if (!supportsDownloadAttr) {
+        if (!supportsDownloadAttr && navigator.msSaveBlob === undefined) {
             let form = document.createElement('form')
             form.method = 'POST'
             form.action = reportUrl
