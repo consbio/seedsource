@@ -455,7 +455,15 @@ class MapImage(object):
 
     def draw_zone_geometry(self, im):
         if self.zone_id is not None:
-            self.draw_geometry(im, SeedZone.objects.get(pk=self.zone_id).polygon.coords[0], (0, 255, 0), 3)
+            polygon = SeedZone.objects.get(pk=self.zone_id).polygon
+
+            if polygon.geom_type == 'MultiPolygon':
+                geometries = polygon.coords
+            else:
+                geometries = [polygon.coords]
+
+            for geometry in geometries:
+                self.draw_geometry(im, geometry[0], (0, 255, 0), 3)
 
     def draw_region_geometry(self, im):
         try:
