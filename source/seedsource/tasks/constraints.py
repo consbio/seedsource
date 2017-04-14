@@ -90,7 +90,7 @@ class PhotoperiodConstraint(Constraint):
 
         julian_day = self.get_julian_day(date)
 
-        lat_arr = numpy.tile(lat.reshape(len(lon), 1), (1, len(lon)))
+        lat_arr = numpy.tile(lat.reshape(len(lat), 1), (1, len(lon)))
         lon_arr = numpy.tile(lon, (len(lat), 1))
 
         # solar_noon = julian_day - lon//360
@@ -182,6 +182,7 @@ class PhotoperiodConstraint(Constraint):
         # return (sunset - sunrise) * 24
         numpy.degrees(hour_angle, hour_angle)
         hour_angle /= 360
+        solar_transit = solar_transit.astype('float64')
         days = (solar_transit + hour_angle) - (solar_transit - hour_angle)
         days *= 24
         return days

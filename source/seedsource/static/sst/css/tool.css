@@ -449,6 +449,20 @@ body {
     text-align: right;
 }
 
+.constraint.photoperiod-constraint input[type=text] {
+    width: 45px;
+    height: 25px;
+    text-align: right;
+}
+
+.constraint.photoperiod-constraint .photoperiod-month {
+    width: 100px;
+}
+
+.constraint.photoperiod-constraint .photoperiod-day {
+    width: 45px;
+}
+
 pre.error-debug-info {
     max-height: 200px;
     overflow: auto;

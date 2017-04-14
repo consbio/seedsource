@@ -1,5 +1,6 @@
 import { get, post } from '../io'
 import { setError } from './error'
+import { morph } from '../utils'
 
 export const RECEIVE_JOB = 'RECEIVE_JOB'
 export const FAIL_JOB = 'FAIL_JOB'
@@ -30,7 +31,7 @@ export const requestJob = configuration => {
 
 export const createJob = configuration => {
     return dispatch => {
-        let { variables, objective, climate, region, constraints } = configuration
+        let { variables, objective, climate, region, constraints, point } = configuration
 
         let inputs = {
             variables: variables.map(item => {
@@ -50,7 +51,8 @@ export const createJob = configuration => {
                 return {min: item.value - item.transfer, max: item.value + item.transfer}
             }),
             constraints: constraints.map(({ type, values }) => {
-                return {name: type, args: values}
+                let { x, y } = point
+                return {name: type, args: morph(values, {lat: y, lon: x})}
             }),
             region
         }

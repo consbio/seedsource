@@ -289,6 +289,12 @@ export const constraints = {
     elevation: {
         min: null,
         max: null
+    },
+    photoperiod: {
+        minutes: null,
+        month: 1,
+        day: 1,
+        year: 1961
     }
 }
 
