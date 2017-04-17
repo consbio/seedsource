@@ -1,7 +1,7 @@
 amqp==2.1.1
 celery==4.0.0
 git+https://github.com/consbio/clover.git
-Django==1.8.16
+Django==1.8.18
 django-celery
 djangorestframework==3.5.3
 Fiona==1.7.1
