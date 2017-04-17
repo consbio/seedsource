@@ -295,6 +295,10 @@ export const constraints = {
         month: 1,
         day: 1,
         year: 1961
+    },
+    latitude: {
+        min: null,
+        max: null
     }
 }
 

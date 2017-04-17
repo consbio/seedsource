@@ -463,6 +463,12 @@ body {
     width: 45px;
 }
 
+.constraint.latlon-constraint input[type=text] {
+    width: 65px;
+    height: 25px;
+    text-align: right;
+}
+
 pre.error-debug-info {
     max-height: 200px;
     overflow: auto;

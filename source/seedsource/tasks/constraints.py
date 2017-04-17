@@ -3,6 +3,7 @@ import math
 import os
 
 import numpy
+from clover.netcdf.variable import SpatialCoordinateVariables
 from django.conf import settings
 from ncdjango.models import Service
 from netCDF4._netCDF4 import Dataset
@@ -18,7 +19,8 @@ class Constraint(object):
     def by_name(constraint):
         return {
             'elevation': ElevationConstraint,
-            'photoperiod': PhotoperiodConstraint
+            'photoperiod': PhotoperiodConstraint,
+            'latitude': LatitudeConstraint
         }[constraint]
 
     def apply_constraint(self, **kwargs):
@@ -187,14 +189,9 @@ class PhotoperiodConstraint(Constraint):
         days *= 24
         return days
 
-    def get_mask(self, **kwargs):
-        try:
-            lat = kwargs['lat']
-            lon = kwargs['lon']
-            date = datetime.date(kwargs['year'], kwargs['month'], kwargs['day'])
-            hours = kwargs['minutes'] / 60
-        except KeyError:
-            raise ValueError('Missing constraint arguments')
+    def get_mask(self, minutes, lat, lon, year, month, day):
+        date = datetime.date(year, month, day)
+        hours = minutes / 60
 
         daylight = self.daylight(date, lat, lon)
 
@@ -207,6 +204,26 @@ class PhotoperiodConstraint(Constraint):
 
         mask = daylight_arr < (daylight - hours)
         mask |= daylight_arr > (daylight + hours)
+
+        return mask
+
+
+class LatitudeConstraint(Constraint):
+    def get_mask(self, **kwargs):
+        try:
+            min_lat = kwargs['min']
+            max_lat = kwargs['max']
+        except KeyError:
+            raise ValueError('Missing constraint arguments')
+
+        min_lat, max_lat = sorted((min_lat, max_lat))
+
+        coords = SpatialCoordinateVariables.from_bbox(self.data.extent, *reversed(self.data.shape))
+        start, stop = coords.y.indices_for_range(min_lat, max_lat)
+
+        mask = numpy.zeros_like(self.data, 'bool')
+        mask[:start][:] = True
+        mask[stop+1:][:] = True
 
         return mask
 

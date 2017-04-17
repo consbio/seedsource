@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import ConfigurationStep from '../containers/ConfigurationStep'
 import ElevationConstraint from '../containers/ElevationConstraint'
 import PhotoperiodConstraint from '../containers/PhotoperiodConstraint'
+import LatitudeConstraint from '../containers/LatitudeConstraint'
 
 const constraintOptions = [
     {
@@ -11,12 +12,17 @@ const constraintOptions = [
     {
         type: 'photoperiod',
         label: 'Photoperiod'
+    },
+    {
+        type: 'latitude',
+        label: 'Latitude'
     }
 ]
 
 const constraintMap = {
     elevation: ElevationConstraint,
-    photoperiod: PhotoperiodConstraint
+    photoperiod: PhotoperiodConstraint,
+    latitude: LatitudeConstraint
 }
 
 const ConstraintStep = ({ number, active, constraints, onChange }) => {
