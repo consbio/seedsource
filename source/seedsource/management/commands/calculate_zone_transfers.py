@@ -22,6 +22,97 @@ VARIABLES = (
 )
 
 
+def get_bands_fn(bands_fn):
+    def _every(low, high, increment, start=0):
+        """ Returns a generator for zones within low-high based on the increment """
+
+        if high < low:
+            return (x for x in [])
+
+        low -= start
+        high -= start
+
+        low -= low % increment
+        high += increment - high % increment
+
+        return ((x + start, x + increment + start) for x in range(low, high, increment))
+
+    def historical(zone_id, low, high):
+        return _every(low, high, 500)
+
+    def wa_psme(zone_id, low, high):
+        if zone_id < 13:
+            return _every(low, high, 1000)
+        elif zone_id < 17:
+            return [(0, 1400)] + list(_every(1400, high, 700, 1400))
+        else:
+            raise ValueError('Unrecognized zone: {}'.format(zone_id))
+
+    def or_psme(zone_id, low, high):
+        if zone_id < 4:
+            return [(0, 2000), (2000, 2750)] + list(_every(2750, high, 500, 2750))
+        elif zone_id == 5:
+            return _every(low, high, 500)
+        elif zone_id == 4 or zone_id < 17:
+            return [(0, 1000)] + list(_every(1000, high, 500, 1000))
+        else:
+            raise ValueError('Unrecognized zone: {}'.format(zone_id))
+
+    def wa_pico(zone_id, low, high):
+        if zone_id < 14:
+            return _every(low, high, 1000)
+        elif zone_id < 18:
+            return _every(low, high, 700)
+        else:
+            raise ValueError('Unrecognized zone: {}'.format(zone_id))
+
+    def or_pico(zone_id, low, high):
+        return _every(low, high, 1000)
+
+    def or_pipo(zone_id, low, high):
+        if zone_id == 10:
+            return list(_every(low, min(4999, high), 1000)) + list(_every(5000, high, 700, 5000))
+        elif zone_id < 16:
+            return _every(low, high, 1000)
+        else:
+            raise ValueError('Unrecognized zone: {}'.format(zone_id))
+
+    def wa_pipo(zone_id, low, high):
+        if zone_id < 4:
+            return [(0, high + 1)]
+        elif zone_id < 12:
+            return _every(low, high, 1000)
+        else:
+            raise ValueError('Unrecognized zone: {}'.format(zone_id))
+
+    def wa_thpl(zone_id, low, high):
+        if zone_id < 5:
+            return _every(low, high, 2000)
+        elif zone_id < 8:
+            return _every(low, high, 1500)
+        else:
+            raise ValueError('Unrecognized zone: {}'.format(zone_id))
+
+    def or_thpl(zone_id, low, high):
+        if zone_id < 3:
+            return [(0, 999999)]
+        elif zone_id < 5:
+            return [(0, 3500), (3500, high + 1)]
+        else:
+            raise ValueError('Unrecognized zone: {}'.format(zone_id))
+
+    def wa_pimo(zone_id, low, high):
+        return [(low, high + 1)]
+
+    def or_pimo(zone_id, low, high):
+        return [(low, high + 1)]
+
+    def no_bands(zone_id, low, high):
+        return [(low, high + 1)]
+
+    return locals()[bands_fn]
+
+
 class Command(BaseCommand):
     help = 'Calculates default variable transfer limits for each available seed zone'
 
@@ -32,96 +123,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('zone_name', nargs='?', type=str, default='all', help='Accepts zone name or all')
-
-    def _get_bands_fn(self, bands_fn):
-        def _every(low, high, increment, start=0):
-            """ Returns a generator for zones within low-high based on the increment """
-
-            if high < low:
-                return (x for x in [])
-
-            low -= start
-            high -= start
-
-            low -= low % increment
-            high += increment - high % increment
-
-            return ((x + start, x + increment + start) for x in range(low, high, increment))
-
-        def historical(zone_id, low, high):
-            return _every(low, high, 500)
-
-        def wa_psme(zone_id, low, high):
-            if zone_id < 13:
-                return _every(low, high, 1000)
-            elif zone_id < 17:
-                return [(0, 1400)] + list(_every(1400, high, 700, 1400))
-            else:
-                raise ValueError('Unrecognized zone: {}'.format(zone_id))
-
-        def or_psme(zone_id, low, high):
-            if zone_id < 4:
-                return [(0, 2000), (2000, 2750)] + list(_every(2750, high, 500, 2750))
-            elif zone_id == 5:
-                return _every(low, high, 500)
-            elif zone_id == 4 or zone_id < 17:
-                return [(0, 1000)] + list(_every(1000, high, 500, 1000))
-            else:
-                raise ValueError('Unrecognized zone: {}'.format(zone_id))
-
-        def wa_pico(zone_id, low, high):
-            if zone_id < 14:
-                return _every(low, high, 1000)
-            elif zone_id < 18:
-                return _every(low, high, 700)
-            else:
-                raise ValueError('Unrecognized zone: {}'.format(zone_id))
-
-        def or_pico(zone_id, low, high):
-            return _every(low, high, 1000)
-
-        def or_pipo(zone_id, low, high):
-            if zone_id == 10:
-                return list(_every(low, min(4999, high), 1000)) + list(_every(5000, high, 700, 5000))
-            elif zone_id < 16:
-                return _every(low, high, 1000)
-            else:
-                raise ValueError('Unrecognized zone: {}'.format(zone_id))
-
-        def wa_pipo(zone_id, low, high):
-            if zone_id < 4:
-                return [(0, high + 1)]
-            elif zone_id < 12:
-                return _every(low, high, 1000)
-            else:
-                raise ValueError('Unrecognized zone: {}'.format(zone_id))
-
-        def wa_thpl(zone_id, low, high):
-            if zone_id < 5:
-                return _every(low, high, 2000)
-            elif zone_id < 8:
-                return _every(low, high, 1500)
-            else:
-                raise ValueError('Unrecognized zone: {}'.format(zone_id))
-
-        def or_thpl(zone_id, low, high):
-            if zone_id < 3:
-                return [(0, 999999)]
-            elif zone_id < 5:
-                return [(0, 3500), (3500, high + 1)]
-            else:
-                raise ValueError('Unrecognized zone: {}'.format(zone_id))
-
-        def wa_pimo(zone_id, low, high):
-            return [(low, high + 1)]
-
-        def or_pimo(zone_id, low, high):
-            return [(low, high + 1)]
-
-        def no_bands(zone_id, low, high):
-            return [(low, high + 1)]
-
-        return locals()[bands_fn]
 
     def _get_subsets(self, elevation, data, coords: SpatialCoordinateVariables, bbox):
         """ Returns subsets of elevation, data, and coords, clipped to the given bounds """
@@ -160,13 +161,6 @@ class Command(BaseCommand):
             print('Error: {} zone does not exists'.format(zone_name))
             print('Choices are:\n\t- {}'.format('\n\t- '.join(seed_zone_choices)))
             return
-
-        elevation_service = Service.objects.get(name='west2_dem')
-        with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, elevation_service.data_path)) as ds:
-            coords = SpatialCoordinateVariables.from_dataset(
-                ds, x_name='lon', y_name='lat', projection=Proj(elevation_service.projection)
-            )
-            elevation = ds.variables['elevation'][:]
 
         message = 'WARNING: This will replace "{}" transfer limits. Do you want to continue? [y/n]'.format(zone_name)
         if input(message).lower() not in {'y', 'yes'}:
@@ -225,7 +219,7 @@ class Command(BaseCommand):
                         masked_dem = numpy.ma.masked_where(zone_mask == 0, clipped_elevation)
                         min_elevation = max(math.floor(numpy.nanmin(masked_dem) / 0.3048), 0)
                         max_elevation = math.ceil(numpy.nanmax(masked_dem) / 0.3048)
-                        bands = list(self._get_bands_fn(zone.bands_fn)(zone.zone_id, min_elevation, max_elevation))
+                        bands = list(get_bands_fn(zone.bands_fn)(zone.zone_id, min_elevation, max_elevation))
 
                         if not bands:
                             print('WARNING: No elevation bands found for {}, zone {}'.format(
