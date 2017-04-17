@@ -11,7 +11,11 @@ const mapStateToProps = (state, { values }) => {
 const mapDispatchToProps = dispatch => {
     return {
         onMinutesChange: (index, minutes) => {
-            dispatch(updateConstraintValues(index, {minutes: parseInt(minutes)}))
+            let value = parseInt(minutes)
+
+            if (!isNaN(value)) {
+                dispatch(updateConstraintValues(index, {minutes: value}))
+            }
         },
 
         onMonthChange: (index, month) => {

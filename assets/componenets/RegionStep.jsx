@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 
-import ConfigurationStep from './ConfigurationStep'
+import ConfigurationStep from '../containers/ConfigurationStep'
 import RegionButton from '../containers/RegionButton'
 import { regions } from '../config'
 

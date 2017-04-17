@@ -5,7 +5,7 @@ import { createJob } from '../actions/job'
 import { showSaveModal } from '../actions/saves'
 import { createReport, setExportMethod } from '../actions/report'
 
-const configurationCanRun = ({point, variables}) =>  {
+const configurationCanRun = ({point, variables, constraints}) =>  {
     if (point === null || point.x === null || point.y === null) {
         return false
     }
@@ -27,10 +27,20 @@ const mapStateToProps = ({ runConfiguration, lastRun, job, isLoggedIn, reportIsF
 const mapDispatchToProps = dispatch => {
     return {
         onRun: configuration => {
-            if (configuration.variables.some(item => item.transfer === null)) {
+            let { variables, constraints } = configuration
+
+            if (variables.some(item => item.transfer === null)) {
                 dispatch(setError(
                     'Configuration error',
                     'Cannot calculate scores: one or more of your variables has no transfer limit, or a limit of 0.'
+                ))
+                return
+            }
+
+            if (constraints.some(item => Object.keys(item.values).some(key => item.values[key] === null))) {
+                dispatch(setError(
+                    'Configuration error',
+                    'Cannot calculate scores: one or more of your constraints is missing a value.'
                 ))
                 return
             }
