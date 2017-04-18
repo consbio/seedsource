@@ -7,6 +7,7 @@ from clover.netcdf.variable import SpatialCoordinateVariables
 from django.conf import settings
 from ncdjango.models import Service
 from netCDF4._netCDF4 import Dataset
+from pyproj import Proj
 
 
 class Constraint(object):
@@ -207,8 +208,14 @@ class PhotoperiodConstraint(Constraint):
         with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, service.data_path)) as ds:
             lat_arr = ds['lat'][:]
             lon_arr = ds['lon'][:]
+            coords = SpatialCoordinateVariables.from_dataset(
+                ds, x_name='lon', y_name='lat', projection=Proj(service.projection)
+            )
 
-        daylight_arr = self.daylight_array(date, lat_arr, lon_arr)
+        x_start, x_stop = coords.x.indices_for_range(self.data.extent.xmin, self.data.extent.xmax)
+        y_start, y_stop = coords.y.indices_for_range(self.data.extent.ymin, self.data.extent.ymax)
+
+        daylight_arr = self.daylight_array(date, lat_arr[y_start:y_stop+1], lon_arr[x_start:x_stop+1])
 
         mask = daylight_arr < (daylight - hours)
         mask |= daylight_arr > (daylight + hours)
