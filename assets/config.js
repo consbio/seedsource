@@ -299,6 +299,10 @@ export const constraints = {
     latitude: {
         min: null,
         max: null
+    },
+    longitude: {
+        min: null,
+        max: null
     }
 }
 

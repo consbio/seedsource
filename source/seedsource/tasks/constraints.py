@@ -20,7 +20,8 @@ class Constraint(object):
         return {
             'elevation': ElevationConstraint,
             'photoperiod': PhotoperiodConstraint,
-            'latitude': LatitudeConstraint
+            'latitude': LatitudeConstraint,
+            'longitude': LongitudeConstraint
         }[constraint]
 
     def apply_constraint(self, **kwargs):
@@ -227,3 +228,22 @@ class LatitudeConstraint(Constraint):
 
         return mask
 
+
+class LongitudeConstraint(Constraint):
+    def get_mask(self, **kwargs):
+        try:
+            min_lon = kwargs['min']
+            max_lon = kwargs['max']
+        except KeyError:
+            raise ValueError('Missing constraint arguments')
+
+        min_lon, max_lon = sorted((min_lon, max_lon))
+
+        coords = SpatialCoordinateVariables.from_bbox(self.data.extent, *reversed(self.data.shape))
+        start, stop = coords.x.indices_for_range(min_lon, max_lon)
+
+        mask = numpy.zeros_like(self.data, 'bool')
+        mask[:,:start] = True
+        mask[:,stop+1:] = True
+
+        return mask

@@ -3,6 +3,7 @@ import ConfigurationStep from '../containers/ConfigurationStep'
 import ElevationConstraint from '../containers/ElevationConstraint'
 import PhotoperiodConstraint from '../containers/PhotoperiodConstraint'
 import LatitudeConstraint from '../containers/LatitudeConstraint'
+import LongitudeConstraint from '../containers/LongitudeConstraint'
 
 const constraintOptions = [
     {
@@ -16,13 +17,18 @@ const constraintOptions = [
     {
         type: 'latitude',
         label: 'Latitude'
+    },
+    {
+        type: 'longitude',
+        label: 'Longitude'
     }
 ]
 
 const constraintMap = {
     elevation: ElevationConstraint,
     photoperiod: PhotoperiodConstraint,
-    latitude: LatitudeConstraint
+    latitude: LatitudeConstraint,
+    longitude: LongitudeConstraint
 }
 
 const ConstraintStep = ({ number, active, constraints, onChange }) => {
