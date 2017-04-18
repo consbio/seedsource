@@ -43,6 +43,7 @@ class GenerateScores(Task):
 
         for i, data in enumerate(variables):
             data = self.apply_constraints(data, constraints, region)
+            extent = data.extent
             mask = data.mask if is_masked(data) else numpy.zeros_like(data, 'bool')
 
             mask |= data < limits[i]['min']
@@ -72,7 +73,7 @@ class GenerateScores(Task):
         sum_rasters = 100 - sum_rasters.astype('int8')
 
         raster = variables[0]
-        return Raster(sum_rasters.astype('int8'), raster.extent, raster.x_dim, raster.y_dim, raster.y_increasing)
+        return Raster(sum_rasters.astype('int8'), extent, raster.x_dim, raster.y_dim, raster.y_increasing)
 
 
 

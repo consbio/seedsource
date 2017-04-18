@@ -14,6 +14,7 @@ class Constraint(object):
         self.data = data
         self.region = region
         self.mask = None
+        self.slice = None
 
     @staticmethod
     def by_name(constraint):
@@ -28,7 +29,13 @@ class Constraint(object):
         if self.mask is None:
             self.mask = self.get_mask(**kwargs)
 
-        return numpy.ma.masked_where(self.mask, self.data)
+            crop = numpy.argwhere(self.mask == False)
+            (y_start, x_start), (y_stop, x_stop) = crop.min(0), crop.max(0) + 1
+
+            self.slice = (slice(x_start, x_stop), slice(y_start, y_stop))
+            self.mask = self.mask[self.slice[1], self.slice[0]]
+
+        return numpy.ma.masked_where(self.mask, self.data[self.slice[1], self.slice[0]])
 
     def get_mask(self, **kwargs):
         raise NotImplemented
