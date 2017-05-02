@@ -1,13 +1,17 @@
 import datetime
 import math
 import os
+from functools import partial
 
 import numpy
+import pyproj
 from clover.netcdf.variable import SpatialCoordinateVariables
 from django.conf import settings
 from ncdjango.models import Service
 from netCDF4._netCDF4 import Dataset
-from pyproj import Proj
+from rasterio.features import rasterize
+from shapely.geometry import Point
+from shapely.ops import transform
 
 
 class Constraint(object):
@@ -23,7 +27,8 @@ class Constraint(object):
             'elevation': ElevationConstraint,
             'photoperiod': PhotoperiodConstraint,
             'latitude': LatitudeConstraint,
-            'longitude': LongitudeConstraint
+            'longitude': LongitudeConstraint,
+            'distance': DistanceConstraint
         }[constraint]
 
     def apply_constraint(self, **kwargs):
@@ -31,12 +36,14 @@ class Constraint(object):
             self.mask = self.get_mask(**kwargs)
 
             crop = numpy.argwhere(self.mask == False)
-            (y_start, x_start), (y_stop, x_stop) = crop.min(0), crop.max(0) + 1
 
-            self.slice = (slice(x_start, x_stop), slice(y_start, y_stop))
-            self.mask = self.mask[self.slice[1], self.slice[0]]
+            if crop.any():
+                (y_start, x_start), (y_stop, x_stop) = crop.min(0), crop.max(0) + 1
 
-        return numpy.ma.masked_where(self.mask, self.data[self.slice[1], self.slice[0]])
+                self.slice = (slice(x_start, x_stop), slice(y_start, y_stop))
+                self.mask = self.mask[self.slice[1], self.slice[0]]
+
+        return numpy.ma.masked_where(self.mask, self.data[self.slice[1], self.slice[0]] if self.slice else self.data)
 
     def get_mask(self, **kwargs):
         raise NotImplemented
@@ -261,3 +268,34 @@ class LongitudeConstraint(Constraint):
         mask[:,stop+1:] = True
 
         return mask
+
+
+class DistanceConstraint(Constraint):
+    def get_mask(self, lat, lon, distance, units):
+        if units == 'miles':
+            distance *= 1.60934
+
+        wgs84 = pyproj.Proj('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
+
+        p = pyproj.Proj({
+            'proj': 'tmerc',
+            'lat_0': lat,
+            'lon_0': lon,
+            'k': 1,
+            'x_0': 0,
+            'y_0': 0,
+            'ellps': 'WGS84',
+            'towgs84': '0,0,0,0,0,0,0',
+            'units': 'm'
+        })
+
+        project_to_custom = partial(pyproj.transform, wgs84, p)
+        project_to_data = partial(pyproj.transform, p, self.data.extent.projection)
+
+        shape = transform(project_to_data, transform(project_to_custom, Point(lon, lat)).buffer(distance * 1000))
+        coords = SpatialCoordinateVariables.from_bbox(self.data.extent, *reversed(self.data.shape))
+        return rasterize(
+            [shape], out_shape=self.data.shape, fill=1, transform=coords.affine, all_touched=True, default_value=0,
+            dtype=numpy.uint8
+        )
+

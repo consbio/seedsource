@@ -303,6 +303,10 @@ export const constraints = {
     longitude: {
         min: null,
         max: null
+    },
+    distance: {
+        distance: null,
+        units: 'miles'
     }
 }
 

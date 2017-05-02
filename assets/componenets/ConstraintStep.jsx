@@ -4,6 +4,7 @@ import ElevationConstraint from '../containers/ElevationConstraint'
 import PhotoperiodConstraint from '../containers/PhotoperiodConstraint'
 import LatitudeConstraint from '../containers/LatitudeConstraint'
 import LongitudeConstraint from '../containers/LongitudeConstraint'
+import DistanceConstraint from '../containers/DistanceConstraint'
 
 const constraintOptions = [
     {
@@ -21,6 +22,10 @@ const constraintOptions = [
     {
         type: 'longitude',
         label: 'Longitude'
+    },
+    {
+        type: 'distance',
+        label: 'Distance'
     }
 ]
 
@@ -28,10 +33,11 @@ const constraintMap = {
     elevation: ElevationConstraint,
     photoperiod: PhotoperiodConstraint,
     latitude: LatitudeConstraint,
-    longitude: LongitudeConstraint
+    longitude: LongitudeConstraint,
+    distance: DistanceConstraint
 }
 
-const ConstraintStep = ({ number, active, constraints, onChange }) => {
+const ConstraintStep = ({ number, constraints, onChange }) => {
     return (
         <ConfigurationStep title="Apply constraints" number={number} name="constraints" active={true}>
             <div className="constraint-list">

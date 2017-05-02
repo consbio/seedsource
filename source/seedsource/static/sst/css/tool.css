@@ -439,14 +439,17 @@ body {
     color: #AAA;
 }
 
+.constraint input[type=text] {
+    height: 25px;
+    text-align: right;
+}
+
 .constraint-list .constraint:last-child {
     margin-bottom: 20px;
 }
 
 .constraint.photoperiod-constraint input[type=text] {
     width: 45px;
-    height: 25px;
-    text-align: right;
 }
 
 .constraint.photoperiod-constraint .photoperiod-month {
@@ -459,8 +462,14 @@ body {
 
 .constraint .constraint-minmax input[type=text] {
     width: 65px;
+}
+
+.constraint.distance-constraint input[type=text] {
+    width: 65px;
+}
+
+.constraint.distance-constraint select {
     height: 25px;
-    text-align: right;
 }
 
 pre.error-debug-info {
