@@ -13,3 +13,22 @@ class IdentityBackend(object):
             return get_user_model().objects.get(pk=user_id)
         except ObjectDoesNotExist:
             return None
+
+
+class EmailAuthenticationBackend:
+    def authenticate(self, email, password):
+        try:
+            user = get_user_model().objects.get(email=email)
+
+            if user.check_password(password):
+                return user
+        except ObjectDoesNotExist:
+            # Run the default password hasher once to reduce the timing
+            # difference between an existing and a non-existing user (#20760).
+            get_user_model()().set_password(password)
+
+    def get_user(self, user_id):
+        try:
+            return get_user_model().objects.get(pk=user_id)
+        except ObjectDoesNotExist:
+            return None

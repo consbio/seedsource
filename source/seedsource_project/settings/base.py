@@ -104,11 +104,11 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
     'social_core.backends.twitter.TwitterOAuth',
-    'django.contrib.auth.backends.ModelBackend',
-    'accounts.backends.IdentityBackend'
+    'accounts.backends.EmailAuthenticationBackend',
+    'accounts.backends.IdentityBackend',
 )
 
-SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
+SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = False
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = reverse_lazy('tool_page')
 SOCIAL_AUTH_LOGIN_ERROR_URL = reverse_lazy('tool_page')

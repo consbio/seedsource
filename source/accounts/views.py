@@ -61,7 +61,7 @@ class LoginView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
-        user = authenticate(username=data['email'], password=data['password'])
+        user = authenticate(email=data['email'], password=data['password'])
         if user:
             login(request, user)
             return Response()
@@ -95,14 +95,14 @@ class LostPasswordView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         email = serializer.validated_data['email']
-        user = get_user_model().objects.get(username=email)
+        user = get_user_model().objects.get(email=email)
         token = PasswordResetToken.objects.create(
             user=user,
             token=str(uuid.uuid4())
         )
 
         body = get_template('emails/password_reset.txt').render(Context({
-            'username': email,
+            'email': email,
             'url': request.build_absolute_uri(reverse('reset_password', args=(token.token,)))
         }))
 
