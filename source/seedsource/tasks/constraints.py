@@ -289,11 +289,27 @@ class DistanceConstraint(Constraint):
             'units': 'm'
         })
 
+        # Snap point to nearest cell center
+        coords = SpatialCoordinateVariables.from_bbox(self.data.extent, *reversed(self.data.shape))
+        lat_pixel_size = coords.y.pixel_size if coords.y.is_ascending_order() else -1 * coords.y.pixel_size
+        lat = (
+            sorted(coords.y.values)[
+                int((lat - coords.y.pixel_size * 1.5 - self.data.extent.ymin) / coords.y.pixel_size)
+            ] - lat_pixel_size/2
+        )
+        lon = (
+            sorted(coords.x.values)[
+                int((lon - coords.x.pixel_size * 1.5 - self.data.extent.xmin) / coords.x.pixel_size)
+            ] - coords.x.pixel_size/2
+        )
+
         project_to_custom = partial(pyproj.transform, wgs84, p)
         project_to_data = partial(pyproj.transform, p, self.data.extent.projection)
 
-        shape = transform(project_to_data, transform(project_to_custom, Point(lon, lat)).buffer(distance * 1000))
-        coords = SpatialCoordinateVariables.from_bbox(self.data.extent, *reversed(self.data.shape))
+        shape = transform(
+            project_to_data, transform(project_to_custom, Point(lon, lat)).buffer(distance * 1000, resolution=64)
+        )
+
         return rasterize(
             [shape], out_shape=self.data.shape, fill=1, transform=coords.affine, all_touched=True, default_value=0,
             dtype=numpy.uint8
