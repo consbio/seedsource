@@ -19,6 +19,7 @@ class ConstraintMinMax extends React.Component {
                 <span className="constraint-label">Between&nbsp;</span>
                 <input
                     type="text"
+                    data-lpignore="true"
                     className="form form-control form-inline"
                     value={minValue === null ? min : minValue}
                     onChange={e => {
@@ -41,6 +42,7 @@ class ConstraintMinMax extends React.Component {
                 <span className="constraint-label">&nbsp;and&nbsp;</span>
                 <input
                     type="text"
+                    data-lpignore="true"
                     className="form form-control form-inline"
                     value={maxValue === null ? max : maxValue}
                     onChange={e => {

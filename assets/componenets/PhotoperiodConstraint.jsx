@@ -27,6 +27,7 @@ class PhotoperiodConstraint extends React.Component {
                 <span className="constraint-label">Within&nbsp;</span>
                 <input
                     type="text"
+                    data-lpignore="true"
                     className="form form-control form-inline"
                     value={minutesValue === null ? minutes : minutesValue}
                     onChange={e => {
