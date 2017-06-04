@@ -43,7 +43,10 @@ class Constraint(object):
                 self.slice = (slice(x_start, x_stop), slice(y_start, y_stop))
                 self.mask = self.mask[self.slice[1], self.slice[0]]
 
-        return numpy.ma.masked_where(self.mask, self.data[self.slice[1], self.slice[0]] if self.slice else self.data)
+        mask = self.data.mask[self.slice[1], self.slice[0]] if self.slice else self.data.mask
+        data = self.data[self.slice[1], self.slice[0]] if self.slice else self.data
+
+        return numpy.ma.masked_where(self.mask | mask, data)
 
     def get_mask(self, **kwargs):
         raise NotImplemented
@@ -59,7 +62,12 @@ class ElevationConstraint(Constraint):
 
         service = Service.objects.get(name='{}_dem'.format(self.region))
         with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, service.data_path)) as ds:
-            elevation = ds.variables['elevation'][:]
+            v = service.variable_set.first()
+            coords = SpatialCoordinateVariables.from_bbox(
+                v.full_extent, ds.variables[v.x_dimension].size, ds.variables[v.y_dimension].size, dtype='float64'
+            )
+            window = coords.get_window_for_bbox(self.data.extent)
+            elevation = ds.variables['elevation'][window.y_slice, window.x_slice]
 
         mask = elevation < min_elevation
         mask |= elevation > max_elevation
@@ -215,14 +223,13 @@ class PhotoperiodConstraint(Constraint):
         with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, service.data_path)) as ds:
             lat_arr = ds['lat'][:]
             lon_arr = ds['lon'][:]
-            coords = SpatialCoordinateVariables.from_dataset(
-                ds, x_name='lon', y_name='lat', projection=Proj(service.projection)
+            coords = SpatialCoordinateVariables.from_bbox(
+                service.full_extent, ds.variables['lon'].size, ds.variables['lat'].size, dtype='float64'
             )
 
-        x_start, x_stop = coords.x.indices_for_range(self.data.extent.xmin, self.data.extent.xmax)
-        y_start, y_stop = coords.y.indices_for_range(self.data.extent.ymin, self.data.extent.ymax)
+        window = coords.get_window_for_bbox(self.data.extent)
 
-        daylight_arr = self.daylight_array(date, lat_arr[y_start:y_stop+1], lon_arr[x_start:x_stop+1])
+        daylight_arr = self.daylight_array(date, lat_arr[window.y_slice], lon_arr[window.x_slice])
 
         mask = daylight_arr < (daylight - hours)
         mask |= daylight_arr > (daylight + hours)
@@ -241,7 +248,8 @@ class LatitudeConstraint(Constraint):
         min_lat, max_lat = sorted((min_lat, max_lat))
 
         coords = SpatialCoordinateVariables.from_bbox(self.data.extent, *reversed(self.data.shape))
-        start, stop = coords.y.indices_for_range(min_lat, max_lat)
+        half_pixel_size = float(coords.y.pixel_size) / 2
+        start, stop = coords.y.indices_for_range(min_lat + half_pixel_size, max_lat - half_pixel_size)
 
         mask = numpy.zeros_like(self.data, 'bool')
         mask[:start][:] = True
@@ -261,7 +269,8 @@ class LongitudeConstraint(Constraint):
         min_lon, max_lon = sorted((min_lon, max_lon))
 
         coords = SpatialCoordinateVariables.from_bbox(self.data.extent, *reversed(self.data.shape))
-        start, stop = coords.x.indices_for_range(min_lon, max_lon)
+        half_pixel_size = float(coords.x.pixel_size) / 2
+        start, stop = coords.x.indices_for_range(min_lon + half_pixel_size, max_lon - half_pixel_size)
 
         mask = numpy.zeros_like(self.data, 'bool')
         mask[:,:start] = True
