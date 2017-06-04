@@ -39,6 +39,7 @@ class SaveModal extends React.Component {
                     <label className="control-label">Title</label>
                     <input
                         type="text"
+                        data-lpignore="true"
                         className="form-control"
                         value={this.state.title}
                         required

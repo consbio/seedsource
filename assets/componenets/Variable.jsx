@@ -40,6 +40,7 @@ class Variable extends React.Component {
                     <input
                         ref="transferInput"
                         type="text"
+                        data-lpignore="true"
                         className="form form-control form-inline"
                         value={transferValue === null ? transfer : transferValue}
                         onChange={e => {

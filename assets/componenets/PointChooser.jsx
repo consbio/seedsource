@@ -15,6 +15,7 @@ class PointChooser extends React.Component {
                 <strong>Lat: </strong>
                 <input
                     type="text"
+                    data-lpignore="true"
                     className="form-control form-inline"
                     value={this.state.latValue === null ? lat : this.state.latValue}
                     onChange={e => {
@@ -36,6 +37,7 @@ class PointChooser extends React.Component {
                 <strong>Lon: </strong>
                 <input
                     type="text"
+                    data-lpignore="true"
                     className="form-control form-inline"
                     value={this.state.lonValue === null ? lon : this.state.lonValue}
                     onChange={e => {
