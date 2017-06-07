@@ -231,6 +231,15 @@
         </table>
     </div>
 
+    <h3>Constraints</h3>
+    <div class="constraints">
+        {% for constraint in constraints %}
+            <div>
+                <strong>{{ constraint.0 }}: </strong> {{ constraint.1|safe }}
+            </div>
+        {% endfor %}
+    </div>
+
     <div>&nbsp;</div>
 
     <div>

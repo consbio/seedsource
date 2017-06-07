@@ -77,6 +77,29 @@ CONFIG_TEXT_IDX = 34
 # Table idxs
 VAR_TABLE = 28
 
+CONSTRAINTS = {
+    'elevation': {
+        'name': 'Elevation',
+        'text': 'Between <strong>{min}</strong> and <strong>{max}</strong> meters'
+    },
+    'photoperiod': {
+        'name': 'Photoperiod',
+        'text': 'Within <strong>{minutes} minutes</strong> of <strong>{month}/{day}/{year}</strong>'
+    },
+    'latitude': {
+        'name': 'Latitude',
+        'text': 'Between <strong>{min}</strong> and <strong>{max}</strong> &deg;N'
+    },
+    'longitude': {
+        'name': 'Longitude',
+        'text': 'Between <strong>{min}</strong> and <strong>{max}</strong> &deg;E'
+    },
+    'distance': {
+        'name': 'Distance',
+        'text': 'Within <strong>{distance} {units}</strong>'
+    }
+}
+
 
 def degree_sign(string):
     return string.replace('&deg;', DEGREE_SIGN)
@@ -178,6 +201,11 @@ class Report(object):
         scale_bar_end = transform(mercator, wgs84, *to_world(scale_bar_x + 96, scale_bar_y))
         scale = '{} mi'.format(round(vincenty(scale_bar_start, scale_bar_end).miles, 1))
 
+        constraints = []
+        for constraint in self.configuration['constraints']:
+            info = CONSTRAINTS[constraint['type']]
+            constraints.append((info['name'], info['text'].format(**constraint['values'])))
+
         legend = RESULTS_RENDERER.get_legend()[0]
 
         def format_x_coord(x):
@@ -210,6 +238,7 @@ class Report(object):
             'zone': getattr(zone, 'name', None),
             'band': band,
             'variables': self.get_context_variables(),
+            'constraints': constraints
         }
 
     def get_pdf_data(self) -> BytesIO:
