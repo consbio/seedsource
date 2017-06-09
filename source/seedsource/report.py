@@ -392,32 +392,41 @@ class Report(object):
                 p.font.size = font_size
 
         if ctx['constraints']:
-            slide = prs.slides.add_slide(prs.slides[2].slide_layout)
+            slide = prs.slides.add_slide(prs.slide_layouts[3])
 
             title_tx = slide.shapes.add_textbox(378320, 393424, 2090559, 369332)
             tf = title_tx.text_frame
             tf.text = 'Constraints'
             tf.paragraphs[0].font.bold = True
 
-            placeholder = slide.placeholders[ATTRIBUTION_IDX]
-            placeholder.text = attribution
+            placeholder = variable_slide.placeholders[ATTRIBUTION_IDX]
+            attribution_tx = slide.shapes.add_textbox(
+                placeholder.left, placeholder.top, placeholder.width, placeholder.height
+            )
+            tf = attribution_tx.text_frame
+            tf.text = attribution
+            tf.paragraphs[0].font.size = Pt(12)
 
             constraints_tx = slide.shapes.add_textbox(378320, Inches(1), Inches(8), Inches(2))
             tf = constraints_tx.text_frame
-            paragraph = tf.paragraphs[0]
 
-            for constraint in self.configuration['constraints']:
-                info = CONSTRAINTS[constraint['type']]
-                run = paragraph.add_run()
-                run.font.bold = True
-                run.text = '{}: '.format(info['name'])
+            notes_label = notes_slide.notes_text_frame.paragraphs[0].add_run()
+            notes_label.font.bold = True
+            notes_label.text = 'Constraints\n'
 
-                for text in info['text']:
+            for paragraph in (tf.paragraphs[0], notes_slide.notes_text_frame.paragraphs[0]):
+                for constraint in self.configuration['constraints']:
+                    info = CONSTRAINTS[constraint['type']]
                     run = paragraph.add_run()
-                    run.font.bold = text[1]
-                    run.text = text[0].format(**constraint['values'])
+                    run.font.bold = True
+                    run.text = '{}: '.format(info['name'])
 
-                paragraph.add_run().text = '\n'
+                    for text in info['text']:
+                        run = paragraph.add_run()
+                        run.font.bold = text[1]
+                        run.text = text[0].format(**constraint['values'])
+
+                    paragraph.add_run().text = '\n'
 
 
         prs.save(ppt_data)
