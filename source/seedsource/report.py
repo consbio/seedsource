@@ -327,6 +327,36 @@ class Report(object):
                 (sz_text, sz_label, False)
             ]
 
+        name_width = max([len('Variable')] + [len(x['label']) for x in ctx['variables']]) + 3
+        center_width = max(
+            [len('Center')] + [len(' '.join([str(x['value']), degree_sign(x['units'])])) for x in ctx['variables']]
+        ) + 3
+        transfer_width = max(
+            [len('Transfer limit (+/-)')] +
+            [
+                len('{} {}{}'.format(x['limit'], degree_sign(x['units']), ' (modified)' if x['modified'] else ''))
+                for x in ctx['variables']
+            ]
+        )
+
+        lines.append(('\nVariables', '', False))
+        lines.append(('', ''.join([
+            'Variable'.ljust(name_width),
+            'Center'.ljust(center_width),
+            'Transfer limit (+/-)'.ljust(transfer_width)
+        ]), False))
+        lines.append(('', '-' * (name_width + center_width + transfer_width), False))
+
+        for variable in ctx['variables']:
+            units = degree_sign(variable['units'])
+            lines.append(('', ''.join([
+                variable['label'].ljust(name_width),
+                '{} {}'.format(variable['value'], units).ljust(center_width),
+                '{} {}{}'.format(variable['limit'], units, ' (modified)' if variable['modified'] else '')
+            ]), False))
+
+        lines.append(('', '', False))
+
         # Add a text frame where needed
         def add_text_frame(tframe):
             p = tframe.paragraphs[0]
@@ -342,6 +372,7 @@ class Report(object):
                     run.text = '\n'
 
         notes_slide = mapslide.notes_slide
+        notes_slide.notes_text_frame.paragraphs[0].font.name = 'Andale Mono'
         add_text_frame(notes_slide.notes_text_frame)
 
         # Set run config placeholders
@@ -412,7 +443,7 @@ class Report(object):
 
             notes_label = notes_slide.notes_text_frame.paragraphs[0].add_run()
             notes_label.font.bold = True
-            notes_label.text = 'Constraints\n'
+            notes_label.text = '\nConstraints\n'
 
             for paragraph in (tf.paragraphs[0], notes_slide.notes_text_frame.paragraphs[0]):
                 for constraint in self.configuration['constraints']:
