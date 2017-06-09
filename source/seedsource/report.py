@@ -80,23 +80,23 @@ VAR_TABLE = 28
 CONSTRAINTS = {
     'elevation': {
         'name': 'Elevation',
-        'text': 'Between <strong>{min}</strong> and <strong>{max}</strong> meters'
+        'text': (('Between ', False),  ('{min}', True), (' and ', False), ('{max}', True), (' meters', False))
     },
     'photoperiod': {
         'name': 'Photoperiod',
-        'text': 'Within <strong>{minutes} minutes</strong> of <strong>{month}/{day}/{year}</strong>'
+        'text': (('Within ', False), ('{minutes}', True), (' minutes of ', False), ('{month}/{day}/{year}', True))
     },
     'latitude': {
         'name': 'Latitude',
-        'text': 'Between <strong>{min}</strong> and <strong>{max}</strong> &deg;N'
+        'text': (('Between ', False), ('{min}', True), (' and ', False), ('{max}', True), (' °N', False))
     },
     'longitude': {
         'name': 'Longitude',
-        'text': 'Between <strong>{min}</strong> and <strong>{max}</strong> &deg;E'
+        'text': (('Between ', False), ('{min}', True), (' and ', False), ('{max}', True), (' °E', False))
     },
     'distance': {
         'name': 'Distance',
-        'text': 'Within <strong>{distance} {units}</strong>'
+        'text': (('Within ', False), ('{distance} {units}', True))
     }
 }
 
@@ -204,7 +204,13 @@ class Report(object):
         constraints = []
         for constraint in self.configuration['constraints']:
             info = CONSTRAINTS[constraint['type']]
-            constraints.append((info['name'], info['text'].format(**constraint['values'])))
+            constraints.append((
+                info['name'],
+                ''.join(
+                    '<strong>{}</strong>'.format(text) if bold else text
+                    for text, bold in ((x[0].format(**constraint['values']), x[1]) for x in info['text'])
+                )
+            ))
 
         legend = RESULTS_RENDERER.get_legend()[0]
 
@@ -354,9 +360,9 @@ class Report(object):
 
         # Insert table
         placeholder = variable_slide.placeholders[VAR_TABLE]
-        numrows = len(ctx['variables'])+1
+        numrows = len(ctx['variables'])+1  # +1 row for column headings
         numcols = 3
-        table = placeholder.insert_table(rows=numrows, cols=numcols).table    # +1 row for column headings
+        table = placeholder.insert_table(rows=numrows, cols=numcols).table
         table.horz_banding = False
         table.vert_banding = False
 
@@ -384,6 +390,35 @@ class Report(object):
             for j in range(numcols):
                 p = table.cell(i, j).text_frame.paragraphs[0]
                 p.font.size = font_size
+
+        if ctx['constraints']:
+            slide = prs.slides.add_slide(prs.slides[2].slide_layout)
+
+            title_tx = slide.shapes.add_textbox(378320, 393424, 2090559, 369332)
+            tf = title_tx.text_frame
+            tf.text = 'Constraints'
+            tf.paragraphs[0].font.bold = True
+
+            placeholder = slide.placeholders[ATTRIBUTION_IDX]
+            placeholder.text = attribution
+
+            constraints_tx = slide.shapes.add_textbox(378320, Inches(1), Inches(8), Inches(2))
+            tf = constraints_tx.text_frame
+            paragraph = tf.paragraphs[0]
+
+            for constraint in self.configuration['constraints']:
+                info = CONSTRAINTS[constraint['type']]
+                run = paragraph.add_run()
+                run.font.bold = True
+                run.text = '{}: '.format(info['name'])
+
+                for text in info['text']:
+                    run = paragraph.add_run()
+                    run.font.bold = text[1]
+                    run.text = text[0].format(**constraint['values'])
+
+                paragraph.add_run().text = '\n'
+
 
         prs.save(ppt_data)
         ppt_data.seek(0)
