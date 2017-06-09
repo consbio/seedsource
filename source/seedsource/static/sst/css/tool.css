@@ -424,6 +424,10 @@ body {
     margin-right: 8px;
 }
 
+.constraint {
+    margin-bottom: 5px;
+}
+
 .constraint button.close {
     float: left;
     margin-right: 10px;
