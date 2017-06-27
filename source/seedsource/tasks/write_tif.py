@@ -17,7 +17,8 @@ class WriteTif(Task):
     outputs = [StringParameter('filename')]
 
     def execute(self, variable):
-        filename = tempfile.mkstemp(prefix=settings.NC_TEMPORARY_FILE_LOCATION, suffix='.tif')[1]
+        fd, filename = tempfile.mkstemp(prefix=settings.NC_TEMPORARY_FILE_LOCATION, suffix='.tif')
+        os.close(fd)
         ex = variable.extent
         height = ex.ymax - ex.ymin
         width = ex.xmax - ex.xmin
