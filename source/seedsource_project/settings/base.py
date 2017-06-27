@@ -193,7 +193,12 @@ NC_REGISTERED_JOBS = {
             (50, Color(254, 178, 76)),
             (0, Color(255, 237, 160))
         ])
-    }
+    },
+    'write_tif': {
+        'type': 'task',
+        'task': 'seedsource.tasks.write_tif.WriteTif',
+    },
+
 }
 
 NC_INSTALLED_INTERFACES = (
