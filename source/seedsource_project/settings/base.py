@@ -8,6 +8,8 @@ from datetime import timedelta
 from clover.render.renderers.stretched import StretchedRenderer
 from clover.utilities.color import Color
 
+import seedsource.tasks.cleanup_tifs
+
 
 # Starting at this file, walk back up the directory tree to the project root
 from django.core.urlresolvers import reverse_lazy
@@ -180,7 +182,16 @@ CELERYBEAT_SCHEDULE = {
         'options': {
             'expires': 7200  # 2 hrs
         }
-    }
+    },
+    'cleanup_temp_tif_files': {
+        'task': 'seedsource.tasks.cleanup_tifs.cleanup_temp_tif_files',
+        'schedule': timedelta(hours=1),
+        'options': {
+            'expires': 7200  # 2 hrs
+        },
+        'kwargs': {'age': 7200},
+    },
+
 }
 
 NC_REGISTERED_JOBS = {
