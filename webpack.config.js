@@ -17,12 +17,12 @@ module.exports = {
     ],
 
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.jsx?$/,
                 include: path.resolve('./assets'),
-                loader: 'babel',
-                query: {
+                loader: 'babel-loader',
+                options: {
                     presets: ['es2015', 'react']
                 }
             }
@@ -30,7 +30,7 @@ module.exports = {
     },
 
     resolve: {
-        modulesDirectories: ['node_modules'],
-        extensions: ['', '.js', '.jsx']
+        modules: ['node_modules'],
+        extensions: ['.js', '.jsx']
     }
 }
