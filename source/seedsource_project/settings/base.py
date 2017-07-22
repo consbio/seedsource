@@ -207,7 +207,7 @@ NC_REGISTERED_JOBS = {
     },
     'write_tif': {
         'type': 'task',
-        'task': 'seedsource.tasks.write_tif.WriteTif',
+        'task': 'seedsource.tasks.write_tif.WriteTIF',
     },
 
 }
