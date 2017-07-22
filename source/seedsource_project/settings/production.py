@@ -67,6 +67,7 @@ EMAIL_USE_TLS = True
 
 NC_SERVICE_DATA_ROOT = '/ncdjango/services/'
 NC_TEMPORARY_FILE_LOCATION = '/ncdjango/tmp/'
+DATASET_DOWNLOAD_DIR = '/ncdjango/downloads/'
 
 # Preview mode
 INSTALLED_APPS += ('preview',)
