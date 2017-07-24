@@ -225,6 +225,10 @@ export const species = [
         }
     },
     {
+        name: 'piba',
+        label: 'Jack pine'
+    },
+    {
         name: 'pipo',
         label: 'Ponderosa pine',
         transfers: {
@@ -240,6 +244,10 @@ export const species = [
             AHM: 30,
             SHM: 20
         }
+    },
+    {
+        name: 'pima',
+        label: 'Black spruce'
     },
     {
         name: 'thpl',

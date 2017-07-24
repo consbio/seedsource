@@ -38,9 +38,11 @@ SPECIES_LABELS = {
     'generic': 'Generic',
     'psme': 'Douglas-fir',
     'pico': 'Lodgepole pine',
+    'piba': 'Jack pine',
     'pipo': 'Ponderosa pine',
+    'pima': 'Black spruce',
     'thpl': 'Western redcedar',
-    'pimo': 'Wester white pine'
+    'pimo': 'Western white pine'
 }
 
 YEAR_LABELS = {

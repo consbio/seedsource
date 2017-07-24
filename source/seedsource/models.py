@@ -21,7 +21,7 @@ class SeedZone(gis_models.Model):
     name = models.CharField(max_length=256)
     species = models.CharField(max_length=10)
     zone_id = models.IntegerField(null=True)
-    zone_uid = models.CharField(max_length=20, unique=True, null=True)
+    zone_uid = models.CharField(max_length=50, unique=True, null=True)
     polygon = gis_models.GeometryField(geography=True)
     bands_fn = models.CharField(max_length=30, null=True)
 

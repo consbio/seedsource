@@ -1,24 +1,25 @@
 import json
-import os
-import shutil
-from tempfile import mkdtemp
 from zipfile import ZipFile
 
 import fiona
-import itertools
+import os
+import shutil
 from django.contrib.gis.geos import LinearRing
 from django.contrib.gis.geos import Polygon, MultiPolygon
 from django.core.management import BaseCommand
 from django.db import transaction
 from django.db.utils import IntegrityError
 from rasterio.warp import transform_geom
+from tempfile import mkdtemp
 
 from seedsource.models import SeedZone
 
 SPECIES_NAMES = {
     'psme': 'Douglas-fir',
     'pico': 'Lodgepole pine',
+    'piba': 'Jack pine',
     'pipo': 'Ponderosa pine',
+    'pima': 'Black spruce',
     'thpl': 'Western redcedar',
     'pimo': 'Western white pine'
 }
