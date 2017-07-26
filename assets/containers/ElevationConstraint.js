@@ -3,39 +3,33 @@ import ElevationConstraint from '../componenets/ElevationConstraint'
 import { updateConstraintValues } from '../actions/constraints'
 
 const mapStateToProps = ({ runConfiguration }, { values }) => {
-    let { unit } = runConfiguration
+    let { unit, point } = runConfiguration
     let { min, max } = values
+    let range = (max-min)/2
+    let value = point.elevation
 
     if (unit === 'imperial') {
-        min = min === null ? min : Math.round(min / 0.3048)
-        max = max === null ? max: Math.round(max / 0.3048)
+        value = Math.round(value / 0.3048)
+        range = Math.round(range / 0.3048)
     }
 
-    return {unit, min, max}
+    return {unit, value, range}
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onMinChange: (index, min, unit) => {
-            let value = parseFloat(min)
+        onRangeChange: (index, value, range, unit) => {
+            let rangeFloat = parseFloat(range)
 
-            if (!isNaN(value)) {
+            if (!isNaN(rangeFloat)) {
                 if (unit === 'imperial') {
-                    value *= 0.3048
+                    rangeFloat *= 0.3048
                 }
 
-                dispatch(updateConstraintValues(index, {min: value}))
-            }
-        },
-        onMaxChange: (index, max, unit) => {
-            let value = parseFloat(max)
+                let min = value - range
+                let max = value + range
 
-            if (!isNaN(value)) {
-                if (unit === 'imperial') {
-                    value *= 0.3048
-                }
-
-                dispatch(updateConstraintValues(index, {max: value}))
+                dispatch(updateConstraintValues(index, {min, max}))
             }
         }
     }

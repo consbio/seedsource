@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react'
 import Constraint from '../containers/Constraint'
-import ConstraintMinMax from './ConstraintMinMax'
+import ConstraintMinMax from './ConstraintRange'
 
 const LatitudeConstraint = ({ index, min, max, onMinChange, onMaxChange }) => (
     <Constraint index={index} title="Latitude" className="latlon-constraint">
-        <ConstraintMinMax index={index} min={min} max={max} onMinChange={onMinChange} onMaxChange={onMaxChange} />
+        <ConstraintRange index={index} min={min} max={max} onMinChange={onMinChange} onMaxChange={onMaxChange} />
         <span>&nbsp;&deg;N</span>
     </Constraint>
 )

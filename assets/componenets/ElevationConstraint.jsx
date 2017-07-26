@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react'
 import Constraint from '../containers/Constraint'
-import ConstraintMinMax from './ConstraintMinMax'
+import ConstraintRange from './ConstraintRange'
 
-const ElevationConstraint = ({ index, min, max, unit, onMinChange, onMaxChange }) => {
+const ElevationConstraint = ({ index, value, range, unit, onRangeChange }) => {
     let unitLabel = unit === 'metric' ? 'meters' : 'feet'
 
     return (
-        <Constraint index={index} title="Elevation" className="elevation-constraint">
-            <ConstraintMinMax index={index} min={min} max={max} unit={unit} onMinChange={onMinChange} onMaxChange={onMaxChange}/>
+        <Constraint index={index} value={value} title="Elevation" className="elevation-constraint">
+            <ConstraintRange index={index} value={value} range={range} unit={unit} onRangeChange={onRangeChange} />
             <span>&nbsp;{unitLabel}</span>
         </Constraint>
     )
@@ -15,11 +15,10 @@ const ElevationConstraint = ({ index, min, max, unit, onMinChange, onMaxChange }
 
 ElevationConstraint.propTypes = {
     index: PropTypes.number.isRequired,
-    min: PropTypes.number,
-    max: PropTypes.number,
+    range: PropTypes.number,
+    value: PropTypes.number,
     unit: PropTypes.string.isRequired,
-    onMinChange: PropTypes.func.isRequired,
-    onMaxChange: PropTypes.func.isRequired
+    onRangeChange: PropTypes.func.isRequired
 }
 
 export default ElevationConstraint

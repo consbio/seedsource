@@ -1,29 +1,29 @@
 import React, { PropTypes } from 'react'
 
-const Constraint = ({ children, index, title, className, onRemove }) => (
-    <div className={'constraint ' + className}>
-        <div>
+const Constraint = ({ children, index, title, value, className, onRemove }) => (
+    <tr>
+        <td>
             <button
                 type="button"
                 className="close"
                 onClick={e => {
                     e.stopPropagation()
-                    onRemove(index)
+                    onRemove()
                 }}
             >
                 <span aria-hidden="true">&times;</span>
             </button>
-            <span><strong>{title}</strong></span>
-        </div>
-        <div className="constraint-body">
-            {children}
-        </div>
-    </div>
+        </td>
+        <td>{title}</td>
+        <td>{value}</td>
+        <td>{children}</td>
+    </tr>
 )
 
 Constraint.propTypes = {
     index: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
+    value: PropTypes.number.isRequired,
     onRemove: PropTypes.func.isRequired
 }
 

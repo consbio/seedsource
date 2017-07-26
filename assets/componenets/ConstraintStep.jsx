@@ -40,12 +40,22 @@ const constraintMap = {
 const ConstraintStep = ({ number, constraints, onChange }) => {
     return (
         <ConfigurationStep title="Apply constraints" number={number} name="constraints" active={true}>
-            <div className="constraint-list">
-                {constraints.map(({ type, values }, i) => {
-                    let tag = {type: constraintMap[type]}
-                    return <tag.type index={i} values={values} key={type + '_' + i} />
-                })}
-            </div>
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Value</th>
+                        <th>Range (+/-)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {constraints.map(({ type, values }, i) => {
+                        let tag = {type: constraintMap[type]}
+                        return <tag.type index={i} values={values} key={type + '_' + i} />
+                    })}
+                </tbody>
+            </table>
             <div>
                 <select
                     className="form-control"
