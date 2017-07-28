@@ -5,7 +5,7 @@ import { constraints } from '../config'
 export default (state = [], action) => {
     switch (action.type) {
         case ADD_CONSTRAINT:
-            return [...state, {type: action.constraint, values: constraints[action.constraint]}]
+            return [...state, {type: action.constraint, values: constraints[action.constraint].values}]
 
         case REMOVE_CONSTRAINT:
             return state.filter((constraint, i) => i !== action.index)

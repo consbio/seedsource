@@ -1,6 +1,7 @@
 import { executeGPTask } from '../io'
 import { setError } from './error'
 import { morph } from '../utils'
+import { constraints as constraintsConfig } from '../config'
 
 export const START_JOB = 'START_JOB'
 export const FAIL_JOB = 'FAIL_JOB'
@@ -57,8 +58,7 @@ export const runJob = configuration => {
                 return {min: item.value - item.transfer, max: item.value + item.transfer}
             }),
             constraints: constraints.map(({ type, values }) => {
-                let { x, y } = point
-                return {name: type, args: morph(values, {lat: y, lon: x})}
+                return {name: type, args: constraintsConfig[type].serialize(configuration, values)}
             }),
             region
         }
