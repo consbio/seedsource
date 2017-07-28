@@ -66,9 +66,13 @@ const ConstraintStep = ({ number, constraints, onChange }) => {
                     }}
                 >
                     <option value="none">Add a constraint...</option>
-                    {constraintOptions.map(constraint => {
-                        return <option value={constraint.type} key={constraint.type}>{constraint.label}</option>
-                    })}
+                    {
+                        constraintOptions
+                            .filter(constraint => !constraints.some(c => c.type === constraint.type))
+                            .map(constraint => {
+                                return <option value={constraint.type} key={constraint.type}>{constraint.label}</option>
+                            })
+                    }
                 </select>
             </div>
         </ConfigurationStep>
