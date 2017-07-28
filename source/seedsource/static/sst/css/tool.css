@@ -318,12 +318,6 @@ body {
     opacity: 1;
 }
 
-.variablesList.edit span.transferNode {
-    border-bottom: 1.5px dashed blue;
-    cursor: pointer;
-    color: blue;
-}
-
 .variablesList div.modifyStatus {
     display: inline-block;
     width: 3px;
@@ -355,6 +349,18 @@ body {
     width: 75px;
     margin-left: -12px;
     margin-top: -6px;
+}
+
+.editable-label {
+    border-bottom: 1.5px dashed blue;
+    cursor: pointer;
+    color: blue;
+}
+
+.editable-label.edit {
+    border: 0;
+    cursor: default;
+    color: black;
 }
 
 .configurationList {
