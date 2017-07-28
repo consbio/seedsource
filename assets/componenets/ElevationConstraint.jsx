@@ -1,14 +1,16 @@
 import React, { PropTypes } from 'react'
 import Constraint from '../containers/Constraint'
 import ConstraintRange from './ConstraintRange'
+import EditableLabel from './EditableLabel'
 
 const ElevationConstraint = ({ index, value, range, unit, onRangeChange }) => {
-    let unitLabel = unit === 'metric' ? 'meters' : 'feet'
+    let unitLabel = unit === 'metric' ? 'm' : 'ft'
 
     return (
-        <Constraint index={index} value={value} title="Elevation" className="elevation-constraint">
-            <ConstraintRange index={index} value={value} range={range} unit={unit} onRangeChange={onRangeChange} />
-            <span>&nbsp;{unitLabel}</span>
+        <Constraint index={index} value={value} unit={unit} title="Elevation" className="elevation-constraint">
+            <EditableLabel value={range} onChange={range => onRangeChange(index, value, range, unit)}>
+                &nbsp;{unitLabel}
+            </EditableLabel>
         </Constraint>
     )
 }
@@ -16,7 +18,7 @@ const ElevationConstraint = ({ index, value, range, unit, onRangeChange }) => {
 ElevationConstraint.propTypes = {
     index: PropTypes.number.isRequired,
     range: PropTypes.number,
-    value: PropTypes.number,
+    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     unit: PropTypes.string.isRequired,
     onRangeChange: PropTypes.func.isRequired
 }

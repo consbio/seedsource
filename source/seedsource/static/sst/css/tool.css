@@ -345,7 +345,7 @@ body {
     margin-right: 5px;
 }
 
-.variablesList input[type=text] {
+.table input[type=text] {
     width: 75px;
     margin-left: -12px;
     margin-top: -6px;

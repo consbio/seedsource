@@ -9,9 +9,13 @@ const mapStateToProps = ({ runConfiguration }, { values }) => {
     let value = point.elevation
 
     if (unit === 'imperial') {
-        value = Math.round(value / 0.3048)
-        range = Math.round(range / 0.3048)
+        value = value / 0.3048
+        range = range / 0.3048
     }
+
+    value = Math.round(value)
+    range = Math.round(range)
+    value = value !== null ? value : '--'
 
     return {unit, value, range}
 }
@@ -26,8 +30,8 @@ const mapDispatchToProps = dispatch => {
                     rangeFloat *= 0.3048
                 }
 
-                let min = value - range
-                let max = value + range
+                let min = value - rangeFloat
+                let max = value + rangeFloat
 
                 dispatch(updateConstraintValues(index, {min, max}))
             }
