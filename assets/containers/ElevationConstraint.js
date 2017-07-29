@@ -4,13 +4,12 @@ import { updateConstraintValues } from '../actions/constraints'
 
 const mapStateToProps = ({ runConfiguration }, { values }) => {
     let { unit, point } = runConfiguration
-    let { min, max } = values
-    let range = (max-min)/2
+    let { range } = values
     let value = point.elevation
 
     if (unit === 'imperial') {
-        value = value / 0.3048
-        range = range / 0.3048
+        value /= 0.3048
+        range /= 0.3048
     }
 
     value = Math.round(value)
@@ -22,7 +21,7 @@ const mapStateToProps = ({ runConfiguration }, { values }) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onRangeChange: (index, value, range, unit) => {
+        onRangeChange: (index, range, unit) => {
             let rangeFloat = parseFloat(range)
 
             if (!isNaN(rangeFloat)) {
@@ -30,10 +29,7 @@ const mapDispatchToProps = dispatch => {
                     rangeFloat *= 0.3048
                 }
 
-                let min = value - rangeFloat
-                let max = value + rangeFloat
-
-                dispatch(updateConstraintValues(index, {min, max}))
+                dispatch(updateConstraintValues(index, {range: rangeFloat}))
             }
         }
     }

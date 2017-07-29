@@ -38,8 +38,10 @@ const constraintMap = {
 }
 
 const ConstraintStep = ({ number, constraints, onChange }) => {
-    return (
-        <ConfigurationStep title="Apply constraints" number={number} name="constraints" active={true}>
+    let table = null
+
+    if (constraints.length) {
+        table = (
             <table className="table">
                 <thead>
                     <tr>
@@ -56,6 +58,12 @@ const ConstraintStep = ({ number, constraints, onChange }) => {
                     })}
                 </tbody>
             </table>
+        )
+    }
+
+    return (
+        <ConfigurationStep title="Apply constraints" number={number} name="constraints" active={true}>
+            {table}
             <div>
                 <select
                     className="form-control"

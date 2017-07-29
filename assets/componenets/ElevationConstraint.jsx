@@ -7,8 +7,8 @@ const ElevationConstraint = ({ index, value, range, unit, onRangeChange }) => {
     let unitLabel = unit === 'metric' ? 'm' : 'ft'
 
     return (
-        <Constraint index={index} value={value} unit={unit} title="Elevation" className="elevation-constraint">
-            <EditableLabel value={range} onChange={range => onRangeChange(index, value, range, unit)}>
+        <Constraint index={index} value={value} unit={unitLabel} title="Elevation">
+            <EditableLabel value={range} onChange={range => onRangeChange(index, range, unit)}>
                 &nbsp;{unitLabel}
             </EditableLabel>
         </Constraint>

@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react'
 
 const Constraint = ({ children, index, title, value, unit, onRemove }) => {
-    let unitLabel = unit === 'metric' ? 'm' : 'ft'
-
     return (
         <tr>
             <td>
@@ -17,8 +15,8 @@ const Constraint = ({ children, index, title, value, unit, onRemove }) => {
                     <span aria-hidden="true">&times;</span>
                 </button>
             </td>
-            <td>{title}</td>
-            <td>{value} {unitLabel}</td>
+            <td><strong>{title}</strong></td>
+            <td>{value} {unit}</td>
             <td>{children}</td>
         </tr>
     )
@@ -28,7 +26,7 @@ Constraint.propTypes = {
     index: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    unit: PropTypes.string.isRequired,
+    unit: PropTypes.string,
     onRemove: PropTypes.func.isRequired
 }
 

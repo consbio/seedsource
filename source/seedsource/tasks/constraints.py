@@ -280,10 +280,7 @@ class LongitudeConstraint(Constraint):
 
 
 class DistanceConstraint(Constraint):
-    def get_mask(self, lat, lon, distance, units):
-        if units == 'miles':
-            distance *= 1.60934
-
+    def get_mask(self, lat, lon, distance):
         wgs84 = pyproj.Proj('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
 
         p = pyproj.Proj({

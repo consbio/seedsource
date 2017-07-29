@@ -1,20 +1,20 @@
 import React, { PropTypes } from 'react'
 import Constraint from '../containers/Constraint'
-import ConstraintMinMax from './ConstraintRange'
+import EditableLabel from './EditableLabel'
 
-const LatitudeConstraint = ({ index, min, max, onMinChange, onMaxChange }) => (
-    <Constraint index={index} title="Latitude" className="latlon-constraint">
-        <ConstraintRange index={index} min={min} max={max} onMinChange={onMinChange} onMaxChange={onMaxChange} />
-        <span>&nbsp;&deg;N</span>
+const LatitudeConstraint = ({ index, value, range, onRangeChange }) => (
+    <Constraint index={index} value={value} unit="&deg;N" title="Latitude">
+        <EditableLabel value={range} onChange={range => onRangeChange(index, range)}>
+            <span>&nbsp;&deg;N</span>
+        </EditableLabel>
     </Constraint>
 )
 
 LatitudeConstraint.propTypes = {
     index: PropTypes.number.isRequired,
-    min: PropTypes.number,
-    max: PropTypes.number,
-    onMinChange: PropTypes.func.isRequired,
-    onMaxChange: PropTypes.func.isRequired
+    range: PropTypes.string,
+    value: PropTypes.string,
+    onRangeChange: PropTypes.func.isRequired
 }
 
 export default LatitudeConstraint

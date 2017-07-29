@@ -2,24 +2,33 @@ import { connect } from 'react-redux'
 import DistanceConstraint from '../componenets/DistanceConstraint'
 import { updateConstraintValues } from '../actions/constraints'
 
-const mapStateToProps = (state, { values }) => {
-    let { distance, units } = values
+const mapStateToProps = ({ runConfiguration }, { values }) => {
+    let { unit, point } = runConfiguration
+    let { x, y } = point
+    let { range } = values
 
-    return { distance, units }
+    if (unit === 'imperial') {
+        range /= 1.60934
+    }
+
+    let value = x === '' || y === '' ? '--' : y.toFixed(2) + ' °N, ' + x.toFixed(2) + ' °E'
+    range = Math.round(range)
+
+    return {unit, value, range}
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onDistanceChange: (index, distance) => {
-            let value = parseFloat(distance)
+        onRangeChange: (index, range, unit) => {
+            let rangeFloat = parseFloat(range)
 
-            if (!isNaN(value)) {
-                dispatch(updateConstraintValues(index, {distance: value}))
+            if (!isNaN(rangeFloat)) {
+                if (unit === 'imperial') {
+                    rangeFloat *= 1.60934
+                }
+
+                dispatch(updateConstraintValues(index, {range: rangeFloat}))
             }
-        },
-
-        onUnitsChange: (index, units) => {
-            dispatch(updateConstraintValues(index, {units}))
         }
     }
 }

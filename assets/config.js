@@ -331,11 +331,11 @@ export const constraints = {
     },
     distance: {
         values: {
-            distance: null
+            range: 0
         },
-        serialize: (configuration, { distance }) => {
+        serialize: (configuration, { range }) => {
             let { x, y } = configuration.point
-            return { lat: y, lon: x, distance}
+            return { lat: y, lon: x, distance: range}
         }
     }
 }

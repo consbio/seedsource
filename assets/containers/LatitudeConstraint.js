@@ -2,26 +2,23 @@ import { connect } from 'react-redux'
 import LatitudeConstraint from '../componenets/LatitudeConstraint'
 import { updateConstraintValues } from '../actions/constraints'
 
-const mapStateToProps = (state, { values }) => {
-    let { min, max } = values
+const mapStateToProps = ({ runConfiguration }, { values }) => {
+    let { y } = runConfiguration.point
+    let { range } = values
 
-    return {min, max}
+    let value = y !== '' ? y.toFixed(2) : '--'
+    range = range.toFixed(2)
+
+    return {value, range}
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onMinChange: (index, min) => {
-            let value = parseFloat(min)
+        onRangeChange: (index, range) => {
+            let rangeFloat = parseFloat(range)
 
-            if (!isNaN(value)) {
-                dispatch(updateConstraintValues(index, {min: value}))
-            }
-        },
-        onMaxChange: (index, max) => {
-            let value = parseFloat(max)
-
-            if (!isNaN(value)) {
-                dispatch(updateConstraintValues(index, {max: value}))
+            if (!isNaN(rangeFloat)) {
+                dispatch(updateConstraintValues(index, {range: rangeFloat}))
             }
         }
     }
