@@ -19,7 +19,7 @@ pytz
 rasterio
 Shapely
 django-filter==1.0.1
-aiohttp==1.1.6
+aiohttp==2.2.5
 geopy
 raven==5.32.0
 WeasyPrint==0.32  # WeasyPrint 0.33 causes font issue on OS X
