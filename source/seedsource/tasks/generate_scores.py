@@ -71,9 +71,10 @@ class GenerateScores(Task):
         sum_masks |= sum_rasters > 100
         sum_rasters = numpy.ma.masked_where(sum_masks, sum_rasters)
         sum_rasters = 100 - sum_rasters.astype('int8')
+        sum_rasters.fill_value = -128
 
         raster = variables[0]
-        return Raster(sum_rasters.astype('int8'), extent, raster.x_dim, raster.y_dim, raster.y_increasing)
+        return Raster(sum_rasters, extent, raster.x_dim, raster.y_dim, raster.y_increasing)
 
 
 
