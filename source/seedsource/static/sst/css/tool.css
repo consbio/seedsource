@@ -458,28 +458,12 @@ body {
     margin-bottom: 20px;
 }
 
-.constraint.photoperiod-constraint input[type=text] {
-    width: 45px;
-}
-
-.constraint.photoperiod-constraint .photoperiod-month {
-    width: 100px;
-}
-
-.constraint.photoperiod-constraint .photoperiod-day {
-    width: 45px;
-}
-
-.constraint .constraint-minmax input[type=text] {
-    width: 65px;
-}
-
-.constraint.distance-constraint input[type=text] {
-    width: 65px;
-}
-
-.constraint.distance-constraint select {
+.constraint select {
     height: 25px;
+}
+
+.constraint.photoperiod-constraint .photoperiod-date {
+    margin-top: 5px;
 }
 
 pre.error-debug-info {

@@ -301,7 +301,7 @@ export const constraints = {
     },
     photoperiod: {
         values: {
-            minutes: null,
+            hours: 0,
             month: 1,
             day: 1,
             year: 1961

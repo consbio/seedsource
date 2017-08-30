@@ -213,9 +213,8 @@ class PhotoperiodConstraint(Constraint):
         days *= 24
         return days
 
-    def get_mask(self, minutes, lat, lon, year, month, day):
+    def get_mask(self, hours, lat, lon, year, month, day):
         date = datetime.date(year, month, day)
-        hours = minutes / 60
 
         daylight = self.daylight(date, lat, lon)
 

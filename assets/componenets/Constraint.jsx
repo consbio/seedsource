@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'
 
-const Constraint = ({ children, index, title, value, unit, onRemove }) => {
+const Constraint = ({ children, className, index, title, value, unit, onRemove }) => {
     return (
-        <tr>
+        <tr className={ 'constraint ' + className }>
             <td>
                 <button
                     type="button"
