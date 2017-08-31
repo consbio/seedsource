@@ -16,7 +16,7 @@ const Constraint = ({ children, className, index, title, value, unit, onRemove }
                 </button>
             </td>
             <td><strong>{title}</strong></td>
-            <td>{value} {unit}</td>
+            <td>{value} {isNaN(value) ? '' : unit}</td>
             <td>{children}</td>
         </tr>
     )

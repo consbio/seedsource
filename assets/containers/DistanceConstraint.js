@@ -11,7 +11,7 @@ const mapStateToProps = ({ runConfiguration }, { values }) => {
         range /= 1.60934
     }
 
-    let value = x === '' || y === '' ? '--' : y.toFixed(2) + ' °N, ' + x.toFixed(2) + ' °E'
+    let value = x === '' || y === '' ? '--' : y.toFixed(1) + ', ' + x.toFixed(1)
     range = Math.round(range)
 
     return {unit, value, range}

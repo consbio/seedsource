@@ -7,14 +7,18 @@ const mapStateToProps = ({ runConfiguration }, { values }) => {
     let { range } = values
     let value = point.elevation
 
-    if (unit === 'imperial') {
-        value /= 0.3048
-        range /= 0.3048
+    if (value === null) {
+        value = '--'
     }
+    else {
+        if (unit === 'imperial') {
+            value /= 0.3048
+            range /= 0.3048
+        }
 
-    value = Math.round(value)
-    range = Math.round(range)
-    value = value !== null ? value : '--'
+        value = Math.round(value)
+        range = Math.round(range)
+    }
 
     return {unit, value, range}
 }
