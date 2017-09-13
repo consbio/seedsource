@@ -8,8 +8,6 @@ from datetime import timedelta
 from clover.render.renderers.stretched import StretchedRenderer
 from clover.utilities.color import Color
 
-import seedsource.tasks.cleanup_tifs
-
 
 # Starting at this file, walk back up the directory tree to the project root
 from django.core.urlresolvers import reverse_lazy

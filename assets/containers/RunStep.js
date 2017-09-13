@@ -3,7 +3,7 @@ import RunStep from '../componenets/RunStep'
 import { setError } from '../actions/error'
 import { createJob } from '../actions/job'
 import { showSaveModal } from '../actions/saves'
-import { createReport, setExportMethod } from '../actions/report'
+import { createReport, createTIFJob } from '../actions/report'
 
 const configurationCanRun = ({point, variables, constraints}) =>  {
     if (point === null || point.x === null || point.y === null) {
@@ -59,6 +59,10 @@ const mapDispatchToProps = dispatch => {
 
         onExport: (name) => {
             dispatch(createReport(name))
+        },
+
+        onExportTIF: () => {
+            dispatch(createTIFJob())
         }
     }
 }

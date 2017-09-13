@@ -11,6 +11,7 @@ import zones from './async/zones'
 import legends from './async/legends'
 import point from './async/point'
 import popup from './async/popup'
+import report from './async/report'
 
 export const store = createStore(reducers, applyMiddleware(thunkMiddleware));
 
@@ -29,3 +30,4 @@ zones(store)
 legends(store)
 point(store)
 popup(store)
+report(store)

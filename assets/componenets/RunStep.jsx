@@ -3,7 +3,11 @@ import ConfigurationStep from '../containers/ConfigurationStep'
 import SaveModal from '../containers/SaveModal'
 import { reports } from '../config'
 
-const RunStep = ({ number, configuration, canRun, canSave, isLoggedIn, reportIsFetching, onRun, onSave, onExport }) => {
+const RunStep = props => {
+    let {
+        number, configuration, canRun, canSave, isLoggedIn, reportIsFetching, onRun, onSave, onExport, onExportTIF
+    } = props
+
     return (
         <ConfigurationStep title="Map your Results" number={number} name="run" active={false}>
             <div>
@@ -48,11 +52,17 @@ const RunStep = ({ number, configuration, canRun, canSave, isLoggedIn, reportIsF
                             {reports.map(r => (
                                 <li key={r.name}>
                                 <a className="dropdown-item" href="#"
-                                   id={r.name}
                                    onClick={e => {
                                        e.preventDefault()
-                                       onExport(e.target.id)
-                                   }}>{r.label}</a></li>))}
+                                       onExport(r.name)
+                                   }}>{r.label}</a></li>))
+                            }
+                            <li>
+                                <a className="dropdown-item" href="#" onClick={e => {
+                                    e.preventDefault()
+                                    onExportTIF()
+                                }}>GeoTIFF</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -72,7 +82,8 @@ RunStep.propTypes = {
     reportIsFetching: PropTypes.bool.isRequired,
     onRun: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
-    onExport: PropTypes.func.isRequired
+    onExport: PropTypes.func.isRequired,
+    onExportTIF: PropTypes.func.isRequired
 }
 
 export default RunStep

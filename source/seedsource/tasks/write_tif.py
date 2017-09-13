@@ -13,13 +13,12 @@ import netCDF4
 class WriteTIF(Task):
     name = 'write_tif'
     inputs = [
-        StringParameter('uuid'),
+        StringParameter('service_id'),
     ]
     outputs = [StringParameter('filename')]
 
-    def execute(self, uuid):
-        svc_name = uuid + '/raster_out'
-        svc = Service.objects.get(name=svc_name)
+    def execute(self, service_id):
+        svc = Service.objects.get(name=service_id)
         var = Variable.objects.get(service_id=svc.id)
         data_path = svc.data_path
         with netCDF4.Dataset(os.path.join(SERVICE_DATA_ROOT, data_path), 'r') as nc:
@@ -31,7 +30,7 @@ class WriteTIF(Task):
         y_step = (ex.ymax - ex.ymin) / height
         transform = [ex.xmin, x_step, 0, ex.ymax, 0, -y_step]
         dtype = np.int16
-        nodata = -9999
+        nodata = data.fill_value
 
         fd, filename = tempfile.mkstemp(prefix=settings.DATASET_DOWNLOAD_DIR, suffix='.tif')
         os.close(fd)
@@ -43,4 +42,4 @@ class WriteTIF(Task):
                 dst.write(np.array(data, dtype=dtype), 1)
                 dst.write_mask(np.logical_not(data.mask))
 
-        return filename
+        return os.path.basename(filename)
