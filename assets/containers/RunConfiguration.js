@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import RunConfiguration from '../componenets/RunConfiguration'
-import { fetchJobStatus, finishJob } from '../actions/job'
 
 const mapStateToProps = state => {
     let { activeStep, runConfiguration, lastRun, job, pdfIsFetching } = state
@@ -15,16 +14,4 @@ const mapStateToProps = state => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onPoll: jobId => {
-            dispatch(fetchJobStatus(jobId))
-        },
-
-        onDone: configuration => {
-            dispatch(finishJob(configuration))
-        }
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(RunConfiguration)
+export default connect(mapStateToProps)(RunConfiguration)
