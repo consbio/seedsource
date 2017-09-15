@@ -1,4 +1,4 @@
-import { REQUEST_JOB, RECEIVE_JOB, REQUEST_JOB_STATUS, RECEIVE_JOB_STATUS, FAIL_JOB } from '../actions/job'
+import { START_JOB, RECEIVE_JOB_STATUS, FAIL_JOB } from '../actions/job'
 import { LOAD_CONFIGURATION } from '../actions/saves'
 import { morph } from '../utils'
 
@@ -13,18 +13,12 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch(action.type) {
-        case REQUEST_JOB:
+        case START_JOB:
             return morph(defaultState, {
                 isRunning: true,
                 isFetching: true,
                 configuration: action.configuration
             })
-
-        case RECEIVE_JOB:
-            return morph(state, {jobId: action.jobId, isFetching: false})
-
-        case REQUEST_JOB_STATUS:
-            return morph(state, {isFetching: true})
 
         case RECEIVE_JOB_STATUS:
             if (action.status === 'success') {

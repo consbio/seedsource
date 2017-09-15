@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import RunStep from '../componenets/RunStep'
 import { setError } from '../actions/error'
-import { createJob } from '../actions/job'
+import { runJob } from '../actions/job'
 import { showSaveModal } from '../actions/saves'
-import { createReport, createTIFJob } from '../actions/report'
+import { createReport, runTIFJob } from '../actions/report'
 
 const configurationCanRun = ({point, variables, constraints}) =>  {
     if (point === null || point.x === null || point.y === null) {
@@ -45,7 +45,7 @@ const mapDispatchToProps = dispatch => {
                 return
             }
 
-            dispatch(createJob(configuration))
+            dispatch(runJob(configuration))
         },
 
         onSave: isLoggedIn => {
@@ -62,7 +62,7 @@ const mapDispatchToProps = dispatch => {
         },
 
         onExportTIF: () => {
-            dispatch(createTIFJob())
+            dispatch(runTIFJob())
         }
     }
 }
