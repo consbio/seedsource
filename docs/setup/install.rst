@@ -161,6 +161,10 @@ to this new file:
 
     ALLOWED_HOSTS = []  # Add your host name or names here. E.g., 'seedlotselectiontool.org'
 
+    # Set this to the directory you will serve GeoTIFF downloads from. It must be writable by the application user
+    # and readable by the nginx user.
+    DATASET_DOWNLOAD_DIR = '/var/www/downloads/'
+
 .. note::
 
     You can also add additional settings to ``custom.py`` or override settings specified in ``production.py`` and
@@ -206,8 +210,8 @@ Restart the supervisord process.
 Configure Nginx
 ^^^^^^^^^^^^^^^
 
-Edit your nginx configuration and add a location directive for the seedsource application, and another location
-directive for your static files:
+Edit your nginx configuration and add a location directive for the seedsource application, a location
+directive for your static files, and a location directive for dataset downloads:
 
 .. code-block:: nginx
 
@@ -218,6 +222,10 @@ directive for your static files:
 
     location /static/ {
         alias /var/www/static/;
+    }
+
+    location /downloads/ {
+        alias /var/www/downloads/;
     }
 
 .. note::
