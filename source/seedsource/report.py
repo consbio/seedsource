@@ -84,19 +84,19 @@ CONSTRAINTS = {
     },
     'photoperiod': {
         'name': 'Photoperiod',
-        'text': (('Within ', False), ('{minutes}', True), (' minutes of ', False), ('{month}/{day}/{year}', True))
+        'text': (('Within ', False), ('{hours:.1f}', True), (' hours of ', False), ('{month}/{day}/{year}', True))
     },
     'latitude': {
         'name': 'Latitude',
-        'text': (('Between ', False), ('{min}', True), (' and ', False), ('{max}', True), (' °N', False))
+        'text': (('Between ', False), ('{min:.2f}', True), (' and ', False), ('{max:.2f}', True), (' &deg;N', False))
     },
     'longitude': {
         'name': 'Longitude',
-        'text': (('Between ', False), ('{min}', True), (' and ', False), ('{max}', True), (' °E', False))
+        'text': (('Between ', False), ('{min:.2f}', True), (' and ', False), ('{max:.2f}', True), (' &deg;E', False))
     },
     'distance': {
         'name': 'Distance',
-        'text': (('Within ', False), ('{distance} {units}', True))
+        'text': (('Within ', False), ('{distance:.1f} meters', True))
     }
 }
 
@@ -203,12 +203,12 @@ class Report(object):
 
         constraints = []
         for constraint in self.configuration['constraints']:
-            info = CONSTRAINTS[constraint['type']]
+            info = CONSTRAINTS[constraint['name']]
             constraints.append((
                 info['name'],
                 ''.join(
                     '<strong>{}</strong>'.format(text) if bold else text
-                    for text, bold in ((x[0].format(**constraint['values']), x[1]) for x in info['text'])
+                    for text, bold in ((x[0].format(**constraint['args']), x[1]) for x in info['text'])
                 )
             ))
 
@@ -257,6 +257,20 @@ class Report(object):
         return pdf_data
 
     def get_pptx_data(self) -> BytesIO:
+        # Add a text frame where needed
+        def add_text_frame(tframe, lines):
+            p = tframe.paragraphs[0]
+            for line in lines:
+                bold_text, norm_text, add_newline = line
+                run = p.add_run()
+                run.text = bold_text
+                run.font.bold = True
+                run = p.add_run()
+                run.text = norm_text + '\n'
+                if add_newline:
+                    run = p.add_run()
+                    run.text = '\n'
+
         ppt_data = BytesIO()
 
         ctx = self.get_context(img_as_bytes=True)
@@ -339,41 +353,29 @@ class Report(object):
             ]
         )
 
-        lines.append(('\nVariables', '', False))
-        lines.append(('', ''.join([
-            'Variable'.ljust(name_width),
-            'Center'.ljust(center_width),
-            'Transfer limit (+/-)'.ljust(transfer_width)
-        ]), False))
-        lines.append(('', '-' * (name_width + center_width + transfer_width), False))
+        variable_notes = [
+            ('Variables', '', False),
+            ('', ''.join([
+                'Variable'.ljust(name_width),
+                'Center'.ljust(center_width),
+                'Transfer limit (+/-)'.ljust(transfer_width)
+            ]), False),
+            ('', '-' * (name_width + center_width + transfer_width), False)
+        ]
 
         for variable in ctx['variables']:
             units = degree_sign(variable['units'])
-            lines.append(('', ''.join([
+            variable_notes.append(('', ''.join([
                 variable['label'].ljust(name_width),
                 '{} {}'.format(variable['value'], units).ljust(center_width),
                 '{} {}{}'.format(variable['limit'], units, ' (modified)' if variable['modified'] else '')
             ]), False))
 
-        lines.append(('', '', False))
-
-        # Add a text frame where needed
-        def add_text_frame(tframe):
-            p = tframe.paragraphs[0]
-            for line in lines:
-                bold_text, norm_text, add_newline = line
-                run = p.add_run()
-                run.text = bold_text
-                run.font.bold = True
-                run = p.add_run()
-                run.text = norm_text + '\n'
-                if add_newline:
-                    run = p.add_run()
-                    run.text = '\n'
+        variable_notes.append(('', '', False))
 
         notes_slide = mapslide.notes_slide
         notes_slide.notes_text_frame.paragraphs[0].font.name = 'Andale Mono'
-        add_text_frame(notes_slide.notes_text_frame)
+        add_text_frame(notes_slide.notes_text_frame, lines + variable_notes)
 
         # Set run config placeholders
         statslide = prs.slides[1]
@@ -382,7 +384,7 @@ class Report(object):
         placeholder = statslide.placeholders[DATE_IDX]
         placeholder.text = date
         placeholder = statslide.placeholders[CONFIG_TEXT_IDX]
-        add_text_frame(placeholder.text_frame)
+        add_text_frame(placeholder.text_frame, lines)
 
         # Populate variables slide
         variable_slide = prs.slides[2]
@@ -447,7 +449,7 @@ class Report(object):
 
             for paragraph in (tf.paragraphs[0], notes_slide.notes_text_frame.paragraphs[0]):
                 for constraint in self.configuration['constraints']:
-                    info = CONSTRAINTS[constraint['type']]
+                    info = CONSTRAINTS[constraint['name']]
                     run = paragraph.add_run()
                     run.font.bold = True
                     run.text = '{}: '.format(info['name'])
@@ -455,7 +457,7 @@ class Report(object):
                     for text in info['text']:
                         run = paragraph.add_run()
                         run.font.bold = text[1]
-                        run.text = text[0].format(**constraint['values'])
+                        run.text = degree_sign(text[0].format(**constraint['args']))
 
                     paragraph.add_run().text = '\n'
 
