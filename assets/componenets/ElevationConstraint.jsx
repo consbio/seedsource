@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import Constraint from '../containers/Constraint'
-import ConstraintRange from './ConstraintRange'
 import EditableLabel from './EditableLabel'
 
 const ElevationConstraint = ({ index, value, range, unit, onRangeChange }) => {
