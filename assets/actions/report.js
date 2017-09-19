@@ -2,8 +2,6 @@ import { post, executeGPTask } from '../io'
 import { setError } from './error'
 import { dumpConfiguration } from './saves'
 import { reports } from '../config'
-import { morph } from '../utils'
-import { constraints as constraintsConfig } from '../config'
 
 export const REQUEST_REPORT = 'REQUEST_REPORT'
 export const RECEIVE_REPORT = 'RECEIVE_REPORT'
@@ -36,11 +34,7 @@ export const createReport = name => {
         let resultsLayer = '/tiles/' + job.serviceId + '/{z}/{x}/{y}.png'
 
         let data = {
-            configuration: morph(dumpConfiguration(lastRun), {
-                constraints: lastRun.constraints.map(({ type, values }) => {
-                    return {name: type, args: constraintsConfig[type].serialize(lastRun, values)}
-                })}
-            ),
+            configuration: dumpConfiguration(lastRun),
             tile_layers: [basemap, resultsLayer],
             zoom,
             opacity

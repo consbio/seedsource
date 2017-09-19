@@ -231,14 +231,29 @@
         </table>
     </div>
 
-    <h3>Constraints</h3>
-    <div class="constraints">
-        {% for constraint in constraints %}
-            <div>
-                <strong>{{ constraint.0 }}: </strong> {{ constraint.1|safe }}
-            </div>
-        {% endfor %}
-    </div>
+    {% if constraints %}
+        <h3>Constraints</h3>
+        <div>
+            <table class="variables">
+                <thead>
+                    <tr>
+                        <th>Constraint</th>
+                        <th>Center</th>
+                        <th>Range (+/-)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for constraint in constraints %}
+                        <tr>
+                            <td>{{ constraint.label }}</td>
+                            <td>{{ constraint.value }}</td>
+                            <td>{{ constraint.range }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
 
     <div>&nbsp;</div>
 
