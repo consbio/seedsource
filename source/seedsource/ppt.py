@@ -133,6 +133,9 @@ class PPTCreator(object):
             (('Data URL: ', 12, True), (data_url, 12, False))
         ))
 
+        # Hyperlink URL
+        shape.text_frame.paragraphs[-1].runs[-1].hyperlink.address = data_url
+
     def create_variables_slide(self, variables):
         slide = self.add_slide()
         self.add_title_text(slide, 'Climate Variables')
