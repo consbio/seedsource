@@ -27,6 +27,8 @@ urlpatterns = [
 
 # For local development, use staticfiles to serve downloads
 if settings.DEBUG:
+    from django.views.static import serve
+
     urlpatterns += [
-        url(r'^downloads/(?P<path>.*)$', 'django.contrib.staticfiles.views.serve')
+        url(r'^downloads/(?P<path>.*)$', serve, {'document_root': settings.DATASET_DOWNLOAD_DIR})
     ]

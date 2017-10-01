@@ -1,13 +1,13 @@
 amqp==2.2.2
 celery==4.1.0
 git+https://github.com/consbio/clover.git
-Django==1.8.18
+Django==1.11.5
 django-celery
 djangorestframework==3.6.4
 Fiona==1.7.9
 kombu==4.1.0
 mercantile
-ncdjango==0.4.4
+ncdjango==0.5.0
 netCDF4
 numpy==1.11.2
 Pillow==3.4.2
