@@ -248,8 +248,8 @@
                     {% for constraint in constraints %}
                         <tr>
                             <td>{{ constraint.label }}</td>
-                            <td>{{ constraint.value }}</td>
-                            <td>{{ constraint.range }}</td>
+                            <td>{{ constraint.value|safe }}</td>
+                            <td>{{ constraint.range|safe }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
