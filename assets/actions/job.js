@@ -71,7 +71,7 @@ export const runJob = configuration => {
 
            let data = {action: 'runJob'}
            if (err.json !== undefined) {
-               data.response = json
+               data.response = err.json
            }
 
            dispatch(failJob())

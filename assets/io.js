@@ -63,7 +63,7 @@ export const executeGPTask = (job, inputs, statusCallback = null) => {
     return post('/geoprocessing/rest/jobs/', data).then(handleJSONResponse).then(json => {
         let { uuid } = json
 
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             let pollStatus = () => {
                 get('/geoprocessing/rest/jobs/' + uuid + '/').then(handleJSONResponse).then(json => {
                     if (statusCallback !== null) {
@@ -74,9 +74,9 @@ export const executeGPTask = (job, inputs, statusCallback = null) => {
                         resolve(json)
                     }
                     else if (json.status === 'failure') {
-                        err = new Error('Job failed')
+                        let err = new Error('Job failed')
                         err.json = json
-                        throw err
+                        reject(err)
                     }
                     else {
                         setTimeout(pollStatus, 1000)

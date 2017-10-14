@@ -127,7 +127,7 @@ export const runTIFJob = () => {
 
             let data = {action: 'runTIFJob'}
             if (err.json !== undefined) {
-               data.response = json
+               data.response = err.json
             }
 
             dispatch(failReport())
