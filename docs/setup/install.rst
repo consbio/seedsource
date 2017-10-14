@@ -11,8 +11,8 @@ Python Requirements
 
 * Python 3.5+ (https://www.python.org/)
 * Django 1.8 (https://www.djangoproject.com/)
-* ``ncdjango`` 0.4.0 (http://ncdjango.readthedocs.io/)
-* ``clover`` 0.2.0 (https://github.com/consbio/clover)
+* ``ncdjango`` (http://ncdjango.readthedocs.io/)
+* ``clover`` (https://github.com/consbio/clover)
 * ``amqp``
 * ``celery``
 * ``django-celery``
@@ -20,7 +20,6 @@ Python Requirements
 * ``Fiona``
 * ``kombu``
 * ``mercantile``
-* ``ncdjango==0.4.0``
 * ``netCDF4``
 * ``numpy``
 * ``Pillow``
