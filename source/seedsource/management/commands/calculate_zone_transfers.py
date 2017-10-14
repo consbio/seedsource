@@ -48,6 +48,12 @@ class Command(BaseCommand):
 
             return ((x + start, x + increment + start) for x in range(low, high, increment))
 
+        def every_500(zone_id, low, high):
+            return _every(low, high, 500)
+
+        def every_1000(zone_id, low, high):
+            return _every(low, high, 1000)
+
         def historical(zone_id, low, high):
             return _every(low, high, 500)
 
