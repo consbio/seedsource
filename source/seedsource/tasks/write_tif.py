@@ -1,4 +1,5 @@
 import zipfile
+from stat import S_IRUSR, S_IRGRP, S_IWUSR
 
 import netCDF4
 import numpy as np
@@ -37,6 +38,7 @@ class WriteTIF(Task):
 
         fd, filename = tempfile.mkstemp(prefix=settings.DATASET_DOWNLOAD_DIR, suffix='.zip')
         os.close(fd)
+        os.chmod(filename, S_IRUSR | S_IWUSR | S_IRGRP)
 
         with zipfile.ZipFile(filename, mode='w') as zf:
             tif_data = BytesIO()
