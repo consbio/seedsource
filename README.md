@@ -13,6 +13,6 @@ Documentation is available [here](http://seedsource.readthedocs.io).
 
 # Contributors
 
-* [Nikola Stevenson-Molnar](https://github.com/nikmolnar)
+* [Nikolas Stevenson-Molnar](https://github.com/nikmolnar)
 * [Taylor Mutch](https://github.com/TaylorMutch)
 * [Kaveh Karimi](https://github.com/ka7eh)
