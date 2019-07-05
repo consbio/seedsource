@@ -180,7 +180,16 @@ CELERYBEAT_SCHEDULE = {
         'options': {
             'expires': 7200  # 2 hrs
         }
-    }
+    },
+    'cleanup_temp_tif_files': {
+        'task': 'seedsource.tasks.cleanup_tifs.cleanup_temp_tif_files',
+        'schedule': timedelta(hours=1),
+        'options': {
+            'expires': 7200  # 2 hrs
+        },
+        'kwargs': {'age': 7200},
+    },
+
 }
 
 NC_REGISTERED_JOBS = {
@@ -193,7 +202,12 @@ NC_REGISTERED_JOBS = {
             (50, Color(254, 178, 76)),
             (0, Color(255, 237, 160))
         ])
-    }
+    },
+    'write_tif': {
+        'type': 'task',
+        'task': 'seedsource.tasks.write_tif.WriteTIF',
+    },
+
 }
 
 NC_INSTALLED_INTERFACES = (

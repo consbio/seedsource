@@ -1,4 +1,4 @@
-import uuid from 'node-uuid'
+import uuid from 'uuid'
 import { get, post, put, ioDelete } from './io'
 
 class Request {

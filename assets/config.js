@@ -1,3 +1,5 @@
+import { morph } from './utils'
+
 export const collapsibleSteps = false
 
 const celsiusUnits = {
@@ -284,6 +286,59 @@ export const species = [
         }
     }
 ]
+
+export const constraints = {
+    elevation: {
+        values: {
+            range: 0
+        },
+        serialize: (configuration, values) => {
+            let { elevation } = configuration.point
+            let { range } = values
+
+            return {min: elevation - range, max: elevation + range}
+        }
+    },
+    photoperiod: {
+        values: {
+            hours: 0,
+            month: 1,
+            day: 1,
+            year: 1961
+        },
+        serialize: (configuration, values) => {
+            let { x, y } = configuration.point
+            return morph(values, {lon: x, lat: y})
+        }
+    },
+    latitude: {
+        values: {
+            range: 0
+        },
+        serialize: (configuration, { range }) => {
+            let { y } = configuration.point
+            return {min: y - range, max: y + range}
+        }
+    },
+    longitude: {
+        values: {
+            range: 0
+        },
+        serialize: (configuration, { range }) => {
+            let { x } = configuration.point
+            return {min: x - range, max: x + range}
+        }
+    },
+    distance: {
+        values: {
+            range: 0
+        },
+        serialize: (configuration, { range }) => {
+            let { x, y } = configuration.point
+            return { lat: y, lon: x, distance: range}
+        }
+    }
+}
 
 export const timeLabels = {
     '1961_1990': '1961 - 1990',

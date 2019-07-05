@@ -1,17 +1,16 @@
-import { get, post } from '../io'
+import { executeGPTask } from '../io'
 import { setError } from './error'
+import { constraints as constraintsConfig } from '../config'
 
-export const RECEIVE_JOB = 'RECEIVE_JOB'
+export const START_JOB = 'START_JOB'
 export const FAIL_JOB = 'FAIL_JOB'
-export const REQUEST_JOB = 'REQUEST_JOB'
 export const RECEIVE_JOB_STATUS = 'RECEIVE_JOB_STATUS'
-export const REQUEST_JOB_STATUS = 'REQUEST_JOB_STATUS'
 export const FINISH_JOB = 'FINISH_JOB'
 
-export const receiveJob = (configuration, json) => {
+export const startJob = configuration => {
     return {
-        type: RECEIVE_JOB,
-        jobId: json.uuid
+        type: START_JOB,
+        configuration
     }
 }
 
@@ -21,16 +20,24 @@ export const failJob = () => {
     }
 }
 
-export const requestJob = configuration => {
+export const receiveJobStatus = json => {
     return {
-        type: REQUEST_JOB,
+        type: RECEIVE_JOB_STATUS,
+        status: json.status,
+        serviceId: json.status === 'success' ? JSON.parse(json.outputs).raster_out : null
+    }
+}
+
+export const finishJob = configuration => {
+    return {
+        type: FINISH_JOB,
         configuration
     }
 }
 
-export const createJob = configuration => {
-    return dispatch => {
-        let { variables, objective, climate, region } = configuration
+export const runJob = configuration => {
+   return dispatch => {
+       let { variables, objective, climate, region, constraints, point } = configuration
 
         let inputs = {
             variables: variables.map(item => {
@@ -48,98 +55,27 @@ export const createJob = configuration => {
             }),
             limits: variables.map(item => {
                 return {min: item.value - item.transfer, max: item.value + item.transfer}
-            })
+            }),
+            constraints: constraints.map(({ type, values }) => {
+                return {name: type, args: constraintsConfig[type].serialize(configuration, values)}
+            }),
+            region
         }
 
-        dispatch(requestJob(configuration))
+       dispatch(startJob(configuration))
 
-        let data = {
-            job: 'generate_scores',
-            inputs: JSON.stringify(inputs)
-        }
+       return executeGPTask('generate_scores', inputs, json => dispatch(receiveJobStatus(json))).then(() => {
+           dispatch(finishJob(configuration))
+       }).catch(err => {
+           console.log(err)
 
-        return post('/geoprocessing/rest/jobs/', data).then(response => {
-            let { status } = response
+           let data = {action: 'runJob'}
+           if (err.json !== undefined) {
+               data.response = err.json
+           }
 
-            if (status >= 200 && status < 300) {
-                return response.json()
-            }
-            else {
-                throw new Error('Bad status creating job: ' + response.status)
-            }
-
-            return response.json()
-        }).then(json => dispatch(receiveJob(configuration, json))).catch(err => {
-            console.log(err)
-
-            dispatch(failJob())
-            dispatch(setError(
-                'Processing error', 'Sorry, there was an error running the tool.', JSON.stringify({
-                    action: 'createJob',
-                    error: err ? err.message : null,
-                    inputs
-                }, null, 2)
-            ))
-        })
-    }
-}
-
-export const receiveJobStatus = json => {
-    return {
-        type: RECEIVE_JOB_STATUS,
-        status: json.status,
-        serviceId: json.status === 'success' ? JSON.parse(json.outputs).raster_out : null
-    }
-}
-
-export const requestJobStatus = () => {
-    return {
-        type: REQUEST_JOB_STATUS
-    }
-}
-
-export const fetchJobStatus = jobId => {
-    return dispatch => {
-        let url = '/geoprocessing/rest/jobs/' + jobId + '/'
-    
-        dispatch(requestJobStatus())
-
-        return get(url).then(response => {
-            let { status } = response
-
-            if (status >= 200 && status < 300) {
-                return response.json()
-            }
-            else {
-                throw new Error('Bad status polling job: ' + response.status)
-            }
-
-            return response.json()
-        }).then(json => {
-            if (json.status === 'failure') {
-                dispatch(failJob())
-                dispatch(setError('Processing error', 'Sorry, processing failed.', JSON.stringify({
-                    action: 'fetchJobStatus',
-                    response: json,
-                    jobId
-                }, null, 2)))
-
-                return
-            }
-
-            dispatch(receiveJobStatus(json))
-        }).catch(err => {
-            console.log(err)
-
-            dispatch(failJob())
-            dispatch(setError('Processing error', 'Sorry, there was an error getting the job status.'))
-        })
-    }
-}
-
-export const finishJob = configuration => {
-    return {
-        type: FINISH_JOB,
-        configuration
-    }
+           dispatch(failJob())
+           dispatch(setError('Processing error', 'Sorry, processing failed.', JSON.stringify(data, null, 2)))
+       })
+   }
 }

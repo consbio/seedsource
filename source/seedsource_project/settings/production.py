@@ -66,7 +66,9 @@ EMAIL_HOST_PASSWORD = CONFIG.get('email_password')
 EMAIL_USE_TLS = True
 
 NC_SERVICE_DATA_ROOT = '/ncdjango/services/'
-NC_TEMPORARY_FILE_LOCATION = '/ncdjango/tmp/'
+MEDIA_ROOT = '/ncdjango/'
+NC_TEMPORARY_FILE_LOCATION = 'tmp/'
+DATASET_DOWNLOAD_DIR = '/ncdjango/downloads/'
 
 # Preview mode
 INSTALLED_APPS += ('preview',)

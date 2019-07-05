@@ -13,6 +13,7 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
+from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 
@@ -23,3 +24,11 @@ urlpatterns = [
     url(r'^sst/', include('seedsource.urls')),
     url(r'^accounts/', include('accounts.urls'))
 ]
+
+# For local development, use staticfiles to serve downloads
+if settings.DEBUG:
+    from django.views.static import serve
+
+    urlpatterns += [
+        url(r'^downloads/(?P<path>.*)$', serve, {'document_root': settings.DATASET_DOWNLOAD_DIR})
+    ]

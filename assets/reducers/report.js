@@ -11,7 +11,7 @@ export default (state = defaultState, action) => {
             return morph(state, {name: action.name})
 
         case RECEIVE_REPORT:
-            return morph(state, {name: null})
+            return morph(state, {name: null, TIFJobIsFetching: false})
 
         default:
             return state

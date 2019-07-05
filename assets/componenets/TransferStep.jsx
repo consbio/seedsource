@@ -33,7 +33,7 @@ const TransferStep = ({ number, active, objective, method, center, onCenterChang
             <div>
                 <div>&nbsp;</div>
                 <em>Which should be used as the climatic center?</em>
-                <div class="radio">
+                <div className="radio">
                     <label>
                         <input
                             type="radio"

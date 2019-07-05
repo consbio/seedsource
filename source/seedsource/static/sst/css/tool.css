@@ -318,12 +318,6 @@ body {
     opacity: 1;
 }
 
-.variablesList.edit span.transferNode {
-    border-bottom: 1.5px dashed blue;
-    cursor: pointer;
-    color: blue;
-}
-
 .variablesList div.modifyStatus {
     display: inline-block;
     width: 3px;
@@ -351,10 +345,22 @@ body {
     margin-right: 5px;
 }
 
-.variablesList input[type=text] {
+.table input[type=text] {
     width: 75px;
     margin-left: -12px;
     margin-top: -6px;
+}
+
+.editable-label {
+    border-bottom: 1.5px dashed blue;
+    cursor: pointer;
+    color: blue;
+}
+
+.editable-label.edit {
+    border: 0;
+    cursor: default;
+    color: black;
 }
 
 .configurationList {
@@ -422,6 +428,42 @@ body {
 .variable-tooltip .tooltip-label {
     color: #999;
     margin-right: 8px;
+}
+
+.constraint {
+    margin-bottom: 5px;
+}
+
+.constraint button.close {
+    float: left;
+    margin-right: 10px;
+    margin-top: -2px;
+}
+
+.constraint .constraint-body {
+    margin-left: 24px;
+}
+
+.constraint .constraint-label {
+    font-size: .8em;
+    color: #AAA;
+}
+
+.constraint input[type=text] {
+    height: 25px;
+    text-align: right;
+}
+
+.constraint-list .constraint:last-child {
+    margin-bottom: 20px;
+}
+
+.constraint select {
+    height: 25px;
+}
+
+.constraint.photoperiod-constraint .photoperiod-date {
+    margin-top: 5px;
 }
 
 pre.error-debug-info {

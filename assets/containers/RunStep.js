@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import RunStep from '../componenets/RunStep'
 import { setError } from '../actions/error'
-import { createJob } from '../actions/job'
+import { runJob } from '../actions/job'
 import { showSaveModal } from '../actions/saves'
-import { createReport, setExportMethod } from '../actions/report'
+import { createReport, runTIFJob } from '../actions/report'
 
-const configurationCanRun = ({point, variables}) =>  {
+const configurationCanRun = ({point, variables, constraints}) =>  {
     if (point === null || point.x === null || point.y === null) {
         return false
     }
@@ -27,7 +27,9 @@ const mapStateToProps = ({ runConfiguration, lastRun, job, isLoggedIn, reportIsF
 const mapDispatchToProps = dispatch => {
     return {
         onRun: configuration => {
-            if (configuration.variables.some(item => item.transfer === null)) {
+            let { variables, constraints } = configuration
+
+            if (variables.some(item => item.transfer === null)) {
                 dispatch(setError(
                     'Configuration error',
                     'Cannot calculate scores: one or more of your variables has no transfer limit, or a limit of 0.'
@@ -35,7 +37,15 @@ const mapDispatchToProps = dispatch => {
                 return
             }
 
-            dispatch(createJob(configuration))
+            if (constraints.some(item => Object.keys(item.values).some(key => item.values[key] === null))) {
+                dispatch(setError(
+                    'Configuration error',
+                    'Cannot calculate scores: one or more of your constraints is missing a value.'
+                ))
+                return
+            }
+
+            dispatch(runJob(configuration))
         },
 
         onSave: isLoggedIn => {
@@ -49,6 +59,10 @@ const mapDispatchToProps = dispatch => {
 
         onExport: (name) => {
             dispatch(createReport(name))
+        },
+
+        onExportTIF: () => {
+            dispatch(runTIFJob())
         }
     }
 }

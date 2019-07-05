@@ -5,6 +5,11 @@ Variable = namedtuple(
     ['label', 'multiplier', 'format_value', 'format_transfer', 'metric_label', 'imperial_label']
 )
 
+Constraint = namedtuple(
+    'Constraint',
+    ['label', 'format_value', 'format_range']
+)
+
 
 def convert_to_f(value):
     return value * 1.8 + 32
@@ -16,6 +21,14 @@ def convert_relative_to_f(value):
 
 def convert_to_in(value):
     return value / 25.4
+
+
+def convert_to_feet(value):
+    return value / 0.3048
+
+
+def convert_to_miles(value):
+    return value / 1.60934
 
 
 def format_temperature_value(value, is_imperial):
@@ -72,4 +85,50 @@ VARIABLE_CONFIG = {
     ),
     'Eref': Variable('Hargreaves reference evaporation', 1, format_precip_value, format_precip_value, 'mm', 'in'),
     'CMD': Variable('Hargreaves climatic moisture deficit', 1, format_precip_value, format_precip_value, 'mm', 'in')
+}
+
+
+def format_elevation_value(config, is_imperial):
+    elevation = config['point']['elevation']
+    return '{:.1f} ft'.format(convert_to_feet(elevation)) if is_imperial else '{:.1f} m'.format(elevation)
+
+
+def format_elevation_range(values, is_imperial):
+    return '{:.1f} ft'.format(convert_to_feet(values['range'])) if is_imperial else '{:.1f} m'.format(values['range'])
+
+
+def format_photoperiod_value(config, is_imperial):
+    return '{y:.2f}, {x:.2f}'.format(**config['point'])
+
+
+def format_photoperiod_range(values, is_imperial):
+    return '{hours:.1f} hours, {day} {month}'.format(**values)
+
+
+def format_latitude_value(config, is_imperial):
+    return '{y:.2f} &deg;N'.format(**config['point'])
+
+
+def format_latitude_range(values, is_imperial):
+    return '{range:.2f} &deg;N'.format(**values)
+
+
+def format_longitude_value(config, is_imperial):
+    return '{x:.2f} &deg;E'.format(**config['point'])
+
+
+def format_longitude_range(values, is_imperial):
+    return '{range:.2f} &deg;E'.format(**values)
+
+
+def format_distance_range(values, is_imperial):
+    return '{} mi'.format(convert_to_miles(values['range'])) if is_imperial else '{} km'.format(values['range'])
+
+
+CONSTRAINT_CONFIG = {
+    'elevation': Constraint('Elevation', format_elevation_value, format_elevation_range),
+    'photoperiod': Constraint('Photoperiod', format_photoperiod_value, format_photoperiod_range),
+    'latitude': Constraint('Latitutde', format_latitude_value, format_latitude_range),
+    'longitude': Constraint('Longitude', format_longitude_value, format_longitude_range),
+    'distance': Constraint('Distance', format_photoperiod_value, format_distance_range)
 }

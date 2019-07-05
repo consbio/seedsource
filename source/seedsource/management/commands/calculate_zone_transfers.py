@@ -167,13 +167,6 @@ class Command(BaseCommand):
             print('Choices are:\n\t- {}'.format('\n\t- '.join(seed_zone_choices)))
             return
 
-        elevation_service = Service.objects.get(name='west2_dem')
-        with Dataset(os.path.join(settings.NC_SERVICE_DATA_ROOT, elevation_service.data_path)) as ds:
-            coords = SpatialCoordinateVariables.from_dataset(
-                ds, x_name='lon', y_name='lat', projection=Proj(elevation_service.projection)
-            )
-            elevation = ds.variables['elevation'][:]
-
         message = 'WARNING: This will replace "{}" transfer limits. Do you want to continue? [y/n]'.format(zone_name)
         if input(message).lower() not in {'y', 'yes'}:
             return
@@ -231,7 +224,7 @@ class Command(BaseCommand):
                         masked_dem = numpy.ma.masked_where(zone_mask == 0, clipped_elevation)
                         min_elevation = max(math.floor(numpy.nanmin(masked_dem) / 0.3048), 0)
                         max_elevation = math.ceil(numpy.nanmax(masked_dem) / 0.3048)
-                        bands = list(self._get_bands_fn(zone.bands_fn)(zone.zone_id, min_elevation, max_elevation))
+                        bands = list(get_bands_fn(zone.bands_fn)(zone.zone_id, min_elevation, max_elevation))
 
                         if not bands:
                             print('WARNING: No elevation bands found for {}, zone {}'.format(

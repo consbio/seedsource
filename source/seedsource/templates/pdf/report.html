@@ -160,7 +160,9 @@
             </thead>
             <tbody>
                 <tr>
-                    <td rowspan="2"><img class="legend" src="data:image/png;base64,{{ legend_image_data }}" /></td>
+                    <td rowspan="2">
+                        <img class="legend" src="data:image/png;base64,{{ legend_image_data.image_base64 }}" />
+                    </td>
                     <td style="vertical-align: top;">High</td>
                 </tr>
                 <tr>
@@ -230,6 +232,30 @@
             </tbody>
         </table>
     </div>
+
+    {% if constraints %}
+        <h3>Constraints</h3>
+        <div>
+            <table class="variables">
+                <thead>
+                    <tr>
+                        <th>Constraint</th>
+                        <th>Center</th>
+                        <th>Range (+/-)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for constraint in constraints %}
+                        <tr>
+                            <td>{{ constraint.label }}</td>
+                            <td>{{ constraint.value|safe }}</td>
+                            <td>{{ constraint.range|safe }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
 
     <div>&nbsp;</div>
 

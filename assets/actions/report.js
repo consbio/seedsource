@@ -1,4 +1,4 @@
-import { post } from '../io'
+import { post, executeGPTask } from '../io'
 import { setError } from './error'
 import { dumpConfiguration } from './saves'
 import { reports } from '../config'
@@ -106,6 +106,32 @@ export const createReport = name => {
                 }, null, 2)
             ))
             dispatch(failReport())
+        })
+    }
+}
+
+export const runTIFJob = () => {
+    return (dispatch, getState) => {
+        dispatch(requestReport('tif'))
+
+        let inputs = {
+            service_id: getState().job.serviceId
+        }
+
+        return executeGPTask('write_tif', inputs).then(json => {
+            dispatch(receiveReport())
+            let { filename } = JSON.parse(json.outputs)
+            window.location = '/downloads/' + filename
+        }).catch(err => {
+            console.log(err)
+
+            let data = {action: 'runTIFJob'}
+            if (err.json !== undefined) {
+               data.response = err.json
+            }
+
+            dispatch(failReport())
+            dispatch(setError('Processing error', 'Sorry, processing failed.', JSON.stringify(data, null, 2)))
         })
     }
 }

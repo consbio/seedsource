@@ -11,8 +11,8 @@ Python Requirements
 
 * Python 3.5+ (https://www.python.org/)
 * Django 1.8 (https://www.djangoproject.com/)
-* ``ncdjango`` 0.4.0 (http://ncdjango.readthedocs.io/)
-* ``clover`` 0.2.0 (https://github.com/consbio/clover)
+* ``ncdjango`` (http://ncdjango.readthedocs.io/)
+* ``clover`` (https://github.com/consbio/clover)
 * ``amqp``
 * ``celery``
 * ``django-celery``
@@ -20,7 +20,6 @@ Python Requirements
 * ``Fiona``
 * ``kombu``
 * ``mercantile``
-* ``ncdjango==0.4.0``
 * ``netCDF4``
 * ``numpy``
 * ``Pillow``
@@ -161,6 +160,10 @@ to this new file:
 
     ALLOWED_HOSTS = []  # Add your host name or names here. E.g., 'seedlotselectiontool.org'
 
+    # Set this to the directory you will serve GeoTIFF downloads from. It must be writable by the application user
+    # and readable by the nginx user.
+    DATASET_DOWNLOAD_DIR = '/var/www/downloads/'
+
 .. note::
 
     You can also add additional settings to ``custom.py`` or override settings specified in ``production.py`` and
@@ -206,8 +209,8 @@ Restart the supervisord process.
 Configure Nginx
 ^^^^^^^^^^^^^^^
 
-Edit your nginx configuration and add a location directive for the seedsource application, and another location
-directive for your static files:
+Edit your nginx configuration and add a location directive for the seedsource application, a location
+directive for your static files, and a location directive for dataset downloads:
 
 .. code-block:: nginx
 
@@ -218,6 +221,10 @@ directive for your static files:
 
     location /static/ {
         alias /var/www/static/;
+    }
+
+    location /downloads/ {
+        alias /var/www/downloads/;
     }
 
 .. note::
